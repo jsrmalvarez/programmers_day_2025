@@ -53,14 +53,18 @@ let gameState = {
         currentLine: 0,
         currentChar: 0,
         lineDelay: 0,
-        characters: [] // Array of character data for current screen
+        characters: [], // Array of character data for current screen
+        mode: 'typing', // 'typing' or 'video'
+        videoPixels: [] // Array of colored rectangles for video mode
     },
     screen2: {
         timer: 0,
         currentLine: 0,
         currentChar: 0,
         lineDelay: 30, // Start with different timing
-        characters: [] // Array of character data for current screen
+        characters: [], // Array of character data for current screen
+        mode: 'typing', // 'typing' or 'video'
+        videoPixels: [] // Array of colored rectangles for video mode
     }
 };
 
@@ -676,6 +680,14 @@ class GameScene extends Phaser.Scene {
         graphics.lineStyle(1, 0x3498db);
         graphics.strokeRect(x, y, width, height);
 
+        if (screenState.mode === 'typing') {
+            this.renderTypingMode(graphics, x, y, width, height, screenState);
+        } else if (screenState.mode === 'video') {
+            this.renderVideoMode(graphics, x, y, width, height, screenState);
+        }
+    }
+
+    renderTypingMode(graphics, x, y, width, height, screenState) {
         // Character rendering parameters
         const charWidth = 1;
         const charHeight = 1;
@@ -695,7 +707,7 @@ class GameScene extends Phaser.Scene {
 
             // Only render if character is visible (not a space)
             if (char.visible) {
-                // Different shades for variety
+                // Different shades of green for variety
                 const colors = [0x00ff00, 0x00dd00, 0x00bb00, 0x00ff44];
                 graphics.fillStyle(colors[char.colorIndex]);
                 graphics.fillRect(charX, charY, charWidth, charHeight);
@@ -715,10 +727,43 @@ class GameScene extends Phaser.Scene {
         }
     }
 
+    renderVideoMode(graphics, x, y, width, height, screenState) {
+        // Render colorful video pixels
+        for (const pixel of screenState.videoPixels) {
+            const pixelX = x + 1 + pixel.x;
+            const pixelY = y + 1 + pixel.y;
+
+            // Make sure pixel is within screen bounds
+            if (pixelX < x + width - 1 && pixelY < y + height - 1) {
+                graphics.fillStyle(pixel.color);
+                graphics.fillRect(pixelX, pixelY, 1, 1);
+            }
+        }
+    }
+
     updateScreenAnimations() {
         // Only update screens if we're in room1 and screens exist
         if (gameState.currentRoom !== 'room1' || !this.screen1Graphics || !this.screen2Graphics) {
             return;
+        }
+
+        // Determine screen modes based on player position
+        const screen1Y = 72; // Sarah's screen Y position
+        const screen2Y = 82; // Mike's screen Y position
+
+        // Update screen modes based on player Y position
+        const newScreen1Mode = gameState.playerY > screen1Y ? 'typing' : 'video';
+        const newScreen2Mode = gameState.playerY > screen2Y ? 'typing' : 'video';
+
+        // Reset screen state if mode changed
+        if (gameState.screen1.mode !== newScreen1Mode) {
+            gameState.screen1.mode = newScreen1Mode;
+            this.resetScreenForMode(gameState.screen1);
+        }
+
+        if (gameState.screen2.mode !== newScreen2Mode) {
+            gameState.screen2.mode = newScreen2Mode;
+            this.resetScreenForMode(gameState.screen2);
         }
 
         let needsUpdate = false;
@@ -739,7 +784,59 @@ class GameScene extends Phaser.Scene {
         }
     }
 
+    resetScreenForMode(screenState) {
+        if (screenState.mode === 'typing') {
+            // Reset typing mode
+            screenState.characters = [];
+            screenState.currentLine = 0;
+            screenState.currentChar = 0;
+            screenState.lineDelay = 0;
+            screenState.videoPixels = [];
+        } else if (screenState.mode === 'video') {
+            // Initialize video mode with random colored rectangles
+            screenState.videoPixels = [];
+            screenState.characters = [];
+
+            // Create initial random video pixels
+            const maxPixelsX = 18; // Screen width - borders
+            const maxPixelsY = 10; // Screen height - borders
+
+            for (let y = 0; y < maxPixelsY; y++) {
+                for (let x = 0; x < maxPixelsX; x++) {
+                    screenState.videoPixels.push({
+                        x: x,
+                        y: y,
+                        color: this.getRandomVideoColor()
+                    });
+                }
+            }
+        }
+    }
+
+    getRandomVideoColor() {
+        const videoColors = [
+            0xff0000, 0x00ff00, 0x0000ff, // Primary colors
+            0xffff00, 0xff00ff, 0x00ffff, // Secondary colors
+            0xff8000, 0x8000ff, 0x00ff80, // Tertiary colors
+            0xff4080, 0x4080ff, 0x80ff40, // Mixed colors
+            0xffffff, 0xcccccc, 0x888888  // Grays
+        ];
+        return videoColors[Math.floor(Math.random() * videoColors.length)];
+    }
+
     updateSingleScreen(screenState) {
+        let changed = false;
+
+        if (screenState.mode === 'typing') {
+            return this.updateTypingMode(screenState);
+        } else if (screenState.mode === 'video') {
+            return this.updateVideoMode(screenState);
+        }
+
+        return changed;
+    }
+
+    updateTypingMode(screenState) {
         let changed = false;
 
         // Handle line delay (pause between lines or screen clear)
@@ -794,6 +891,30 @@ class GameScene extends Phaser.Scene {
         }
 
         return changed;
+    }
+
+    updateVideoMode(screenState) {
+        screenState.timer++;
+
+        // Update video pixels every 2-4 frames for smooth animation
+        const updateSpeed = 2 + Math.random() * 2;
+        if (screenState.timer >= updateSpeed) {
+            screenState.timer = 0;
+
+            // Randomly change some pixels
+            const changeCount = Math.floor(Math.random() * 5) + 1; // 1-5 pixels per update
+
+            for (let i = 0; i < changeCount; i++) {
+                const randomIndex = Math.floor(Math.random() * screenState.videoPixels.length);
+                if (screenState.videoPixels[randomIndex]) {
+                    screenState.videoPixels[randomIndex].color = this.getRandomVideoColor();
+                }
+            }
+
+            return true; // Always needs update in video mode
+        }
+
+        return false;
     }
 
     updateGame() {
