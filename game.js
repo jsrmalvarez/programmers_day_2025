@@ -281,12 +281,13 @@ class GameScene extends Phaser.Scene {
         // Key in drawer (if drawer is open and key not taken)
         if (gameState.drawerOpen && !gameState.keyTaken) {
             this.keySprite = this.add.sprite(70, 110, 'key');
-            this.keySprite.setDepth(10);
+            this.keySprite.setDepth(50); // Higher depth to be above everything
 
-            // Add key hotspot
-            this.rooms.room1.hotspots.push({
-                name: 'Key',
-                x: 65, y: 105, width: 10, height: 10,
+            // Add key hotspot with larger area for easier clicking
+            // Insert at the beginning so it gets checked first (higher priority than drawer)
+            this.rooms.room1.hotspots.unshift({
+                name: 'Office Key',
+                x: 60, y: 105, width: 20, height: 15,
                 action: this.takeKey.bind(this)
             });
         }
@@ -360,17 +361,20 @@ class GameScene extends Phaser.Scene {
             this.keySprite = null;
         }
 
-        // Create background
+        // Reset hotspots (remove key hotspot if it was added) - do this BEFORE creating background
+        if (roomId === 'room1') {
+            // Remove key hotspot if it exists (it would be at the beginning of the array)
+            if (this.rooms.room1.hotspots.length > 0 && this.rooms.room1.hotspots[0].name === 'Office Key') {
+                this.rooms.room1.hotspots.shift();
+            }
+        }
+
+        // Create background (this will add key hotspot if needed)
         room.background();
 
         // Create player sprite
         this.playerSprite = this.add.sprite(gameState.playerX, gameState.playerY, 'player_idle');
         this.playerSprite.setDepth(20);
-
-        // Reset hotspots (remove key hotspot if it was added)
-        if (roomId === 'room1') {
-            this.rooms.room1.hotspots = this.rooms.room1.hotspots.filter(h => h.name !== 'Key');
-        }
     }
 
     handleClick(x, y) {
@@ -401,6 +405,7 @@ class GameScene extends Phaser.Scene {
         if (y < CONFIG.VIRTUAL_HEIGHT - CONFIG.INVENTORY_HEIGHT) {
             const room = this.rooms[gameState.currentRoom];
             for (const hotspot of room.hotspots) {
+
                 if (x >= hotspot.x && x <= hotspot.x + hotspot.width &&
                     y >= hotspot.y && y <= hotspot.y + hotspot.height) {
                     tooltipText = hotspot.name;
