@@ -46,7 +46,20 @@ let gameState = {
     targetY: 120,
     isWalking: false,
     walkFrame: 0,
-    walkTimer: 0
+    walkTimer: 0,
+    // Screen animation states (independent)
+    screen1: {
+        timer: 0,
+        currentLine: 0,
+        lineProgress: 0,
+        lineDelay: 0
+    },
+    screen2: {
+        timer: 0,
+        currentLine: 0,
+        lineProgress: 0,
+        lineDelay: 30 // Start with different timing
+    }
 };
 
 // Items definition
@@ -132,6 +145,9 @@ class GameScene extends Phaser.Scene {
         playerGraphics.fillRect(8, 3, 2, 1);
         playerGraphics.fillRect(8, 5, 2, 1);
         playerGraphics.generateTexture('key', 10, 8);
+
+        // Create NPC sprites
+        this.createNPCTextures(playerGraphics);
 
         playerGraphics.destroy();
     }
@@ -270,14 +286,11 @@ class GameScene extends Phaser.Scene {
         g.fillRect(90, 70, 30, 20); // Sarah's computer
         g.fillRect(190, 80, 30, 20); // Mike's computer
 
-        // Computer screens (blue glow)
-        g.fillStyle(0x3498db);
-        g.fillRect(95, 72, 20, 12);
-        g.fillRect(195, 82, 20, 12);
+        // Computer screens - will be animated separately
+        this.createAnimatedScreens();
 
-        // NPCs
-        this.createNPC(110, 80, 0xe74c3c); // Sarah (red shirt)
-        this.createNPC(210, 90, 0x2ecc71); // Mike (green shirt)
+        // Create NPCs as sprites (higher layer than screens)
+        this.createNPCSprites();
 
         // Key in drawer (if drawer is open and key not taken)
         if (gameState.drawerOpen && !gameState.keyTaken) {
@@ -294,21 +307,49 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    createNPC(x, y, color) {
-        const g = this.backgroundGraphics;
+    createNPCTextures(graphics) {
+        // Create Sarah (red shirt)
+        graphics.clear();
+        this.drawNPCTexture(graphics, 0xe74c3c); // Red
+        graphics.generateTexture('npc_sarah', 16, 24);
 
-        // Body
-        g.fillStyle(color);
-        g.fillRect(x - 6, y, 12, 16);
+        // Create Mike (green shirt)
+        graphics.clear();
+        this.drawNPCTexture(graphics, 0x2ecc71); // Green
+        graphics.generateTexture('npc_mike', 16, 24);
+    }
+
+    drawNPCTexture(graphics, shirtColor) {
+        // Body (centered in 16x24 texture)
+        graphics.fillStyle(shirtColor);
+        graphics.fillRect(2, 8, 12, 16);
 
         // Head
-        g.fillStyle(0xf5a623);
-        g.fillRect(x - 4, y - 8, 8, 8);
+        graphics.fillStyle(0xf5a623);
+        graphics.fillRect(4, 0, 8, 8);
 
         // Arms
-        g.fillStyle(color);
-        g.fillRect(x - 8, y + 4, 4, 8);
-        g.fillRect(x + 4, y + 4, 4, 8);
+        graphics.fillStyle(shirtColor);
+        graphics.fillRect(0, 12, 4, 8); // Left arm
+        graphics.fillRect(12, 12, 4, 8); // Right arm
+    }
+
+    createNPCSprites() {
+        // Clear existing NPC sprites
+        if (this.sarahSprite) {
+            this.sarahSprite.destroy();
+        }
+        if (this.mikeSprite) {
+            this.mikeSprite.destroy();
+        }
+
+        // Create Sarah sprite
+        this.sarahSprite = this.add.sprite(110, 89, 'npc_sarah');
+        this.sarahSprite.setDepth(20); // Same as player, above screens
+
+        // Create Mike sprite
+        this.mikeSprite = this.add.sprite(210, 99, 'npc_mike');
+        this.mikeSprite.setDepth(20); // Same as player, above screens
     }
 
     createStorageBackground() {
@@ -363,6 +404,26 @@ class GameScene extends Phaser.Scene {
         if (this.keySprite) {
             this.keySprite.destroy();
             this.keySprite = null;
+        }
+
+        // Clear screen graphics
+        if (this.screen1Graphics) {
+            this.screen1Graphics.destroy();
+            this.screen1Graphics = null;
+        }
+        if (this.screen2Graphics) {
+            this.screen2Graphics.destroy();
+            this.screen2Graphics = null;
+        }
+
+        // Clear NPC sprites
+        if (this.sarahSprite) {
+            this.sarahSprite.destroy();
+            this.sarahSprite = null;
+        }
+        if (this.mikeSprite) {
+            this.mikeSprite.destroy();
+            this.mikeSprite = null;
         }
 
         // Reset hotspots (remove key hotspot if it was added) - do this BEFORE creating background
@@ -571,9 +632,131 @@ class GameScene extends Phaser.Scene {
         }
     }
 
+    createAnimatedScreens() {
+        // Clear existing screen graphics
+        if (this.screen1Graphics) {
+            this.screen1Graphics.destroy();
+        }
+        if (this.screen2Graphics) {
+            this.screen2Graphics.destroy();
+        }
+
+        // Create graphics objects for both screens
+        this.screen1Graphics = this.add.graphics();
+        this.screen2Graphics = this.add.graphics();
+
+        // Set depth to be above background but below NPCs and UI
+        this.screen1Graphics.setDepth(10);
+        this.screen2Graphics.setDepth(10);
+
+        // Initial screen render
+        this.updateScreenGraphics();
+    }
+
+    updateScreenGraphics() {
+        // Clear both screens
+        this.screen1Graphics.clear();
+        this.screen2Graphics.clear();
+
+        // Screen 1 (Sarah's computer) - 95, 72, 20x12
+        this.renderScreen(this.screen1Graphics, 95, 72, 20, 12, gameState.screen1);
+
+        // Screen 2 (Mike's computer) - 195, 82, 20x12
+        this.renderScreen(this.screen2Graphics, 195, 82, 20, 12, gameState.screen2);
+    }
+
+    renderScreen(graphics, x, y, width, height, screenState) {
+        // Dark screen background
+        graphics.fillStyle(0x001100);
+        graphics.fillRect(x, y, width, height);
+
+        // Blue screen border/glow
+        graphics.lineStyle(1, 0x3498db);
+        graphics.strokeRect(x, y, width, height);
+
+        // Render "code lines" as colored rectangles
+        const lineHeight = 2;
+        const lineSpacing = 1;
+        const maxLines = Math.floor((height - 2) / (lineHeight + lineSpacing));
+
+        for (let i = 0; i < maxLines; i++) {
+            const lineY = y + 1 + i * (lineHeight + lineSpacing);
+
+            if (i < screenState.currentLine) {
+                // Completed lines - full width, green
+                graphics.fillStyle(0x00ff00);
+                graphics.fillRect(x + 1, lineY, width - 2, lineHeight);
+            } else if (i === screenState.currentLine) {
+                // Current line being "typed" - partial width, bright green
+                const lineWidth = Math.floor((width - 2) * screenState.lineProgress);
+                if (lineWidth > 0) {
+                    graphics.fillStyle(0x00ff88);
+                    graphics.fillRect(x + 1, lineY, lineWidth, lineHeight);
+                }
+            }
+        }
+    }
+
+    updateScreenAnimations() {
+        let needsUpdate = false;
+
+        // Update Screen 1
+        if (this.updateSingleScreen(gameState.screen1)) {
+            needsUpdate = true;
+        }
+
+        // Update Screen 2
+        if (this.updateSingleScreen(gameState.screen2)) {
+            needsUpdate = true;
+        }
+
+        // Only redraw if something changed
+        if (needsUpdate) {
+            this.updateScreenGraphics();
+        }
+    }
+
+    updateSingleScreen(screenState) {
+        let changed = false;
+
+        // Handle line delay (pause between lines)
+        if (screenState.lineDelay > 0) {
+            screenState.lineDelay--;
+            return false;
+        }
+
+        screenState.timer++;
+
+        // Type current line (every 2 frames for smooth animation)
+        if (screenState.timer >= 2) {
+            screenState.timer = 0;
+            screenState.lineProgress += 0.1; // Progress 10% per update
+            changed = true;
+
+            // Line completed
+            if (screenState.lineProgress >= 1.0) {
+                screenState.lineProgress = 0;
+                screenState.currentLine++;
+
+                // If screen is full, scroll up (reset)
+                if (screenState.currentLine >= 4) { // Max 4 lines per screen
+                    screenState.currentLine = 0;
+                    // Add delay before starting new "page"
+                    screenState.lineDelay = 60 + Math.random() * 120; // 1-3 seconds
+                } else {
+                    // Short delay between lines
+                    screenState.lineDelay = 10 + Math.random() * 30; // 0.2-0.7 seconds
+                }
+            }
+        }
+
+        return changed;
+    }
+
     updateGame() {
         this.updatePlayerMovement();
         this.updatePlayerAnimation();
+        this.updateScreenAnimations();
     }
 
     updatePlayerMovement() {
