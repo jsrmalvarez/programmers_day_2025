@@ -716,6 +716,11 @@ class GameScene extends Phaser.Scene {
     }
 
     updateScreenAnimations() {
+        // Only update screens if we're in room1 and screens exist
+        if (gameState.currentRoom !== 'room1' || !this.screen1Graphics || !this.screen2Graphics) {
+            return;
+        }
+
         let needsUpdate = false;
 
         // Update Screen 1
