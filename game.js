@@ -61,6 +61,7 @@ class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' });
         this.tooltip = null;
+        this.pendingInteraction = null;
     }
 
     preload() {
@@ -352,6 +353,9 @@ class GameScene extends Phaser.Scene {
         gameState.currentRoom = roomId;
         const room = this.rooms[roomId];
 
+        // Clear pending interactions when switching rooms
+        this.pendingInteraction = null;
+
         // Clear existing sprites
         if (this.playerSprite) {
             this.playerSprite.destroy();
@@ -389,7 +393,14 @@ class GameScene extends Phaser.Scene {
         for (const hotspot of room.hotspots) {
             if (x >= hotspot.x && x <= hotspot.x + hotspot.width &&
                 y >= hotspot.y && y <= hotspot.y + hotspot.height) {
-                hotspot.action();
+
+                // Check if player is close enough to interact
+                if (this.isPlayerNearHotspot(hotspot)) {
+                    hotspot.action();
+                } else {
+                    // Move player closer to the hotspot, then interact when close
+                    this.movePlayerToHotspot(hotspot);
+                }
                 return;
             }
         }
@@ -488,6 +499,54 @@ class GameScene extends Phaser.Scene {
         });
     }
 
+    isPlayerNearHotspot(hotspot) {
+        const INTERACTION_DISTANCE = 30; // pixels
+
+        // Calculate center of hotspot
+        const hotspotCenterX = hotspot.x + hotspot.width / 2;
+        const hotspotCenterY = hotspot.y + hotspot.height / 2;
+
+        // Calculate distance from player to hotspot center
+        const dx = gameState.playerX - hotspotCenterX;
+        const dy = gameState.playerY - hotspotCenterY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        return distance <= INTERACTION_DISTANCE;
+    }
+
+    movePlayerToHotspot(hotspot) {
+        // Calculate a good position near the hotspot for interaction
+        const hotspotCenterX = hotspot.x + hotspot.width / 2;
+        const hotspotCenterY = hotspot.y + hotspot.height / 2;
+
+        // Move to a position close to the hotspot
+        const APPROACH_DISTANCE = 20;
+        let targetX, targetY;
+
+        // Calculate the closest walkable position to the hotspot
+        const room = this.rooms[gameState.currentRoom];
+        const bounds = room.walkableBounds;
+
+        // Try to approach from the bottom (most natural for most objects)
+        targetX = Math.max(bounds.x + 10, Math.min(bounds.x + bounds.width - 10, hotspotCenterX));
+        targetY = Math.max(bounds.y + 10, Math.min(bounds.y + bounds.height - 10, hotspot.y + hotspot.height + APPROACH_DISTANCE));
+
+        // If that puts us outside walkable bounds, try from the side
+        if (targetY > bounds.y + bounds.height - 10) {
+            targetY = hotspotCenterY;
+            if (gameState.playerX < hotspotCenterX) {
+                targetX = Math.max(bounds.x + 10, hotspot.x - APPROACH_DISTANCE);
+            } else {
+                targetX = Math.min(bounds.x + bounds.width - 10, hotspot.x + hotspot.width + APPROACH_DISTANCE);
+            }
+        }
+
+        // Store the hotspot for auto-interaction when we arrive
+        this.pendingInteraction = hotspot;
+
+        this.movePlayerTo(targetX, targetY);
+    }
+
     movePlayerTo(x, y) {
         const room = this.rooms[gameState.currentRoom];
         const bounds = room.walkableBounds;
@@ -528,6 +587,19 @@ class GameScene extends Phaser.Scene {
             gameState.playerX = gameState.targetX;
             gameState.playerY = gameState.targetY;
             gameState.isWalking = false;
+
+            // Check if we have a pending interaction to execute
+            if (this.pendingInteraction) {
+                const hotspot = this.pendingInteraction;
+                this.pendingInteraction = null;
+
+                // Double-check that we're close enough (in case of pathfinding issues)
+                if (this.isPlayerNearHotspot(hotspot)) {
+                    hotspot.action();
+                } else {
+                    this.showMessage("Can't reach that from here.");
+                }
+            }
         } else {
             const speed = 1;
             gameState.playerX += (dx / distance) * speed;
