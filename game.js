@@ -684,7 +684,7 @@ class GameScene extends Phaser.Scene {
 
 // Phaser game configuration
 const gameConfig = {
-    type: Phaser.AUTO,
+    type: Phaser.WEBGL,
     width: CONFIG.VIRTUAL_WIDTH,
     height: CONFIG.VIRTUAL_HEIGHT,
     canvas: document.getElementById('game-canvas'),
