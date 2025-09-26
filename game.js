@@ -198,12 +198,12 @@ class GameScene extends Phaser.Scene {
                         action: this.interactDrawer.bind(this)
                     },
                     {
-                        name: 'NPC Sarah',
+                        name: 'Sarah',
                         x: 100, y: 80, width: 20, height: 30,
                         action: this.talkToNPC1.bind(this)
                     },
                     {
-                        name: 'NPC Mike',
+                        name: 'Mike',
                         x: 200, y: 90, width: 20, height: 30,
                         action: this.talkToNPC2.bind(this)
                     }
@@ -707,6 +707,12 @@ class GameScene extends Phaser.Scene {
     }
 
     talkToNPC1() {
+
+        if(gameState.doorUnlocked) {
+            this.showMessage("Don't mess with anything in the storage room.");
+            return;
+        }
+
         const dialogs = [
             "The boss lost a key... maybe it's in a drawer.",
             "Seriously, check the drawer near the door."
@@ -718,6 +724,11 @@ class GameScene extends Phaser.Scene {
     }
 
     talkToNPC2() {
+        if(gameState.doorUnlocked) {
+            this.showMessage("Congratulations! You've unlocked the door.");
+            return;
+        }
+
         const dialogs = [
             "Doors don't open by wishing. Find the key.",
             "Try the drawer at the desk."
@@ -750,7 +761,7 @@ class GameScene extends Phaser.Scene {
         }).setOrigin(0.5).setDepth(200);
 
         // Auto-remove after 3 seconds
-        this.time.delayedCall(3000, () => {
+        this.time.delayedCall(6000, () => {
             if (this.messageText) {
                 this.messageText.destroy();
                 this.messageText = null;
