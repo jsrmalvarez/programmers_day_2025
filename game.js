@@ -51,14 +51,16 @@ let gameState = {
     screen1: {
         timer: 0,
         currentLine: 0,
-        lineProgress: 0,
-        lineDelay: 0
+        currentChar: 0,
+        lineDelay: 0,
+        characters: [] // Array of character data for current screen
     },
     screen2: {
         timer: 0,
         currentLine: 0,
-        lineProgress: 0,
-        lineDelay: 30 // Start with different timing
+        currentChar: 0,
+        lineDelay: 30, // Start with different timing
+        characters: [] // Array of character data for current screen
     }
 };
 
@@ -674,25 +676,41 @@ class GameScene extends Phaser.Scene {
         graphics.lineStyle(1, 0x3498db);
         graphics.strokeRect(x, y, width, height);
 
-        // Render "code lines" as colored rectangles
-        const lineHeight = 2;
-        const lineSpacing = 1;
-        const maxLines = Math.floor((height - 2) / (lineHeight + lineSpacing));
+        // Character rendering parameters
+        const charWidth = 1;
+        const charHeight = 1;
+        const charSpacingX = 1;
+        const charSpacingY = 1;
+        const lineHeight = charHeight + charSpacingY;
 
-        for (let i = 0; i < maxLines; i++) {
-            const lineY = y + 1 + i * (lineHeight + lineSpacing);
+        const maxCharsPerLine = Math.floor((width - 2) / charSpacingX);
+        const maxLines = Math.floor((height - 2) / lineHeight);
 
-            if (i < screenState.currentLine) {
-                // Completed lines - full width, green
-                graphics.fillStyle(0x00ff00);
-                graphics.fillRect(x + 1, lineY, width - 2, lineHeight);
-            } else if (i === screenState.currentLine) {
-                // Current line being "typed" - partial width, bright green
-                const lineWidth = Math.floor((width - 2) * screenState.lineProgress);
-                if (lineWidth > 0) {
-                    graphics.fillStyle(0x00ff88);
-                    graphics.fillRect(x + 1, lineY, lineWidth, lineHeight);
-                }
+        // Render each character
+        for (const char of screenState.characters) {
+            if (char.line >= maxLines) continue; // Skip if outside screen bounds
+
+            const charX = x + 1 + char.col * charSpacingX;
+            const charY = y + 1 + char.line * lineHeight;
+
+            // Only render if character is visible (not a space)
+            if (char.visible) {
+                // Different shades for variety
+                const colors = [0x00ff00, 0x00dd00, 0x00bb00, 0x00ff44];
+                graphics.fillStyle(colors[char.colorIndex]);
+                graphics.fillRect(charX, charY, charWidth, charHeight);
+            }
+        }
+
+        // Render cursor on current typing position
+        if (screenState.currentLine < maxLines) {
+            const cursorX = x + 1 + screenState.currentChar * charSpacingX;
+            const cursorY = y + 1 + screenState.currentLine * lineHeight;
+
+            // Blinking cursor effect
+            if (Math.floor(Date.now() / 500) % 2 === 0) {
+                graphics.fillStyle(0x00ffff);
+                graphics.fillRect(cursorX, cursorY, charWidth, charHeight);
             }
         }
     }
@@ -719,7 +737,7 @@ class GameScene extends Phaser.Scene {
     updateSingleScreen(screenState) {
         let changed = false;
 
-        // Handle line delay (pause between lines)
+        // Handle line delay (pause between lines or screen clear)
         if (screenState.lineDelay > 0) {
             screenState.lineDelay--;
             return false;
@@ -727,25 +745,45 @@ class GameScene extends Phaser.Scene {
 
         screenState.timer++;
 
-        // Type current line (every 2 frames for smooth animation)
-        if (screenState.timer >= 2) {
+        // Type characters (every 3-5 frames for realistic typing speed)
+        const typingSpeed = 3 + Math.random() * 2;
+        if (screenState.timer >= typingSpeed) {
             screenState.timer = 0;
-            screenState.lineProgress += 0.1; // Progress 10% per update
             changed = true;
 
-            // Line completed
-            if (screenState.lineProgress >= 1.0) {
-                screenState.lineProgress = 0;
+            // Calculate screen dimensions
+            const maxCharsPerLine = 18; // 20 width - 2 for borders
+            const maxLines = 5; // 12 height / 2 (char + spacing)
+
+            // Add a new character
+            const isSpace = Math.random() < (1/6); // 1/6 probability of space
+            const newChar = {
+                line: screenState.currentLine,
+                col: screenState.currentChar,
+                visible: !isSpace,
+                colorIndex: Math.floor(Math.random() * 4) // Random color variation
+            };
+
+            screenState.characters.push(newChar);
+            screenState.currentChar++;
+
+            // Check if line is complete
+            if (screenState.currentChar >= maxCharsPerLine) {
+                screenState.currentChar = 0;
                 screenState.currentLine++;
 
-                // If screen is full, scroll up (reset)
-                if (screenState.currentLine >= 4) { // Max 4 lines per screen
+                // Short delay between lines
+                screenState.lineDelay = 5 + Math.random() * 15; // 0.1-0.3 seconds
+
+                // Check if screen is full
+                if (screenState.currentLine >= maxLines) {
+                    // Clear screen and start over
+                    screenState.characters = [];
                     screenState.currentLine = 0;
-                    // Add delay before starting new "page"
+                    screenState.currentChar = 0;
+
+                    // Longer delay before starting new "page"
                     screenState.lineDelay = 60 + Math.random() * 120; // 1-3 seconds
-                } else {
-                    // Short delay between lines
-                    screenState.lineDelay = 10 + Math.random() * 30; // 0.2-0.7 seconds
                 }
             }
         }
