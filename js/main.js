@@ -122,7 +122,7 @@ export class GameScene extends Phaser.Scene {
             this.keySprite = null;
         }
 
-        // Clear player overlay
+        // Clear player overlay (no longer used)
         if (this.playerOverlay) {
             if (this.playerOverlay.parentNode) {
                 document.body.removeChild(this.playerOverlay);
@@ -155,13 +155,10 @@ export class GameScene extends Phaser.Scene {
             room.background();
         }
 
-        // Create player sprite (invisible, for game logic)
+        // Create player sprite (visible, with proper depth layering)
         this.playerSprite = this.add.sprite(gameState.playerX, gameState.playerY, 'player_idle');
-        this.playerSprite.setDepth(20);
-        this.playerSprite.setVisible(false);
-
-        // Create player HTML overlay (for rendering above NPCs)
-        this.createPlayerOverlay();
+        this.playerSprite.setDepth(20); // Layer 20 - between room sprites
+        this.playerSprite.setVisible(true);
     }
 
     // Interaction handlers
@@ -217,92 +214,6 @@ export class GameScene extends Phaser.Scene {
         this.switchToRoom('room1');
     }
 
-    createPlayerOverlay() {
-        // Clean up existing overlay
-        if (this.playerOverlay) {
-            if (this.playerOverlay.parentNode) {
-                document.body.removeChild(this.playerOverlay);
-            }
-        }
-
-        // Create canvas element for player
-        const canvas = document.createElement('canvas');
-        canvas.width = 12;
-        canvas.height = 16;
-        canvas.style.position = 'absolute';
-        canvas.style.imageRendering = 'pixelated';
-        canvas.style.imageRendering = 'crisp-edges';
-        canvas.style.zIndex = '20'; // Above NPCs (z-index 10) and GIFs (z-index 5)
-        canvas.style.pointerEvents = 'none';
-        canvas.style.border = 'none';
-        canvas.style.outline = 'none';
-        canvas.style.boxSizing = 'border-box';
-
-        // Add to DOM and store reference
-        document.body.appendChild(canvas);
-        this.playerOverlay = canvas;
-
-        // Draw initial player state and position
-        this.updatePlayerOverlay();
-    }
-
-    updatePlayerOverlay() {
-        if (!this.playerOverlay) return;
-
-        // Clear canvas
-        const ctx = this.playerOverlay.getContext('2d');
-        ctx.clearRect(0, 0, 12, 16);
-
-        // Draw player based on current state
-        this.drawPlayerOnCanvas(ctx);
-
-        // Update position
-        this.updatePlayerOverlayPosition();
-    }
-
-    drawPlayerOnCanvas(ctx) {
-        // Player body (blue shirt)
-        ctx.fillStyle = '#4a90e2';
-        ctx.fillRect(0, 0, 12, 16);
-
-        // Player head (skin color)
-        ctx.fillStyle = '#f5a623';
-        ctx.fillRect(2, 2, 8, 6);
-
-        // Add walk animation if walking
-        if (gameState.isWalking) {
-            ctx.fillStyle = '#333333';
-            if (gameState.walkFrame === 0) {
-                ctx.fillRect(1, 14, 3, 2); // left foot forward
-                ctx.fillRect(8, 15, 3, 1); // right foot back
-            } else {
-                ctx.fillRect(8, 14, 3, 2); // right foot forward
-                ctx.fillRect(1, 15, 3, 1); // left foot back
-            }
-        }
-    }
-
-    updatePlayerOverlayPosition() {
-        if (!this.playerOverlay) return;
-
-        // Get canvas position and scale
-        const gameCanvas = this.game.canvas;
-        const canvasRect = gameCanvas.getBoundingClientRect();
-        const scaleX = canvasRect.width / this.game.config.width;
-        const scaleY = canvasRect.height / this.game.config.height;
-
-        // Calculate player position in actual pixels
-        const actualX = canvasRect.left + (gameState.playerX * scaleX);
-        const actualY = canvasRect.top + (gameState.playerY * scaleY);
-        const actualWidth = 12 * scaleX;
-        const actualHeight = 16 * scaleY;
-
-        // Position the player overlay (centered on sprite position)
-        this.playerOverlay.style.left = `${actualX - actualWidth/2}px`;
-        this.playerOverlay.style.top = `${actualY - actualHeight/2}px`;
-        this.playerOverlay.style.width = `${actualWidth}px`;
-        this.playerOverlay.style.height = `${actualHeight}px`;
-    }
 }
 
 // Phaser game configuration

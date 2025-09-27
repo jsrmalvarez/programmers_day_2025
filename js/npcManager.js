@@ -19,91 +19,17 @@ export class NPC {
         // Individual dialog state
         this.dialogIndex = 0;
 
-        // Phaser sprite (for game logic)
+        // Phaser sprite (for game logic and rendering)
         this.sprite = null;
-
-        // HTML overlay (for rendering)
-        this.overlay = null;
     }
 
     create() {
-        // Create Phaser sprite for game logic/interactions
+        // Create visible Phaser sprite with proper depth layering
         this.sprite = this.scene.add.sprite(this.position.x, this.position.y, `npc_${this.id}`);
-        this.sprite.setDepth(20);
-        this.sprite.setVisible(false); // Hidden, using HTML overlay for rendering
-
-        // Create HTML overlay for rendering
-        this.createOverlay();
+        this.sprite.setDepth(15); // Below player (depth 20)
+        this.sprite.setVisible(true);
     }
 
-    createOverlay() {
-        // Create canvas element for NPC
-        const canvas = document.createElement('canvas');
-        canvas.width = 16;
-        canvas.height = 24;
-        canvas.style.position = 'absolute';
-        canvas.style.imageRendering = 'pixelated';
-        canvas.style.imageRendering = 'crisp-edges';
-        canvas.style.zIndex = '10'; // Above GIF screens (z-index 5) but below player
-        canvas.style.pointerEvents = 'none';
-        canvas.style.border = 'none';
-        canvas.style.outline = 'none';
-        canvas.style.boxSizing = 'border-box';
-
-        // Draw NPC on canvas
-        const ctx = canvas.getContext('2d');
-        this.drawOnCanvas(ctx);
-
-        // Add to DOM and store reference
-        document.body.appendChild(canvas);
-        this.overlay = canvas;
-
-        // Position the overlay
-        this.updateOverlayPosition();
-    }
-
-    drawOnCanvas(ctx) {
-        // Convert hex color to RGB
-        const r = (this.shirtColor >> 16) & 255;
-        const g = (this.shirtColor >> 8) & 255;
-        const b = this.shirtColor & 255;
-        const shirtRGB = `rgb(${r}, ${g}, ${b})`;
-
-        // Body (centered in 16x24 canvas)
-        ctx.fillStyle = shirtRGB;
-        ctx.fillRect(2, 8, 12, 16);
-
-        // Head (skin color)
-        ctx.fillStyle = '#f5a623';
-        ctx.fillRect(4, 0, 8, 8);
-
-        // Arms
-        ctx.fillStyle = shirtRGB;
-        ctx.fillRect(0, 12, 4, 8); // Left arm
-        ctx.fillRect(12, 12, 4, 8); // Right arm
-    }
-
-    updateOverlayPosition() {
-        if (!this.overlay) return;
-
-        // Get canvas position and scale
-        const gameCanvas = this.scene.game.canvas;
-        const canvasRect = gameCanvas.getBoundingClientRect();
-        const scaleX = canvasRect.width / this.scene.game.config.width;
-        const scaleY = canvasRect.height / this.scene.game.config.height;
-
-        // Calculate NPC position in actual pixels
-        const actualX = canvasRect.left + (this.position.x * scaleX);
-        const actualY = canvasRect.top + (this.position.y * scaleY);
-        const actualWidth = 16 * scaleX;
-        const actualHeight = 24 * scaleY;
-
-        // Position the NPC overlay (centered on sprite position)
-        this.overlay.style.left = `${actualX - actualWidth/2}px`;
-        this.overlay.style.top = `${actualY - actualHeight/2}px`;
-        this.overlay.style.width = `${actualWidth}px`;
-        this.overlay.style.height = `${actualHeight}px`;
-    }
 
     talk() {
         // Determine which dialog set to use
@@ -136,14 +62,6 @@ export class NPC {
             this.sprite.destroy();
             this.sprite = null;
         }
-
-        // Clean up HTML overlay
-        if (this.overlay) {
-            if (this.overlay.parentNode) {
-                document.body.removeChild(this.overlay);
-            }
-            this.overlay = null;
-        }
     }
 }
 
@@ -165,11 +83,6 @@ export class NPCManager {
         }
     }
 
-    updateAllOverlayPositions() {
-        for (const npc of this.npcs.values()) {
-            npc.updateOverlayPosition();
-        }
-    }
 
     getAllHotspots() {
         const hotspots = [];

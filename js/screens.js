@@ -228,13 +228,6 @@ export class ScreenManager {
             this.updateGifPosition(gameState.screen2.gifElement, 195, 82, 20, 12);
         }
 
-        // Update NPC overlay positions in case canvas moved/resized
-        this.scene.npcManager.updateAllOverlayPositions();
-
-        // Update player overlay position in case canvas moved/resized
-        if (this.scene.updatePlayerOverlayPosition) {
-            this.scene.updatePlayerOverlayPosition();
-        }
     }
 
     resetScreenForMode(screenState) {
