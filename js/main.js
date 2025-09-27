@@ -3,7 +3,7 @@
  * Orchestrates all game systems and handles game flow
  */
 
-import { CONFIG, ITEMS } from './config.js';
+import { CONFIG, ITEMS, ROOMS } from './config.js';
 import { gameState, setPlayerPosition } from './gameState.js';
 import { SpriteManager } from './sprites.js';
 import { ScreenManager } from './screens.js';
@@ -11,6 +11,8 @@ import { RoomManager } from './rooms.js';
 import { InputManager } from './input.js';
 import { UIManager } from './ui.js';
 import { NPCManager } from './npcManager.js';
+import { CollisionManager } from './collision.js';
+import { RoomSpriteManager } from './roomSprites.js';
 
 export class GameScene extends Phaser.Scene {
     constructor() {
@@ -23,6 +25,8 @@ export class GameScene extends Phaser.Scene {
         this.inputManager = new InputManager(this);
         this.uiManager = new UIManager(this);
         this.npcManager = new NPCManager(this);
+        this.collisionManager = new CollisionManager(this);
+        this.roomSpriteManager = new RoomSpriteManager(this);
 
         // Game objects
         this.playerSprite = null;
@@ -37,10 +41,37 @@ export class GameScene extends Phaser.Scene {
         // Load bitmap font for pixel-perfect text
         this.load.bitmapFont('arcade', 'assets/arcade.png', 'assets/arcade.xml');
 
+        // Load room backgrounds and collision masks
+        this.loadRoomAssets();
+
         // Note: GIFs are loaded as HTML elements for animation support
 
         // Create pixel art sprites programmatically
         this.spriteManager.createAllSprites();
+    }
+
+    loadRoomAssets() {
+        // Load assets for each room defined in config
+        for (const [roomId, roomConfig] of Object.entries(ROOMS)) {
+            // Load background image
+            if (roomConfig.background.image) {
+                this.load.image(roomConfig.background.image, `assets/rooms/${roomConfig.background.image}.png`);
+            }
+
+            // Load collision mask
+            if (roomConfig.background.mask) {
+                this.load.image(roomConfig.background.mask, `assets/rooms/${roomConfig.background.mask}.png`);
+            }
+
+            // Load sprite images
+            if (roomConfig.sprites) {
+                for (const sprite of roomConfig.sprites) {
+                    if (sprite.image) {
+                        this.load.image(sprite.image, `assets/sprites/${sprite.image}.png`);
+                    }
+                }
+            }
+        }
     }
 
     create() {
@@ -99,10 +130,12 @@ export class GameScene extends Phaser.Scene {
             this.playerOverlay = null;
         }
 
-        // Clear screen graphics and NPCs
+        // Clear screen graphics, NPCs, and room sprites
         this.screenManager.clearScreens();
         this.npcManager.clearAllNPCs();
+        this.roomSpriteManager.clearAllSprites();
         this.roomManager.destroyBackground();
+        this.collisionManager.clearMask();
 
         // Reset hotspots (remove key hotspot if it was added) - do this BEFORE creating background
         if (roomId === 'room1') {
@@ -112,8 +145,15 @@ export class GameScene extends Phaser.Scene {
             }
         }
 
-        // Create background (this will add key hotspot if needed)
-        room.background();
+        // Try to create image-based room first, fallback to old system
+        const roomConfig = ROOMS[roomId];
+        if (roomConfig && roomConfig.background.image) {
+            // Use new image-based room system
+            this.roomManager.createImageBasedRoom(roomId);
+        } else {
+            // Fallback to old graphics-based room system
+            room.background();
+        }
 
         // Create player sprite (invisible, for game logic)
         this.playerSprite = this.add.sprite(gameState.playerX, gameState.playerY, 'player_idle');

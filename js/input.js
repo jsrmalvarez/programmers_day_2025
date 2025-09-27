@@ -140,14 +140,22 @@ export class InputManager {
     }
 
     movePlayerTo(x, y) {
-        // Clamp to walkable bounds
-        const room = this.scene.rooms[gameState.currentRoom];
-        const bounds = room.walkableBounds;
+        // Use collision detection if available, otherwise use bounds
+        if (this.scene.collisionManager.maskData) {
+            // Find nearest walkable point using collision mask
+            const walkablePoint = this.scene.collisionManager.findNearestWalkablePoint(x, y);
+            setPlayerTarget(walkablePoint.x, walkablePoint.y);
+        } else {
+            // Fallback to bounds-based movement
+            const room = this.scene.rooms[gameState.currentRoom];
+            const bounds = room.walkableBounds;
 
-        x = Math.max(bounds.x, Math.min(bounds.x + bounds.width, x));
-        y = Math.max(bounds.y, Math.min(bounds.y + bounds.height, y));
+            x = Math.max(bounds.x, Math.min(bounds.x + bounds.width, x));
+            y = Math.max(bounds.y, Math.min(bounds.y + bounds.height, y));
 
-        setPlayerTarget(x, y);
+            setPlayerTarget(x, y);
+        }
+
         this.playSound('walk');
     }
 

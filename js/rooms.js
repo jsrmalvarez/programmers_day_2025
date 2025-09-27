@@ -3,12 +3,13 @@
  * Manages room layouts, backgrounds, and hotspots
  */
 
-import { CONFIG } from './config.js';
+import { CONFIG, ROOMS } from './config.js';
 
 export class RoomManager {
     constructor(scene) {
         this.scene = scene;
         this.backgroundGraphics = null;
+        this.backgroundSprite = null;
     }
 
     createRooms() {
@@ -156,10 +157,80 @@ export class RoomManager {
             .setLineSpacing(10);
     }
 
+    createImageBasedRoom(roomId) {
+        const roomConfig = ROOMS[roomId];
+        if (!roomConfig) {
+            console.warn(`Room config not found for: ${roomId}`);
+            return;
+        }
+
+        // Clear existing background
+        this.destroyBackground();
+
+        // Create background sprite if image is defined
+        if (roomConfig.background.image) {
+            this.backgroundSprite = this.scene.add.sprite(0, 0, roomConfig.background.image);
+            this.backgroundSprite.setOrigin(0, 0); // Top-left origin
+            this.backgroundSprite.setDepth(0); // Background layer
+        }
+
+        // Load collision mask
+        if (roomConfig.background.mask) {
+            this.scene.collisionManager.loadMask(roomConfig.background.mask);
+        }
+
+        // Create room sprites with layers
+        this.scene.roomSpriteManager.createSpritesForRoom(roomConfig);
+
+        // Create NPCs using new NPC management system
+        this.scene.npcManager.createAllNPCs();
+
+        // Add NPC hotspots to the room after NPCs are created
+        const npcHotspots = this.scene.npcManager.getAllHotspots();
+        this.scene.rooms[roomId].hotspots.push(...npcHotspots);
+
+        // Create animated screens (for room1 only, for now)
+        if (roomId === 'room1') {
+            this.scene.screenManager.createAnimatedScreens();
+        }
+
+        // Handle special room elements (key, etc.)
+        this.createSpecialElements(roomId);
+    }
+
+    createSpecialElements(roomId) {
+        if (roomId === 'room1') {
+            // Key in drawer (if drawer is open and key not taken)
+            if (this.scene.gameState.drawerOpen && !this.scene.gameState.keyTaken) {
+                this.scene.keySprite = this.scene.add.sprite(70, 110, 'key');
+                this.scene.keySprite.setDepth(50); // Higher depth to be above everything
+
+                // Add key hotspot with larger area for easier clicking
+                // Insert at the beginning so it gets checked first (higher priority than drawer)
+                this.scene.rooms.room1.hotspots.unshift({
+                    name: 'Office Key',
+                    x: 60, y: 105, width: 20, height: 15,
+                    action: this.scene.takeKey.bind(this.scene)
+                });
+            }
+        } else if (roomId === 'room2') {
+            // Success message using bitmap font - pixel perfect
+            const successText = this.scene.add.bitmapText(CONFIG.VIRTUAL_WIDTH / 2, 30, 'arcade', 'YOU DID IT!')
+                .setOrigin(0.5)
+                .setTint(0x2ecc71)
+                .setFontSize(7)
+                .setLineSpacing(10);
+        }
+    }
+
     destroyBackground() {
         if (this.backgroundGraphics) {
             this.backgroundGraphics.destroy();
             this.backgroundGraphics = null;
+        }
+        if (this.backgroundSprite) {
+            this.backgroundSprite.destroy();
+            this.backgroundSprite = null;
         }
     }
 }

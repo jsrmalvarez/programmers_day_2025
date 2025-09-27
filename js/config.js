@@ -91,3 +91,47 @@ export const NPCS = {
         hotspot: { x: 200, y: 90, width: 20, height: 30 }
     }
 };
+
+// Room Definitions with Images and Sprites
+export const ROOMS = {
+    room1: {
+        name: 'Office',
+        background: {
+            image: 'room1_bg', // PNG background image
+            mask: 'room1_mask'  // Black/white collision mask
+        },
+        sprites: [
+            // Example sprites with layers
+            {
+                 id: 'desk_front',
+                 image: 'desk_front',
+                 x: 9, y: 134,
+                 layer: 15
+             },
+             {
+                id: 'desk_back',
+                image: 'desk_back',
+                x: 35, y: 92,
+                layer: 25
+            },
+            // {
+            //     id: 'plant',
+            //     image: 'plant_sprite',
+            //     x: 250, y: 80,
+            //     layer: 25 // This appears in front of player
+            // }
+        ],
+        walkableBounds: { x: 20, y: 60, width: 280, height: 100 } // Fallback bounds
+    },
+    room2: {
+        name: 'Storage Room',
+        background: {
+            image: 'room2_bg',
+            mask: 'room2_mask'
+        },
+        sprites: [
+            // Storage room sprites would go here
+        ],
+        walkableBounds: { x: 20, y: 60, width: 280, height: 100 }
+    }
+};
