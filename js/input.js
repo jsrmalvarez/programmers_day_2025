@@ -198,10 +198,39 @@ export class InputManager {
                 }
             }
         } else {
-            // Move towards target
+            // Calculate next position
             const speed = 1;
-            gameState.playerX += (dx / distance) * speed;
-            gameState.playerY += (dy / distance) * speed;
+            const nextX = gameState.playerX + (dx / distance) * speed;
+            const nextY = gameState.playerY + (dy / distance) * speed;
+
+            // Check if next position is walkable (if collision system is available)
+            if (this.scene.collisionManager.maskData) {
+                // Check collision for the player's feet position (slightly below center)
+                const feetX = Math.round(nextX);
+                const feetY = Math.round(nextY + 8); // Player feet are about 8 pixels below center
+
+                if (this.scene.collisionManager.isWalkable(feetX, feetY)) {
+                    // Safe to move
+                    gameState.playerX = nextX;
+                    gameState.playerY = nextY;
+                } else {
+                    // Hit a wall, stop movement
+                    console.log(`Player hit wall at (${feetX}, ${feetY}), stopping movement`);
+                    gameState.isWalking = false;
+
+                    // Clear any pending interaction since we couldn't reach the target
+                    if (this.pendingInteraction) {
+                        this.pendingInteraction = null;
+                        if (this.scene.uiManager) {
+                            this.scene.uiManager.showMessage("Can't reach that from here.");
+                        }
+                    }
+                }
+            } else {
+                // No collision system, move normally
+                gameState.playerX = nextX;
+                gameState.playerY = nextY;
+            }
         }
 
         // Update player sprite position

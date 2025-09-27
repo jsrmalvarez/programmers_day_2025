@@ -12,10 +12,28 @@ export class CollisionManager {
     }
 
     loadMask(maskKey) {
+        console.log(`Loading collision mask: ${maskKey}`);
+
         // Get the mask texture from Phaser
         const maskTexture = this.scene.textures.get(maskKey);
-        if (!maskTexture || !maskTexture.source[0]) {
-            console.warn(`Collision mask '${maskKey}' not found`);
+        if (!maskTexture) {
+            console.warn(`Collision mask texture '${maskKey}' not found in Phaser textures`);
+            console.log('Available textures:', Object.keys(this.scene.textures.list));
+            return false;
+        }
+
+        const source = maskTexture.source[0];
+        if (!source) {
+            console.warn(`Collision mask source not found for '${maskKey}'`);
+            return false;
+        }
+
+        if (!source.image) {
+            console.warn(`Collision mask image not loaded yet for '${maskKey}'`);
+            // Try to load it with a delay
+            this.scene.time.delayedCall(100, () => {
+                this.loadMask(maskKey);
+            });
             return false;
         }
 
@@ -23,21 +41,35 @@ export class CollisionManager {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
 
-        // Get the source image
-        const source = maskTexture.source[0];
         canvas.width = source.width;
         canvas.height = source.height;
         this.maskWidth = source.width;
         this.maskHeight = source.height;
 
-        // Draw the mask image to canvas
-        ctx.drawImage(source.image, 0, 0);
+        console.log(`Mask dimensions: ${this.maskWidth}x${this.maskHeight}`);
 
-        // Get pixel data
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        this.maskData = imageData.data;
+        try {
+            // Draw the mask image to canvas
+            ctx.drawImage(source.image, 0, 0);
 
-        return true;
+            // Get pixel data
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            this.maskData = imageData.data;
+
+            console.log(`Mask loaded successfully. Data length: ${this.maskData.length}`);
+
+            // Test a few pixels for debugging
+            console.log(`Sample pixels:`, {
+                topLeft: this.isWalkable(0, 0),
+                center: this.isWalkable(Math.floor(this.maskWidth/2), Math.floor(this.maskHeight/2)),
+                bottomRight: this.isWalkable(this.maskWidth-1, this.maskHeight-1)
+            });
+
+            return true;
+        } catch (error) {
+            console.error(`Error loading collision mask '${maskKey}':`, error);
+            return false;
+        }
     }
 
     isWalkable(x, y) {
@@ -47,17 +79,27 @@ export class CollisionManager {
         }
 
         // Clamp coordinates to mask bounds
-        x = Math.floor(Math.max(0, Math.min(this.maskWidth - 1, x)));
-        y = Math.floor(Math.max(0, Math.min(this.maskHeight - 1, y)));
+        const clampedX = Math.floor(Math.max(0, Math.min(this.maskWidth - 1, x)));
+        const clampedY = Math.floor(Math.max(0, Math.min(this.maskHeight - 1, y)));
 
         // Calculate pixel index (RGBA format)
-        const index = (y * this.maskWidth + x) * 4;
+        const index = (clampedY * this.maskWidth + clampedX) * 4;
 
         // Check red channel (assuming grayscale mask)
         // White (255) = walkable, Black (0) = blocked
         const red = this.maskData[index];
+        const green = this.maskData[index + 1];
+        const blue = this.maskData[index + 2];
+        const alpha = this.maskData[index + 3];
 
-        return red > 128; // Threshold for walkable (white-ish pixels)
+        const isWalkable = red > 128; // Threshold for walkable (white-ish pixels)
+
+        // Debug logging for important collision checks (reduce spam)
+        if (Math.abs(x - clampedX) < 1 && Math.abs(y - clampedY) < 1 && !isWalkable) {
+            console.log(`BLOCKED at (${x}, ${y}): RGBA(${red}, ${green}, ${blue}, ${alpha})`);
+        }
+
+        return isWalkable;
     }
 
     findNearestWalkablePoint(targetX, targetY, maxDistance = 20) {
