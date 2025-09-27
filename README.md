@@ -1,91 +1,96 @@
 # Office Adventure - Point & Click Game
 
-A classic point-and-click adventure game built with Phaser 3 that runs locally in any modern browser.
+A classic point-and-click adventure game built with Phaser 3, featuring pixel-perfect graphics and retro aesthetics.
 
-## How to Play
+## 🎮 Game Features
 
-1. **Double-click `index.html`** to open the game in your browser
-2. **Left-click** anywhere to walk to that location
-3. **Left-click** on objects and NPCs to interact with them
-4. **Click** inventory items to select them, then click objects to use them
-5. **Hover** over objects to see their names
+- **Pixel Art Style**: 320x200 virtual resolution with crisp, pixel-perfect scaling
+- **Interactive NPCs**: Talk to Sarah and Mike for hints
+- **Puzzle Solving**: Find the key to unlock the storage room
+- **Animated Screens**: Dynamic computer screens that respond to player position
+- **Classic Adventure Mechanics**: Click-to-move, inventory system, hotspot interactions
 
-## Game Objective
+## 🕹️ How to Play
 
-You're stuck in an office and need to get into the storage room. The door is locked, so you'll need to:
+### Controls
+- **Left Click**: Walk to location or interact with objects
+- **Inventory**: Click items to select, then click objects to use them
+- **Tooltips**: Hover over objects to see their names
 
-1. Talk to your colleagues Sarah and Mike for hints
-2. Find the key hidden in the office
-3. Use the key to unlock the door
-4. Enter the storage room to win!
+### Objective
+Find the office key and unlock the storage room door.
 
-## Controls
+## 🚀 Local Development
 
-- **Mouse**: Click to move and interact
-- **Inventory**: Bottom bar shows collected items
-- **Tooltips**: Hover over objects to see what they are
+### Option 1: Python HTTP Server (Recommended)
+```bash
+# Navigate to project directory
+cd programmers_day
 
-## Technical Features
+# Start local server
+python3 -m http.server 8080
 
-- **Resolution**: 320×200 virtual resolution with pixel-perfect scaling
-- **Graphics**: Retro 256-color aesthetic using canvas-drawn pixel art
-- **Sound**: Embedded WAV audio for walking and unlocking sounds
-- **No Server Required**: Runs entirely offline from a single folder
-- **CORS-Free**: All assets embedded or generated at runtime
-
-## Game Structure
-
-### Room 1: Office
-- **NPCs**: Sarah (red shirt) and Mike (green shirt) who give hints
-- **Hotspots**: Door (locked), Drawer (contains key), NPCs for dialog
-- **Furniture**: Desks, computers with glowing screens
-
-### Room 2: Storage Room
-- **Purpose**: Success state - reaching this room completes the game
-- **Contents**: Storage boxes and equipment
-- **Exit**: Door back to the office
-
-## Code Structure
-
-The game is organized into clear modules:
-
-- **GameScene**: Main game class handling all logic
-- **Room System**: Manages room backgrounds and hotspots
-- **Input Handler**: Click-to-move and interaction system
-- **Inventory System**: Item management with visual slots
-- **Dialog System**: NPC conversations with progressive hints
-- **Animation System**: Player walk cycle and sprite management
-
-## Extending the Game
-
-To add new content:
-
-1. **New Rooms**: Add entries to the `rooms` object in `createRooms()`
-2. **New Items**: Add to the `ITEMS` object and create sprites
-3. **New Hotspots**: Add to room `hotspots` arrays with action functions
-4. **New Dialogs**: Modify NPC dialog arrays in talk functions
-5. **New Graphics**: Use the canvas drawing system in background functions
-
-## Browser Compatibility
-
-Works in all modern browsers that support:
-- HTML5 Canvas
-- ES6 JavaScript
-- Web Audio API (for sounds)
-
-Tested in Chrome, Firefox, Safari, and Edge.
-
-## File Structure
-
-```
-office-adventure/
-├── index.html          # Main entry point
-├── game.js            # Complete game logic
-└── README.md          # This file
+# Open browser to http://localhost:8080
 ```
 
-No external dependencies except Phaser 3 loaded via CDN.
+### Option 2: Any HTTP Server
+The game uses ES6 modules and requires HTTP serving (won't work with `file://` URLs).
 
-## Credits
+## 📁 Project Structure
 
-Built with Phaser 3 game framework. All art and code created specifically for this project using canvas primitives and embedded assets to ensure offline compatibility.
+```
+programmers_day/
+├── index.html          # Main game page
+├── js/
+│   ├── main.js         # Main game scene and configuration
+│   ├── config.js       # Game settings and constants
+│   ├── gameState.js    # State management
+│   ├── sprites.js      # Sprite creation and management
+│   ├── screens.js      # Animated screen system
+│   ├── rooms.js        # Room definitions and backgrounds
+│   ├── input.js        # Input handling and player movement
+│   └── ui.js           # User interface management
+└── README.md
+```
+
+## 🌐 GitHub Pages Deployment
+
+1. **Enable GitHub Pages** in your repository settings
+2. **Select Source**: Deploy from main branch
+3. **Access**: Your game will be available at `https://username.github.io/repository-name/`
+
+The modular ES6 structure works perfectly with GitHub Pages' HTTP serving.
+
+## 🎨 Technical Features
+
+- **Modular Architecture**: Clean separation of concerns across multiple files
+- **Pixel-Perfect Rendering**: No antialiasing, crisp pixel scaling
+- **Dynamic Animations**: Screen content changes based on player position
+- **Proximity Interactions**: Characters must walk near objects to interact
+- **Sound Effects**: Base64-encoded WAV files for offline compatibility
+
+## 🔧 Customization
+
+### Adding New Rooms
+1. Add room definition in `js/rooms.js`
+2. Create background function
+3. Define hotspots and walkable bounds
+
+### Adding New Items
+1. Add item to `ITEMS` in `js/config.js`
+2. Create sprite texture in `js/sprites.js`
+3. Implement interaction logic
+
+### Modifying Graphics
+All graphics are generated programmatically using Phaser's graphics API. No external image files needed!
+
+## 📝 Credits
+
+Built with:
+- **Phaser 3** - HTML5 game framework
+- **ES6 Modules** - Modern JavaScript architecture
+- **Pixel Art** - Nostalgic retro aesthetics
+
+---
+
+🎮 **Ready to play?** Start the local server and begin your office adventure!
