@@ -50,6 +50,28 @@ export const SCREEN_POSITIONS = {
     screen2Y: 82  // Mike's screen Y position
 };
 
+// Screen Definitions with Dynamic Layering
+export const SCREENS = {
+    screen1: {
+        position: { x: 95, y: 72, width: 20, height: 12 },
+        layering: {
+            type: 'dynamic',
+            threshold: 127, // Y position threshold (NPC feet position)
+            aboveLayer: 26, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 11  // Layer when player Y > threshold (NPC behind)
+        }
+    },
+    screen2: {
+        position: { x: 195, y: 82, width: 20, height: 12 },
+        layering: {
+            type: 'dynamic',
+            threshold: 127, // Y position threshold (NPC feet position)
+            aboveLayer: 26, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 11  // Layer when player Y > threshold (NPC behind)
+        }
+    }
+};
+
 // Video colors for screen animation
 export const VIDEO_COLORS = [
     0xff0000, 0x00ff00, 0x0000ff, // Primary colors
@@ -76,7 +98,7 @@ export const GAME_GIFS = [
 export const NPCS = {
     sarah: {
         name: 'Sarah',
-        position: { x: 110, y: 89 },
+        position: { x: 55, y: 106 },
         shirtColor: 0xe74c3c, // Red
         dialogs: {
             beforeDoorUnlocked: [
@@ -87,11 +109,18 @@ export const NPCS = {
                 "Don't mess with anything in the storage room."
             ]
         },
-        hotspot: { x: 100, y: 80, width: 20, height: 30 }
+        hotspot: { x: 45, y: 96, width: 20, height: 30 },
+        // Dynamic layering based on player position
+        layering: {
+            type: 'dynamic',
+            threshold: 127, // Y position threshold (NPC feet position)
+            aboveLayer: 27, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 12  // Layer when player Y > threshold (NPC behind)
+        }
     },
     mike: {
         name: 'Mike',
-        position: { x: 210, y: 99 },
+        position: { x: 105, y: 106 },
         shirtColor: 0x2ecc71, // Green
         dialogs: {
             beforeDoorUnlocked: [
@@ -102,7 +131,14 @@ export const NPCS = {
                 "Congratulations! You've unlocked the door."
             ]
         },
-        hotspot: { x: 200, y: 90, width: 20, height: 30 }
+        hotspot: { x: 95, y: 96, width: 20, height: 30 },
+        // Dynamic layering based on player position
+        layering: {
+            type: 'dynamic',
+            threshold: 127, // Y position threshold (NPC feet position)
+            aboveLayer: 27, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 12  // Layer when player Y > threshold (NPC behind)
+        }
     }
 };
 
@@ -124,9 +160,9 @@ export const ROOMS = {
                 // Dynamic layering: different threshold for this sprite
                 layering: {
                     type: 'dynamic',
-                    threshold: 129, // Different threshold than desk_front
-                    aboveLayer: 25, // Layer when player Y < 100 (desk in front)
-                    belowLayer: 10  // Layer when player Y > 100 (desk behind)
+                    threshold: 127, // Different threshold than desk_front
+                    aboveLayer: 25, // Layer when player Y < threshold
+                    belowLayer: 10  // Layer when player Y > threshold
                 }
             },
             {
@@ -137,8 +173,8 @@ export const ROOMS = {
                  layering: {
                      type: 'dynamic',
                      threshold: 183, // Y position threshold
-                     aboveLayer: 25, // Layer when player Y < threshold (desk in front)
-                     belowLayer: 15  // Layer when player Y > threshold (desk behind)
+                     aboveLayer: 25, // Layer when player Y < threshold
+                     belowLayer: 15  // Layer when player Y > threshold
                  }
              },
 

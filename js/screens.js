@@ -4,7 +4,7 @@
  */
 
 import { gameState } from './gameState.js';
-import { SCREEN_POSITIONS, VIDEO_COLORS, TYPING_COLORS, GAME_GIFS } from './config.js';
+import { SCREEN_POSITIONS, VIDEO_COLORS, TYPING_COLORS, GAME_GIFS, SCREENS, CONFIG } from './config.js';
 
 export class ScreenManager {
     constructor(scene) {
@@ -26,9 +26,8 @@ export class ScreenManager {
         this.screen1Graphics = this.scene.add.graphics();
         this.screen2Graphics = this.scene.add.graphics();
 
-        // Set depth to be above background but below NPCs and UI
-        this.screen1Graphics.setDepth(10);
-        this.screen2Graphics.setDepth(10);
+        // Set initial depths based on dynamic layering configuration
+        this.updateScreenLayers();
 
         // Initial screen render
         this.updateScreenGraphics();
@@ -41,11 +40,9 @@ export class ScreenManager {
         this.screen1Graphics.clear();
         this.screen2Graphics.clear();
 
-        // Screen 1 (Sarah's computer) - 95, 72, 20x12
-        this.renderScreen(this.screen1Graphics, 95, 72, 20, 12, gameState.screen1);
 
-        // Screen 2 (Mike's computer) - 195, 82, 20x12
-        this.renderScreen(this.screen2Graphics, 195, 82, 20, 12, gameState.screen2);
+        this.renderScreen(this.screen1Graphics, 55, 86, 20, 12, gameState.screen1);
+        this.renderScreen(this.screen2Graphics, 105, 86, 20, 12, gameState.screen2);
     }
 
     renderScreen(graphics, x, y, width, height, screenState) {
@@ -189,8 +186,8 @@ export class ScreenManager {
         }
 
         // Update screen modes based on player Y position
-        const newScreen1Mode = gameState.playerY > SCREEN_POSITIONS.screen1Y ? 'typing' : 'video';
-        const newScreen2Mode = gameState.playerY > SCREEN_POSITIONS.screen2Y ? 'typing' : 'video';
+        const newScreen1Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREEN_POSITIONS.screen1Y ? 'typing' : 'video';
+        const newScreen2Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREEN_POSITIONS.screen2Y ? 'typing' : 'video';
 
         // Reset screen state if mode changed
         if (gameState.screen1.mode !== newScreen1Mode) {
@@ -380,5 +377,36 @@ export class ScreenManager {
         // Reset GIF selection
         gameState.screen1.selectedGif = null;
         gameState.screen2.selectedGif = null;
+    }
+
+    // Update screen depths based on player position
+    updateScreenLayers() {
+        if (!this.screen1Graphics || !this.screen2Graphics) return;
+
+        // Update screen1 depth
+        const screen1Config = SCREENS.screen1;
+        if (screen1Config.layering.type === 'dynamic') {
+            const playerFeetY = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
+            const threshold = screen1Config.layering.threshold;
+            const newDepth = playerFeetY < threshold ? screen1Config.layering.aboveLayer : screen1Config.layering.belowLayer;
+
+            if (this.screen1Graphics.depth !== newDepth) {
+                this.screen1Graphics.setDepth(newDepth);
+                console.log(`Screen1: Player feet Y=${playerFeetY}, Threshold=${threshold}, Depth: ${this.screen1Graphics.depth} → ${newDepth}`);
+            }
+        }
+
+        // Update screen2 depth
+        const screen2Config = SCREENS.screen2;
+        if (screen2Config.layering.type === 'dynamic') {
+            const playerFeetY = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
+            const threshold = screen2Config.layering.threshold;
+            const newDepth = playerFeetY < threshold ? screen2Config.layering.aboveLayer : screen2Config.layering.belowLayer;
+
+            if (this.screen2Graphics.depth !== newDepth) {
+                this.screen2Graphics.setDepth(newDepth);
+                console.log(`Screen2: Player feet Y=${playerFeetY}, Threshold=${threshold}, Depth: ${this.screen2Graphics.depth} → ${newDepth}`);
+            }
+        }
     }
 }

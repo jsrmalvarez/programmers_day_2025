@@ -257,9 +257,15 @@ export class InputManager {
             this.scene.playerSprite.y = gameState.playerY;
         }
 
-        // Update dynamic sprite layering based on new player position
+        // Update all dynamic layering based on new player position
         if (this.scene.roomSpriteManager) {
             this.scene.roomSpriteManager.updateAllDynamicLayers();
+        }
+        if (this.scene.npcManager) {
+            this.scene.npcManager.updateAllNPCLayers();
+        }
+        if (this.scene.screenManager) {
+            this.scene.screenManager.updateScreenLayers();
         }
     }
 

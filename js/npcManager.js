@@ -3,7 +3,7 @@
  * Handles creation, interaction, and management of all NPCs
  */
 
-import { NPCS } from './config.js';
+import { NPCS, CONFIG } from './config.js';
 import { gameState } from './gameState.js';
 
 export class NPC {
@@ -14,6 +14,7 @@ export class NPC {
         this.shirtColor = config.shirtColor;
         this.dialogs = config.dialogs;
         this.hotspot = config.hotspot;
+        this.layering = config.layering; // Dynamic layering configuration
         this.scene = scene;
 
         // Individual dialog state
@@ -24,10 +25,31 @@ export class NPC {
     }
 
     create() {
-        // Create visible Phaser sprite with proper depth layering
+        // Create visible Phaser sprite with dynamic depth layering
         this.sprite = this.scene.add.sprite(this.position.x, this.position.y, `npc_${this.id}`);
-        this.sprite.setDepth(15); // Below player (depth 20)
         this.sprite.setVisible(true);
+
+        // Set initial depth based on layering configuration
+        this.updateDepth();
+    }
+
+    updateDepth() {
+        if (!this.sprite || !this.layering) return;
+
+        if (this.layering.type === 'dynamic') {
+            // Use player's feet position for realistic layering
+            const playerFeetY = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
+            const threshold = this.layering.threshold;
+            const newDepth = playerFeetY < threshold ? this.layering.aboveLayer : this.layering.belowLayer;
+
+            if (this.sprite.depth !== newDepth) {
+                this.sprite.setDepth(newDepth);
+                console.log(`NPC ${this.name}: Player feet Y=${playerFeetY}, Threshold=${threshold}, Depth: ${this.sprite.depth} → ${newDepth}`);
+            }
+        } else {
+            // Static layering fallback
+            this.sprite.setDepth(this.layering.layer || 15);
+        }
     }
 
 
@@ -97,6 +119,13 @@ export class NPCManager {
             npc.destroy();
         }
         this.npcs.clear();
+    }
+
+    // Update all NPC depths based on current player position
+    updateAllNPCLayers() {
+        for (const npc of this.npcs.values()) {
+            npc.updateDepth();
+        }
     }
 
     // Helper method to get NPC by ID

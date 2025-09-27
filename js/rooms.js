@@ -203,6 +203,13 @@ export class RoomManager {
             this.scene.screenManager.createAnimatedScreens();
         }
 
+        // Update all dynamic layering based on current player position
+        this.scene.roomSpriteManager.updateAllDynamicLayers();
+        this.scene.npcManager.updateAllNPCLayers();
+        if (roomId === 'room1') {
+            this.scene.screenManager.updateScreenLayers();
+        }
+
         // Handle special room elements (key, etc.)
         this.createSpecialElements(roomId);
     }
