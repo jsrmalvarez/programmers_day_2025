@@ -182,6 +182,9 @@ export class RoomManager {
         // Create room sprites with layers
         this.scene.roomSpriteManager.createSpritesForRoom(roomConfig);
 
+        // Update dynamic layering based on current player position
+        this.scene.roomSpriteManager.updateAllDynamicLayers();
+
         // Create NPCs using new NPC management system
         this.scene.npcManager.createAllNPCs();
 

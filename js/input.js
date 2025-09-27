@@ -58,7 +58,7 @@ export class InputManager {
             }
         }
 
-        // No hotspot clicked, just move player
+        // No hotspot clicked, move player so feet end up at clicked position
         this.movePlayerTo(x, y);
     }
 
@@ -113,7 +113,7 @@ export class InputManager {
     }
 
     movePlayerToHotspot(hotspot) {
-        // Calculate a good position near the hotspot
+        // Calculate a good position where player's feet should be near the hotspot
         const hotspotCenterX = hotspot.x + hotspot.width / 2;
         const hotspotCenterY = hotspot.y + hotspot.height / 2;
 
@@ -136,24 +136,31 @@ export class InputManager {
 
         // Store the interaction to execute when player reaches target
         this.pendingInteraction = hotspot;
+        // movePlayerTo will automatically adjust so feet end up at (targetX, targetY)
         this.movePlayerTo(targetX, targetY);
     }
 
     movePlayerTo(x, y) {
+        // Calculate player center position so that feet end up at clicked coordinates
+        // We need to subtract the feet offset from the Y coordinate
+        const targetCenterX = x;
+        const targetCenterY = y - CONFIG.PLAYER.FEET_OFFSET;
+
         // Use collision detection if available, otherwise use bounds
         if (this.scene.collisionManager.maskData) {
             // Find nearest walkable point using collision mask
-            const walkablePoint = this.scene.collisionManager.findNearestWalkablePoint(x, y);
+            // The collision system will check if the feet can be at (x, y)
+            const walkablePoint = this.scene.collisionManager.findNearestWalkablePoint(targetCenterX, targetCenterY);
             setPlayerTarget(walkablePoint.x, walkablePoint.y);
         } else {
             // Fallback to bounds-based movement
             const room = this.scene.rooms[gameState.currentRoom];
             const bounds = room.walkableBounds;
 
-            x = Math.max(bounds.x, Math.min(bounds.x + bounds.width, x));
-            y = Math.max(bounds.y, Math.min(bounds.y + bounds.height, y));
+            const clampedX = Math.max(bounds.x, Math.min(bounds.x + bounds.width, targetCenterX));
+            const clampedY = Math.max(bounds.y, Math.min(bounds.y + bounds.height, targetCenterY));
 
-            setPlayerTarget(x, y);
+            setPlayerTarget(clampedX, clampedY);
         }
 
         this.playSound('walk');
@@ -205,17 +212,15 @@ export class InputManager {
 
             // Check if next position is walkable (if collision system is available)
             if (this.scene.collisionManager.maskData) {
-                // Check collision for the player's feet position (slightly below center)
-                const feetX = Math.round(nextX);
-                const feetY = Math.round(nextY + 8); // Player feet are about 8 pixels below center
-
-                if (this.scene.collisionManager.isWalkable(feetX, feetY)) {
+                // Check collision using proper player feet position
+                if (this.scene.collisionManager.isPlayerPositionWalkable(nextX, nextY)) {
                     // Safe to move
                     gameState.playerX = nextX;
                     gameState.playerY = nextY;
                 } else {
                     // Hit a wall, stop movement
-                    console.log(`Player hit wall at (${feetX}, ${feetY}), stopping movement`);
+                    const feet = this.scene.collisionManager.getPlayerFeetPosition(nextX, nextY);
+                    console.log(`Player hit wall at feet position (${feet.x}, ${feet.y}), stopping movement`);
                     gameState.isWalking = false;
 
                     // Clear any pending interaction since we couldn't reach the target
@@ -237,6 +242,11 @@ export class InputManager {
         if (this.scene.playerSprite) {
             this.scene.playerSprite.x = gameState.playerX;
             this.scene.playerSprite.y = gameState.playerY;
+        }
+
+        // Update dynamic sprite layering based on new player position
+        if (this.scene.roomSpriteManager) {
+            this.scene.roomSpriteManager.updateAllDynamicLayers();
         }
     }
 

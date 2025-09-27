@@ -3,10 +3,13 @@
  * Handles layered PNG sprites within rooms
  */
 
+import { CONFIG } from './config.js';
+
 export class RoomSpriteManager {
     constructor(scene) {
         this.scene = scene;
         this.sprites = new Map(); // Map of sprite ID to Phaser sprite object
+        this.dynamicSprites = new Map(); // Map of sprite ID to dynamic layering config
     }
 
     createSpritesForRoom(roomConfig) {
@@ -24,12 +27,32 @@ export class RoomSpriteManager {
     }
 
     createSprite(config) {
-        const { id, image, x, y, layer = 10 } = config;
+        const { id, image, x, y, layering } = config;
 
         // Create Phaser sprite
         const sprite = this.scene.add.sprite(x, y, image);
-        sprite.setDepth(layer);
         sprite.setOrigin(0, 0);
+
+        // Handle layering configuration
+        if (layering) {
+            if (layering.type === 'dynamic') {
+                // Store dynamic layering config
+                this.dynamicSprites.set(id, layering);
+                // Set initial depth based on current player position
+                this.updateSpriteDepth(id);
+            } else if (layering.type === 'static') {
+                // Static layer
+                sprite.setDepth(layering.layer);
+            } else {
+                // Fallback for old format
+                const layer = layering.layer || config.layer || 10;
+                sprite.setDepth(layer);
+            }
+        } else {
+            // Fallback for old 'layer' property
+            const layer = config.layer || 10;
+            sprite.setDepth(layer);
+        }
 
         // Store reference
         this.sprites.set(id, sprite);
@@ -55,6 +78,36 @@ export class RoomSpriteManager {
             sprite.destroy();
         }
         this.sprites.clear();
+        this.dynamicSprites.clear();
+    }
+
+    // Dynamic layering methods
+    updateSpriteDepth(spriteId) {
+        const sprite = this.sprites.get(spriteId);
+        const layering = this.dynamicSprites.get(spriteId);
+
+        if (!sprite || !layering) return;
+
+        // Use player's feet position for realistic layering
+        const playerFeetY = this.scene.gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
+        const threshold = layering.threshold;
+        const currentDepth = sprite.depth;
+
+        // Determine layer based on player feet position relative to threshold
+        const newDepth = playerFeetY < threshold ? layering.aboveLayer : layering.belowLayer;
+
+        // Only update and log if depth actually changes
+        if (currentDepth !== newDepth) {
+            sprite.setDepth(newDepth);
+            console.log(`Dynamic layering: Player feet Y=${playerFeetY}, Threshold=${threshold}, Sprite '${spriteId}' depth: ${currentDepth} → ${newDepth}`);
+        }
+    }
+
+    updateAllDynamicLayers() {
+        // Update all sprites with dynamic layering based on current player position
+        for (const spriteId of this.dynamicSprites.keys()) {
+            this.updateSpriteDepth(spriteId);
+        }
     }
 
     // Helper method to add a sprite dynamically

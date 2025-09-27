@@ -3,6 +3,8 @@
  * Handles walkable area detection using black/white mask images
  */
 
+import { CONFIG } from './config.js';
+
 export class CollisionManager {
     constructor(scene) {
         this.scene = scene;
@@ -103,7 +105,8 @@ export class CollisionManager {
     }
 
     findNearestWalkablePoint(targetX, targetY, maxDistance = 20) {
-        if (this.isWalkable(targetX, targetY)) {
+        // Check if the target position is walkable for the player (using feet position)
+        if (this.isPlayerPositionWalkable(targetX, targetY)) {
             return { x: targetX, y: targetY };
         }
 
@@ -114,7 +117,8 @@ export class CollisionManager {
                 const x = Math.round(targetX + Math.cos(radians) * distance);
                 const y = Math.round(targetY + Math.sin(radians) * distance);
 
-                if (this.isWalkable(x, y)) {
+                // Check if this position is walkable for the player (using feet position)
+                if (this.isPlayerPositionWalkable(x, y)) {
                     return { x, y };
                 }
             }
@@ -156,5 +160,19 @@ export class CollisionManager {
         this.maskData = null;
         this.maskWidth = 0;
         this.maskHeight = 0;
+    }
+
+    // Helper method to get player's feet position for collision detection
+    getPlayerFeetPosition(playerX, playerY) {
+        return {
+            x: Math.round(playerX),
+            y: Math.round(playerY + CONFIG.PLAYER.FEET_OFFSET)
+        };
+    }
+
+    // Check if player can be at a given position (using feet for collision)
+    isPlayerPositionWalkable(playerX, playerY) {
+        const feet = this.getPlayerFeetPosition(playerX, playerY);
+        return this.isWalkable(feet.x, feet.y);
     }
 }

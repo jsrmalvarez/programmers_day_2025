@@ -11,7 +11,14 @@ export const CONFIG = {
     SCALE_MODE: Phaser.Scale.FIT,
     PIXEL_ART: true,
     INTERACTION_DISTANCE: 30,
-    APPROACH_DISTANCE: 20
+    APPROACH_DISTANCE: 20,
+
+    // Player character dimensions and collision
+    PLAYER: {
+        WIDTH: 12,          // Player sprite width
+        HEIGHT: 8,         // Player sprite height
+        FEET_OFFSET: 8     // Distance from sprite center to feet (bottom collision point)
+    }
 };
 
 // Sound effects as base64 WAV data (minimal)
@@ -101,19 +108,33 @@ export const ROOMS = {
             mask: 'room1_mask'  // Black/white collision mask
         },
         sprites: [
-            // Example sprites with layers
+            // Dynamic layering system: sprites can change depth based on player position
+            // This simulates perspective - objects appear behind/in front based on relative distance
+            {
+                id: 'desk_back',
+                image: 'desk_back',
+                x: 35, y: 92,
+                // Dynamic layering: different threshold for this sprite
+                layering: {
+                    type: 'dynamic',
+                    threshold: 129, // Different threshold than desk_front
+                    aboveLayer: 25, // Layer when player Y < 100 (desk in front)
+                    belowLayer: 10  // Layer when player Y > 100 (desk behind)
+                }
+            },
             {
                  id: 'desk_front',
                  image: 'desk_front',
                  x: 9, y: 134,
-                 layer: 15
+                 // Dynamic layering: if player Y > threshold, desk appears behind player
+                 layering: {
+                     type: 'dynamic',
+                     threshold: 183, // Y position threshold
+                     aboveLayer: 25, // Layer when player Y < threshold (desk in front)
+                     belowLayer: 15  // Layer when player Y > threshold (desk behind)
+                 }
              },
-             {
-                id: 'desk_back',
-                image: 'desk_back',
-                x: 35, y: 92,
-                layer: 25
-            },
+
             // {
             //     id: 'plant',
             //     image: 'plant_sprite',
