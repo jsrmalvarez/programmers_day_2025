@@ -37,15 +37,13 @@ export class GameScene extends Phaser.Scene {
     }
 
     create() {
-        // Set up pixel perfect rendering
-        this.cameras.main.setRoundPixels(true);
 
         // Disable texture smoothing globally for crisp pixels
-        this.renderer.antialias = false;
+        /*this.renderer.antialias = false;
         if (this.renderer.gl) {
             this.renderer.gl.texParameteri(this.renderer.gl.TEXTURE_2D, this.renderer.gl.TEXTURE_MAG_FILTER, this.renderer.gl.NEAREST);
             this.renderer.gl.texParameteri(this.renderer.gl.TEXTURE_2D, this.renderer.gl.TEXTURE_MIN_FILTER, this.renderer.gl.NEAREST);
-        }
+        }*/
 
         // Set up global text rendering defaults (we'll apply these manually in each text creation)
 

@@ -162,7 +162,6 @@ export class RoomManager {
 
         // Apply essential pixel-perfect settings
         successText.setResolution(1);
-        successText.setRoundPixels(true);
 
         // Force disable smoothing
         if (successText.style) {

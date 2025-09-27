@@ -145,22 +145,22 @@ export class UIManager {
         }
 
         // Create new message with pixel-perfect settings
-        this.messageText = this.scene.add.text(CONFIG.VIRTUAL_WIDTH / 2, 20, text, {
-            fontSize: '8px',
+        this.messageText = this.scene.add.text(CONFIG.VIRTUAL_WIDTH / 2, 40, text, {
+            fontSize: '40px',
             fill: '#ffffff',
             fontFamily: 'Courier New, monospace',
             backgroundColor: '#000000',
-            padding: { x: 3, y: 1 }
-        }).setOrigin(0.5).setDepth(200);
+            padding: { x: 3, y: 1 },
+            smoothed: false
+        }).setOrigin(0.5).setScale(0.2).setDepth(200);
 
-        // Apply essential pixel-perfect settings
+        /*// Apply essential pixel-perfect settings
         this.messageText.setResolution(1);
-        this.messageText.setRoundPixels(true);
 
         // Force disable smoothing
         if (this.messageText.style) {
             this.messageText.style.smoothed = false;
-        }
+        }*/
 
         // Auto-hide after 3 seconds
         this.scene.time.delayedCall(3000, () => {

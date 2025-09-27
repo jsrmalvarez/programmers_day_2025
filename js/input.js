@@ -164,6 +164,9 @@ export class InputManager {
     updateMovement() {
         if (!gameState.isWalking) return;
 
+        // Safety check to ensure scene exists
+        if (!this.scene) return;
+
         const dx = gameState.targetX - gameState.playerX;
         const dy = gameState.targetY - gameState.playerY;
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -182,7 +185,7 @@ export class InputManager {
                 // Double-check player is close enough
                 if (this.isPlayerNearHotspot(hotspot)) {
                     hotspot.action();
-                } else {
+                } else if (this.scene.uiManager) {
                     this.scene.uiManager.showMessage("Can't reach that from here.");
                 }
             }
@@ -201,6 +204,11 @@ export class InputManager {
     }
 
     updateAnimation() {
+        // Safety check to ensure scene and playerSprite exist
+        if (!this.scene || !this.scene.playerSprite) {
+            return;
+        }
+
         if (gameState.isWalking) {
             gameState.walkTimer++;
             if (gameState.walkTimer >= 15) { // Change frame every 0.25 seconds at 60fps
@@ -208,15 +216,11 @@ export class InputManager {
                 gameState.walkFrame = (gameState.walkFrame + 1) % 2;
 
                 // Update sprite texture
-                if (this.scene.playerSprite) {
-                    this.scene.playerSprite.setTexture(gameState.walkFrame === 0 ? 'player_walk1' : 'player_walk2');
-                }
+                this.scene.playerSprite.setTexture(gameState.walkFrame === 0 ? 'player_walk1' : 'player_walk2');
             }
         } else {
             // Use idle texture when not walking
-            if (this.scene.playerSprite) {
-                this.scene.playerSprite.setTexture('player_idle');
-            }
+            this.scene.playerSprite.setTexture('player_idle');
         }
     }
 
