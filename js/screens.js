@@ -229,11 +229,11 @@ export class ScreenManager {
         }
 
         // Update NPC overlay positions in case canvas moved/resized
-        if (this.scene.sarahOverlay) {
-            this.scene.spriteManager.updateNPCOverlayPosition(this.scene.sarahOverlay, 110, 89);
-        }
-        if (this.scene.mikeOverlay) {
-            this.scene.spriteManager.updateNPCOverlayPosition(this.scene.mikeOverlay, 210, 99);
+        this.scene.npcManager.updateAllOverlayPositions();
+
+        // Update player overlay position in case canvas moved/resized
+        if (this.scene.updatePlayerOverlayPosition) {
+            this.scene.updatePlayerOverlayPosition();
         }
     }
 

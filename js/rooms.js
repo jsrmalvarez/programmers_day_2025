@@ -26,17 +26,8 @@ export class RoomManager {
                         name: 'Drawer',
                         x: 50, y: 100, width: 40, height: 20,
                         action: this.scene.interactDrawer.bind(this.scene)
-                    },
-                    {
-                        name: 'Sarah',
-                        x: 100, y: 80, width: 20, height: 30,
-                        action: this.scene.talkToNPC1.bind(this.scene)
-                    },
-                    {
-                        name: 'Mike',
-                        x: 200, y: 90, width: 20, height: 30,
-                        action: this.scene.talkToNPC2.bind(this.scene)
                     }
+                    // NPC hotspots will be added dynamically after NPCs are created
                 ],
                 walkableBounds: { x: 20, y: 60, width: 280, height: 100 }
             },
@@ -105,8 +96,12 @@ export class RoomManager {
         // Create animated screens
         this.scene.screenManager.createAnimatedScreens();
 
-        // Create NPCs as sprites (higher layer than screens)
-        this.scene.spriteManager.createNPCSpritesInScene();
+        // Create NPCs using new NPC management system
+        this.scene.npcManager.createAllNPCs();
+
+        // Add NPC hotspots to the room after NPCs are created
+        const npcHotspots = this.scene.npcManager.getAllHotspots();
+        this.scene.rooms.room1.hotspots.push(...npcHotspots);
 
         // Key in drawer (if drawer is open and key not taken)
         if (this.scene.gameState.drawerOpen && !this.scene.gameState.keyTaken) {

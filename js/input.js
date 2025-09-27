@@ -201,6 +201,11 @@ export class InputManager {
             this.scene.playerSprite.x = gameState.playerX;
             this.scene.playerSprite.y = gameState.playerY;
         }
+
+        // Update player overlay position
+        if (this.scene.updatePlayerOverlayPosition) {
+            this.scene.updatePlayerOverlayPosition();
+        }
     }
 
     updateAnimation() {
@@ -217,10 +222,20 @@ export class InputManager {
 
                 // Update sprite texture
                 this.scene.playerSprite.setTexture(gameState.walkFrame === 0 ? 'player_walk1' : 'player_walk2');
+
+                // Update player overlay animation
+                if (this.scene.updatePlayerOverlay) {
+                    this.scene.updatePlayerOverlay();
+                }
             }
         } else {
             // Use idle texture when not walking
             this.scene.playerSprite.setTexture('player_idle');
+
+            // Update player overlay to idle state
+            if (this.scene.updatePlayerOverlay) {
+                this.scene.updatePlayerOverlay();
+            }
         }
     }
 

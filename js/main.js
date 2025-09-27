@@ -10,6 +10,7 @@ import { ScreenManager } from './screens.js';
 import { RoomManager } from './rooms.js';
 import { InputManager } from './input.js';
 import { UIManager } from './ui.js';
+import { NPCManager } from './npcManager.js';
 
 export class GameScene extends Phaser.Scene {
     constructor() {
@@ -21,6 +22,7 @@ export class GameScene extends Phaser.Scene {
         this.roomManager = new RoomManager(this);
         this.inputManager = new InputManager(this);
         this.uiManager = new UIManager(this);
+        this.npcManager = new NPCManager(this);
 
         // Game objects
         this.playerSprite = null;
@@ -89,9 +91,17 @@ export class GameScene extends Phaser.Scene {
             this.keySprite = null;
         }
 
-        // Clear screen graphics and NPC sprites
+        // Clear player overlay
+        if (this.playerOverlay) {
+            if (this.playerOverlay.parentNode) {
+                document.body.removeChild(this.playerOverlay);
+            }
+            this.playerOverlay = null;
+        }
+
+        // Clear screen graphics and NPCs
         this.screenManager.clearScreens();
-        this.spriteManager.clearNPCSprites();
+        this.npcManager.clearAllNPCs();
         this.roomManager.destroyBackground();
 
         // Reset hotspots (remove key hotspot if it was added) - do this BEFORE creating background
@@ -105,9 +115,13 @@ export class GameScene extends Phaser.Scene {
         // Create background (this will add key hotspot if needed)
         room.background();
 
-        // Create player sprite
+        // Create player sprite (invisible, for game logic)
         this.playerSprite = this.add.sprite(gameState.playerX, gameState.playerY, 'player_idle');
         this.playerSprite.setDepth(20);
+        this.playerSprite.setVisible(false);
+
+        // Create player HTML overlay (for rendering above NPCs)
+        this.createPlayerOverlay();
     }
 
     // Interaction handlers
@@ -151,41 +165,103 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
-    talkToNPC1() {
-        if (gameState.doorUnlocked) {
-            this.uiManager.showMessage("Don't mess with anything in the storage room.");
-            return;
+    talkToNPC(npcId) {
+        const npc = this.npcManager.getNPC(npcId);
+        if (npc) {
+            npc.talk();
         }
-
-        const dialogs = [
-            "The boss lost a key... maybe it's in a drawer.",
-            "Seriously, check the drawer near the door."
-        ];
-
-        const dialog = dialogs[Math.min(gameState.npc1DialogIndex, dialogs.length - 1)];
-        gameState.npc1DialogIndex++;
-        this.uiManager.showMessage(`Sarah: "${dialog}"`);
-    }
-
-    talkToNPC2() {
-        if (gameState.doorUnlocked) {
-            this.uiManager.showMessage("Congratulations! You've unlocked the door.");
-            return;
-        }
-
-        const dialogs = [
-            "Doors don't open by wishing. Find the key.",
-            "Try the drawer at the desk."
-        ];
-
-        const dialog = dialogs[Math.min(gameState.npc2DialogIndex, dialogs.length - 1)];
-        gameState.npc2DialogIndex++;
-        this.uiManager.showMessage(`Mike: "${dialog}"`);
     }
 
     returnToRoom1() {
         setPlayerPosition(250, 110);
         this.switchToRoom('room1');
+    }
+
+    createPlayerOverlay() {
+        // Clean up existing overlay
+        if (this.playerOverlay) {
+            if (this.playerOverlay.parentNode) {
+                document.body.removeChild(this.playerOverlay);
+            }
+        }
+
+        // Create canvas element for player
+        const canvas = document.createElement('canvas');
+        canvas.width = 12;
+        canvas.height = 16;
+        canvas.style.position = 'absolute';
+        canvas.style.imageRendering = 'pixelated';
+        canvas.style.imageRendering = 'crisp-edges';
+        canvas.style.zIndex = '20'; // Above NPCs (z-index 10) and GIFs (z-index 5)
+        canvas.style.pointerEvents = 'none';
+        canvas.style.border = 'none';
+        canvas.style.outline = 'none';
+        canvas.style.boxSizing = 'border-box';
+
+        // Add to DOM and store reference
+        document.body.appendChild(canvas);
+        this.playerOverlay = canvas;
+
+        // Draw initial player state and position
+        this.updatePlayerOverlay();
+    }
+
+    updatePlayerOverlay() {
+        if (!this.playerOverlay) return;
+
+        // Clear canvas
+        const ctx = this.playerOverlay.getContext('2d');
+        ctx.clearRect(0, 0, 12, 16);
+
+        // Draw player based on current state
+        this.drawPlayerOnCanvas(ctx);
+
+        // Update position
+        this.updatePlayerOverlayPosition();
+    }
+
+    drawPlayerOnCanvas(ctx) {
+        // Player body (blue shirt)
+        ctx.fillStyle = '#4a90e2';
+        ctx.fillRect(0, 0, 12, 16);
+
+        // Player head (skin color)
+        ctx.fillStyle = '#f5a623';
+        ctx.fillRect(2, 2, 8, 6);
+
+        // Add walk animation if walking
+        if (gameState.isWalking) {
+            ctx.fillStyle = '#333333';
+            if (gameState.walkFrame === 0) {
+                ctx.fillRect(1, 14, 3, 2); // left foot forward
+                ctx.fillRect(8, 15, 3, 1); // right foot back
+            } else {
+                ctx.fillRect(8, 14, 3, 2); // right foot forward
+                ctx.fillRect(1, 15, 3, 1); // left foot back
+            }
+        }
+    }
+
+    updatePlayerOverlayPosition() {
+        if (!this.playerOverlay) return;
+
+        // Get canvas position and scale
+        const gameCanvas = this.game.canvas;
+        const canvasRect = gameCanvas.getBoundingClientRect();
+        const scaleX = canvasRect.width / this.game.config.width;
+        const scaleY = canvasRect.height / this.game.config.height;
+
+        // Calculate player position in actual pixels
+        const actualX = canvasRect.left + (gameState.playerX * scaleX);
+        const actualY = canvasRect.top + (gameState.playerY * scaleY);
+        const actualWidth = 12 * scaleX;
+        const actualHeight = 16 * scaleY;
+
+        // Position the player overlay (centered on sprite position)
+        this.playerOverlay.style.left = `${actualX - actualWidth/2}px`;
+        this.playerOverlay.style.top = `${actualY - actualHeight/2}px`;
+        this.playerOverlay.style.width = `${actualWidth}px`;
+        this.playerOverlay.style.height = `${actualHeight}px`;
     }
 }
 

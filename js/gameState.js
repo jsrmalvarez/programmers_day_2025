@@ -11,8 +11,6 @@ export let gameState = {
     doorUnlocked: false,
     drawerOpen: false,
     keyTaken: false,
-    npc1DialogIndex: 0,
-    npc2DialogIndex: 0,
     playerX: 160,
     playerY: 120,
     targetX: 160,
@@ -53,8 +51,6 @@ export function resetGameState() {
     gameState.doorUnlocked = false;
     gameState.drawerOpen = false;
     gameState.keyTaken = false;
-    gameState.npc1DialogIndex = 0;
-    gameState.npc2DialogIndex = 0;
     gameState.playerX = 160;
     gameState.playerY = 120;
     gameState.targetX = 160;

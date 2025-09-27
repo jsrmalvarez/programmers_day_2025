@@ -57,3 +57,37 @@ export const GAME_GIFS = [
     'dott_gif',
     'sim_city_2000_gif'
 ];
+
+// NPC Definitions
+export const NPCS = {
+    sarah: {
+        name: 'Sarah',
+        position: { x: 110, y: 89 },
+        shirtColor: 0xe74c3c, // Red
+        dialogs: {
+            beforeDoorUnlocked: [
+                "The boss lost a key... maybe it's in a drawer.",
+                "Seriously, check the drawer near the door."
+            ],
+            afterDoorUnlocked: [
+                "Don't mess with anything in the storage room."
+            ]
+        },
+        hotspot: { x: 100, y: 80, width: 20, height: 30 }
+    },
+    mike: {
+        name: 'Mike',
+        position: { x: 210, y: 99 },
+        shirtColor: 0x2ecc71, // Green
+        dialogs: {
+            beforeDoorUnlocked: [
+                "Doors don't open by wishing. Find the key.",
+                "Try the drawer at the desk."
+            ],
+            afterDoorUnlocked: [
+                "Congratulations! You've unlocked the door."
+            ]
+        },
+        hotspot: { x: 200, y: 90, width: 20, height: 30 }
+    }
+};
