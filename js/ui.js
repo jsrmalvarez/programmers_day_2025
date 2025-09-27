@@ -144,27 +144,31 @@ export class UIManager {
             this.messageText.destroy();
         }
 
-        // Create new message with pixel-perfect settings
-        this.messageText = this.scene.add.text(CONFIG.VIRTUAL_WIDTH / 2, 40, text, {
-            fontSize: '40px',
-            fill: '#ffffff',
-            fontFamily: 'Courier New, monospace',
-            backgroundColor: '#000000',
-            padding: { x: 3, y: 1 },
-            smoothed: false
-        }).setOrigin(0.5).setScale(0.2).setDepth(200);
+        // Create bitmap text message - pixel perfect by default
+        this.messageText = this.scene.add.bitmapText(CONFIG.VIRTUAL_WIDTH / 2, 20, 'arcade', text)
+            .setOrigin(0.5)
+            .setTint(0xffffff)
+            .setDepth(200)
+            .setFontSize(7)
+            .setLineSpacing(10)
+            .setMaxWidth(CONFIG.VIRTUAL_WIDTH - 40);
 
-        /*// Apply essential pixel-perfect settings
-        this.messageText.setResolution(1);
+        // Add background using graphics
+        const textBounds = this.messageText.getBounds();
+        const bg = this.scene.add.graphics();
+        bg.fillStyle(0x000000);
+        bg.fillRect(textBounds.x - 4, textBounds.y - 2, textBounds.width + 8, textBounds.height + 4);
+        bg.setDepth(199);
 
-        // Force disable smoothing
-        if (this.messageText.style) {
-            this.messageText.style.smoothed = false;
-        }*/
+        // Store background reference for cleanup
+        this.messageText.background = bg;
 
         // Auto-hide after 3 seconds
         this.scene.time.delayedCall(3000, () => {
             if (this.messageText) {
+                if (this.messageText.background) {
+                    this.messageText.background.destroy();
+                }
                 this.messageText.destroy();
                 this.messageText = null;
             }
