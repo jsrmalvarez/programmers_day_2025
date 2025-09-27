@@ -170,9 +170,37 @@ export class CollisionManager {
         };
     }
 
-    // Check if player can be at a given position (using feet for collision)
+    // Check if player can be at a given position (using full feet width for collision)
     isPlayerPositionWalkable(playerX, playerY) {
-        const feet = this.getPlayerFeetPosition(playerX, playerY);
-        return this.isWalkable(feet.x, feet.y);
+        const feetY = playerY + CONFIG.PLAYER.FEET_OFFSET;
+        const halfWidth = CONFIG.PLAYER.WIDTH / 2;
+
+        // Check multiple points across the player's feet width for thorough collision detection
+        // For a 12-pixel wide character, check 5 points to ensure no gaps
+        const checkPoints = [
+            { x: playerX - halfWidth - 1, y: feetY }, // Left edge (with 1px margin)
+            { x: playerX - halfWidth/2, y: feetY },   // Left quarter
+            { x: playerX, y: feetY },                 // Center
+            { x: playerX + halfWidth/2, y: feetY },   // Right quarter
+            { x: playerX + halfWidth + 1, y: feetY }  // Right edge (with 1px margin)
+        ];
+
+        // All points must be walkable for the position to be valid
+        for (let i = 0; i < checkPoints.length; i++) {
+            const point = checkPoints[i];
+            const roundedX = Math.round(point.x);
+            const roundedY = Math.round(point.y);
+
+            if (!this.isWalkable(roundedX, roundedY)) {
+                // Optional debug logging for collision failures
+                if (CONFIG.DEBUG && CONFIG.DEBUG.SHOW_COLLISION_POINTS) {
+                    const pointNames = ['left edge', 'left quarter', 'center', 'right quarter', 'right edge'];
+                    console.log(`Collision: Player ${pointNames[i]} at (${roundedX}, ${roundedY}) is blocked`);
+                }
+                return false;
+            }
+        }
+
+        return true;
     }
 }

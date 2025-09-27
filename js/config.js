@@ -22,8 +22,9 @@ export const CONFIG = {
 
     // Debug settings
     DEBUG: {
-        SHOW_MASK: false,       // Toggle with 'M' key
-        SHOW_SPRITES: true      // Toggle with 'S' key
+        SHOW_MASK: false,           // Toggle with 'M' key
+        SHOW_SPRITES: true,         // Toggle with 'S' key
+        SHOW_COLLISION_POINTS: false // Enable to see collision point debugging
     }
 };
 

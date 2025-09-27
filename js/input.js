@@ -39,6 +39,10 @@ export class InputManager {
             this.toggleSpriteDebug();
         });
 
+        this.scene.input.keyboard.on('keydown-C', () => {
+            this.toggleCollisionDebug();
+        });
+
         // Get tooltip element from DOM
         this.tooltip = document.getElementById('tooltip');
     }
@@ -299,5 +303,14 @@ export class InputManager {
 
         // Update sprite visibility
         this.scene.roomSpriteManager.updateSpriteVisibility();
+    }
+
+    toggleCollisionDebug() {
+        CONFIG.DEBUG.SHOW_COLLISION_POINTS = !CONFIG.DEBUG.SHOW_COLLISION_POINTS;
+        console.log(`Debug: Collision point logging ${CONFIG.DEBUG.SHOW_COLLISION_POINTS ? 'ON' : 'OFF'}`);
+
+        if (CONFIG.DEBUG.SHOW_COLLISION_POINTS) {
+            console.log('Now showing detailed collision point information when player hits walls');
+        }
     }
 }
