@@ -4,7 +4,7 @@
  */
 
 import { gameState } from './gameState.js';
-import { SCREEN_POSITIONS, VIDEO_COLORS, TYPING_COLORS } from './config.js';
+import { SCREEN_POSITIONS, VIDEO_COLORS, TYPING_COLORS, GAME_GIFS } from './config.js';
 
 export class ScreenManager {
     constructor(scene) {
@@ -103,17 +103,83 @@ export class ScreenManager {
     }
 
     renderVideoMode(graphics, x, y, width, height, screenState) {
-        // Render colorful video pixels
-        for (const pixel of screenState.videoPixels) {
-            const pixelX = x + 1 + pixel.x;
-            const pixelY = y + 1 + pixel.y;
-
-            // Make sure pixel is within screen bounds
-            if (pixelX < x + width - 1 && pixelY < y + height - 1) {
-                graphics.fillStyle(pixel.color);
-                graphics.fillRect(pixelX, pixelY, 1, 1);
-            }
+        // If no GIF is selected, select one randomly
+        if (!screenState.selectedGif) {
+            screenState.selectedGif = GAME_GIFS[Math.floor(Math.random() * GAME_GIFS.length)];
         }
+
+        // Create or update animated GIF element
+        if (!screenState.gifElement) {
+            this.createAnimatedGif(screenState, x, y, width, height);
+        }
+
+        // Update GIF element position and size
+        if (screenState.gifElement) {
+            this.updateGifPosition(screenState.gifElement, x, y, width, height);
+        }
+
+        // Add vignette effect around the edges
+        this.renderVignette(graphics, x, y, width, height);
+    }
+
+    renderVignette(graphics, x, y, width, height) {
+        // Create a subtle vignette effect by darkening the edges
+        const vignetteColor = 0x000000;
+        const vignetteAlpha = 0.3;
+
+        // Top and bottom edges
+        graphics.fillStyle(vignetteColor);
+        graphics.fillRect(x + 1, y + 1, width - 2, 1); // Top
+        graphics.fillRect(x + 1, y + height - 2, width - 2, 1); // Bottom
+
+        // Left and right edges
+        graphics.fillRect(x + 1, y + 1, 1, height - 2); // Left
+        graphics.fillRect(x + width - 2, y + 1, 1, height - 2); // Right
+
+        // Corner darkening for more realistic CRT effect
+        graphics.fillRect(x + 2, y + 2, 1, 1); // Top-left corner
+        graphics.fillRect(x + width - 3, y + 2, 1, 1); // Top-right corner
+        graphics.fillRect(x + 2, y + height - 3, 1, 1); // Bottom-left corner
+        graphics.fillRect(x + width - 3, y + height - 3, 1, 1); // Bottom-right corner
+    }
+
+    createAnimatedGif(screenState, x, y, width, height) {
+        // Create HTML img element for animated GIF
+        const img = document.createElement('img');
+        img.src = `assets/games_gif/${screenState.selectedGif.replace('_gif', '.gif')}`;
+        img.style.position = 'absolute';
+        img.style.imageRendering = 'pixelated'; // Maintain pixel art look
+        img.style.imageRendering = 'crisp-edges'; // Firefox fallback
+        img.style.zIndex = '5'; // Above canvas but below NPCs and UI
+        img.style.pointerEvents = 'none'; // Don't interfere with game input
+
+        // Add to DOM
+        document.body.appendChild(img);
+        screenState.gifElement = img;
+
+        // Position and size the GIF
+        this.updateGifPosition(img, x, y, width, height);
+    }
+
+    updateGifPosition(gifElement, screenX, screenY, screenWidth, screenHeight) {
+        // Get canvas position and scale
+        const canvas = this.scene.game.canvas;
+        const canvasRect = canvas.getBoundingClientRect();
+        const scaleX = canvasRect.width / this.scene.game.config.width;
+        const scaleY = canvasRect.height / this.scene.game.config.height;
+
+        // Calculate screen position in actual pixels
+        const actualX = canvasRect.left + (screenX * scaleX);
+        const actualY = canvasRect.top + (screenY * scaleY);
+        const actualWidth = (screenWidth - 2) * scaleX; // -2 for border
+        const actualHeight = (screenHeight - 2) * scaleY; // -2 for border
+
+        // Position the GIF element
+        gifElement.style.left = `${actualX + scaleX}px`; // +1 pixel for border
+        gifElement.style.top = `${actualY + scaleY}px`; // +1 pixel for border
+        gifElement.style.width = `${actualWidth}px`;
+        gifElement.style.height = `${actualHeight}px`;
+        gifElement.style.objectFit = 'contain'; // Maintain aspect ratio
     }
 
     updateScreenAnimations() {
@@ -153,10 +219,33 @@ export class ScreenManager {
         if (needsUpdate) {
             this.updateScreenGraphics();
         }
+
+        // Update GIF positions in case canvas moved/resized
+        if (gameState.screen1.mode === 'video' && gameState.screen1.gifElement) {
+            this.updateGifPosition(gameState.screen1.gifElement, 95, 72, 20, 12);
+        }
+        if (gameState.screen2.mode === 'video' && gameState.screen2.gifElement) {
+            this.updateGifPosition(gameState.screen2.gifElement, 195, 82, 20, 12);
+        }
+
+        // Update NPC overlay positions in case canvas moved/resized
+        if (this.scene.sarahOverlay) {
+            this.scene.spriteManager.updateNPCOverlayPosition(this.scene.sarahOverlay, 110, 89);
+        }
+        if (this.scene.mikeOverlay) {
+            this.scene.spriteManager.updateNPCOverlayPosition(this.scene.mikeOverlay, 210, 99);
+        }
     }
 
     resetScreenForMode(screenState) {
         if (screenState.mode === 'typing') {
+            // Clean up video mode elements
+            if (screenState.gifElement) {
+                document.body.removeChild(screenState.gifElement);
+                screenState.gifElement = null;
+            }
+            screenState.selectedGif = null;
+
             // Reset typing mode
             screenState.characters = [];
             screenState.currentLine = 0;
@@ -164,23 +253,14 @@ export class ScreenManager {
             screenState.lineDelay = 0;
             screenState.videoPixels = [];
         } else if (screenState.mode === 'video') {
-            // Initialize video mode with random colored rectangles
-            screenState.videoPixels = [];
+            // Clean up typing mode elements
             screenState.characters = [];
+            screenState.videoPixels = [];
 
-            // Create initial random video pixels
-            const maxPixelsX = 18; // Screen width - borders
-            const maxPixelsY = 10; // Screen height - borders
+            // Select a new random GIF for this video session
+            screenState.selectedGif = null; // Will be selected in renderVideoMode
 
-            for (let y = 0; y < maxPixelsY; y++) {
-                for (let x = 0; x < maxPixelsX; x++) {
-                    screenState.videoPixels.push({
-                        x: x,
-                        y: y,
-                        color: this.getRandomVideoColor()
-                    });
-                }
-            }
+            // GIF element will be created in renderVideoMode
         }
     }
 
@@ -280,6 +360,7 @@ export class ScreenManager {
     }
 
     clearScreens() {
+        // Clean up screen graphics
         if (this.screen1Graphics) {
             this.screen1Graphics.destroy();
             this.screen1Graphics = null;
@@ -288,5 +369,23 @@ export class ScreenManager {
             this.screen2Graphics.destroy();
             this.screen2Graphics = null;
         }
+
+        // Clean up GIF elements
+        if (gameState.screen1.gifElement) {
+            if (gameState.screen1.gifElement.parentNode) {
+                document.body.removeChild(gameState.screen1.gifElement);
+            }
+            gameState.screen1.gifElement = null;
+        }
+        if (gameState.screen2.gifElement) {
+            if (gameState.screen2.gifElement.parentNode) {
+                document.body.removeChild(gameState.screen2.gifElement);
+            }
+            gameState.screen2.gifElement = null;
+        }
+
+        // Reset GIF selection
+        gameState.screen1.selectedGif = null;
+        gameState.screen2.selectedGif = null;
     }
 }

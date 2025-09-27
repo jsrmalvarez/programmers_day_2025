@@ -35,6 +35,8 @@ export class GameScene extends Phaser.Scene {
         // Load bitmap font for pixel-perfect text
         this.load.bitmapFont('arcade', 'assets/arcade.png', 'assets/arcade.xml');
 
+        // Note: GIFs are loaded as HTML elements for animation support
+
         // Create pixel art sprites programmatically
         this.spriteManager.createAllSprites();
     }

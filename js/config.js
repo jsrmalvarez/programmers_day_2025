@@ -49,3 +49,11 @@ export const VIDEO_COLORS = [
 export const TYPING_COLORS = [
     0x00ff00, 0x00dd00, 0x00bb00, 0x00ff44
 ];
+
+// Available game GIFs for video mode
+export const GAME_GIFS = [
+    'arkanoid_gif',
+    'doom_gif',
+    'dott_gif',
+    'sim_city_2000_gif'
+];

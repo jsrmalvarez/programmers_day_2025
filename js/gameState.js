@@ -28,7 +28,9 @@ export let gameState = {
         lineDelay: 0,
         characters: [], // Array of character data for current screen
         mode: 'typing', // 'typing' or 'video'
-        videoPixels: [] // Array of colored rectangles for video mode
+        videoPixels: [], // Array of colored rectangles for video mode
+        selectedGif: null, // Currently selected GIF for video mode
+        gifElement: null // HTML img element for animated GIF
     },
     screen2: {
         timer: 0,
@@ -37,7 +39,9 @@ export let gameState = {
         lineDelay: 30, // Start with different timing
         characters: [], // Array of character data for current screen
         mode: 'typing', // 'typing' or 'video'
-        videoPixels: [] // Array of colored rectangles for video mode
+        videoPixels: [], // Array of colored rectangles for video mode
+        selectedGif: null, // Currently selected GIF for video mode
+        gifElement: null // HTML img element for animated GIF
     }
 };
 

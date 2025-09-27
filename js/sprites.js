@@ -102,24 +102,93 @@ export class SpriteManager {
     }
 
     createNPCSpritesInScene() {
-        // Clear existing NPC sprites
-        if (this.scene.sarahSprite) {
-            this.scene.sarahSprite.destroy();
-        }
-        if (this.scene.mikeSprite) {
-            this.scene.mikeSprite.destroy();
-        }
+        // Clear existing NPC sprites and overlays
+        this.clearNPCSprites();
 
-        // Create Sarah sprite
+        // Create Sarah sprite (keep for game logic/interactions)
         this.scene.sarahSprite = this.scene.add.sprite(110, 89, 'npc_sarah');
         this.scene.sarahSprite.setDepth(20); // Same as player, above screens
+        this.scene.sarahSprite.setVisible(false); // Hide Phaser sprite, use HTML overlay
 
-        // Create Mike sprite
+        // Create Mike sprite (keep for game logic/interactions)
         this.scene.mikeSprite = this.scene.add.sprite(210, 99, 'npc_mike');
         this.scene.mikeSprite.setDepth(20); // Same as player, above screens
+        this.scene.mikeSprite.setVisible(false); // Hide Phaser sprite, use HTML overlay
+
+        // Create HTML overlays for NPCs (above GIF screens)
+        this.createNPCOverlay('sarah', 110, 89, 0xe74c3c); // Red shirt
+        this.createNPCOverlay('mike', 210, 99, 0x2ecc71); // Green shirt
+    }
+
+    createNPCOverlay(name, gameX, gameY, shirtColor) {
+        // Create canvas element for NPC
+        const canvas = document.createElement('canvas');
+        canvas.width = 16;
+        canvas.height = 24;
+        canvas.style.position = 'absolute';
+        canvas.style.imageRendering = 'pixelated';
+        canvas.style.imageRendering = 'crisp-edges';
+        canvas.style.zIndex = '15'; // Above GIF screens (z-index 5) but below UI
+        canvas.style.pointerEvents = 'none';
+        canvas.style.border = 'none';
+        canvas.style.outline = 'none';
+        canvas.style.boxSizing = 'border-box';
+
+        // Draw NPC on canvas
+        const ctx = canvas.getContext('2d');
+        this.drawNPCOnCanvas(ctx, shirtColor);
+
+        // Add to DOM and store reference
+        document.body.appendChild(canvas);
+        this.scene[`${name}Overlay`] = canvas;
+
+        // Position the overlay
+        this.updateNPCOverlayPosition(canvas, gameX, gameY);
+    }
+
+    drawNPCOnCanvas(ctx, shirtColor) {
+        // Convert hex color to RGB
+        const r = (shirtColor >> 16) & 255;
+        const g = (shirtColor >> 8) & 255;
+        const b = shirtColor & 255;
+        const shirtRGB = `rgb(${r}, ${g}, ${b})`;
+
+        // Body (centered in 16x24 canvas)
+        ctx.fillStyle = shirtRGB;
+        ctx.fillRect(2, 8, 12, 16);
+
+        // Head (skin color)
+        ctx.fillStyle = '#f5a623';
+        ctx.fillRect(4, 0, 8, 8);
+
+        // Arms
+        ctx.fillStyle = shirtRGB;
+        ctx.fillRect(0, 12, 4, 8); // Left arm
+        ctx.fillRect(12, 12, 4, 8); // Right arm
+    }
+
+    updateNPCOverlayPosition(canvas, gameX, gameY) {
+        // Get canvas position and scale
+        const gameCanvas = this.scene.game.canvas;
+        const canvasRect = gameCanvas.getBoundingClientRect();
+        const scaleX = canvasRect.width / this.scene.game.config.width;
+        const scaleY = canvasRect.height / this.scene.game.config.height;
+
+        // Calculate NPC position in actual pixels
+        const actualX = canvasRect.left + (gameX * scaleX);
+        const actualY = canvasRect.top + (gameY * scaleY);
+        const actualWidth = 16 * scaleX;
+        const actualHeight = 24 * scaleY;
+
+        // Position the NPC overlay (centered on sprite position)
+        canvas.style.left = `${actualX - actualWidth/2}px`;
+        canvas.style.top = `${actualY - actualHeight/2}px`;
+        canvas.style.width = `${actualWidth}px`;
+        canvas.style.height = `${actualHeight}px`;
     }
 
     clearNPCSprites() {
+        // Clear Phaser sprites
         if (this.scene.sarahSprite) {
             this.scene.sarahSprite.destroy();
             this.scene.sarahSprite = null;
@@ -127,6 +196,20 @@ export class SpriteManager {
         if (this.scene.mikeSprite) {
             this.scene.mikeSprite.destroy();
             this.scene.mikeSprite = null;
+        }
+
+        // Clear HTML overlays
+        if (this.scene.sarahOverlay) {
+            if (this.scene.sarahOverlay.parentNode) {
+                document.body.removeChild(this.scene.sarahOverlay);
+            }
+            this.scene.sarahOverlay = null;
+        }
+        if (this.scene.mikeOverlay) {
+            if (this.scene.mikeOverlay.parentNode) {
+                document.body.removeChild(this.scene.mikeOverlay);
+            }
+            this.scene.mikeOverlay = null;
         }
     }
 }
