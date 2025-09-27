@@ -144,17 +144,20 @@ export class UIManager {
             this.messageText.destroy();
         }
 
-        // Create new message
+        // Create new message with pixel-perfect settings
         this.messageText = this.scene.add.text(CONFIG.VIRTUAL_WIDTH / 2, 20, text, {
-            fontSize: '10px',
+            fontSize: '8px',
             fill: '#ffffff',
-            fontFamily: 'monospace',
+            fontFamily: 'Courier New, monospace',
             backgroundColor: '#000000',
-            padding: { x: 4, y: 2 }
+            padding: { x: 3, y: 1 }
         }).setOrigin(0.5).setDepth(200);
 
-        // Disable antialiasing for pixel-perfect text
+        // Apply essential pixel-perfect settings
         this.messageText.setResolution(1);
+        this.messageText.setRoundPixels(true);
+
+        // Force disable smoothing
         if (this.messageText.style) {
             this.messageText.style.smoothed = false;
         }

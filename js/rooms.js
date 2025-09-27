@@ -153,15 +153,18 @@ export class RoomManager {
         g.fillRect(140, 80, 35, 25);
         g.fillRect(200, 65, 45, 35);
 
-        // Success message
+        // Success message with pixel-perfect settings
         const successText = this.scene.add.text(CONFIG.VIRTUAL_WIDTH / 2, 30, 'Store room unlocked. You did it!', {
-            fontSize: '12px',
+            fontSize: '10px',
             fill: '#2ecc71',
-            fontFamily: 'monospace'
+            fontFamily: 'Courier New, monospace'
         }).setOrigin(0.5);
 
-        // Disable antialiasing for pixel-perfect text
+        // Apply essential pixel-perfect settings
         successText.setResolution(1);
+        successText.setRoundPixels(true);
+
+        // Force disable smoothing
         if (successText.style) {
             successText.style.smoothed = false;
         }

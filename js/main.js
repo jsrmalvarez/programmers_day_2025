@@ -47,6 +47,8 @@ export class GameScene extends Phaser.Scene {
             this.renderer.gl.texParameteri(this.renderer.gl.TEXTURE_2D, this.renderer.gl.TEXTURE_MIN_FILTER, this.renderer.gl.NEAREST);
         }
 
+        // Set up global text rendering defaults (we'll apply these manually in each text creation)
+
         // Initialize systems
         this.inputManager.setupInput();
         this.uiManager.setupUI();
