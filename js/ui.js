@@ -12,6 +12,7 @@ export class UIManager {
         this.inventoryBg = null;
         this.inventorySlots = [];
         this.messageText = null;
+        this.messageBackground = null;
     }
 
     setupUI() {
@@ -139,9 +140,14 @@ export class UIManager {
     }
 
     showMessage(text) {
-        // Remove existing message
+        // Remove existing message and its background
         if (this.messageText) {
+            if (this.messageBackground) {
+                this.messageBackground.destroy();
+                this.messageBackground = null;
+            }
             this.messageText.destroy();
+            this.messageText = null;
         }
 
         // Create bitmap text message - pixel perfect by default
@@ -155,22 +161,20 @@ export class UIManager {
 
         // Add background using graphics
         const textBounds = this.messageText.getBounds();
-        const bg = this.scene.add.graphics();
-        bg.fillStyle(0x000000);
-        bg.fillRect(textBounds.x - 4, textBounds.y - 2, textBounds.width + 8, textBounds.height + 4);
-        bg.setDepth(199);
-
-        // Store background reference for cleanup
-        this.messageText.background = bg;
+        this.messageBackground = this.scene.add.graphics();
+        this.messageBackground.fillStyle(0x000000);
+        this.messageBackground.fillRect(textBounds.x - 4, textBounds.y - 2, textBounds.width + 8, textBounds.height + 4);
+        this.messageBackground.setDepth(199);
 
         // Auto-hide after 3 seconds
         this.scene.time.delayedCall(3000, () => {
             if (this.messageText) {
-                if (this.messageText.background) {
-                    this.messageText.background.destroy();
-                }
                 this.messageText.destroy();
                 this.messageText = null;
+            }
+            if (this.messageBackground) {
+                this.messageBackground.destroy();
+                this.messageBackground = null;
             }
         });
     }

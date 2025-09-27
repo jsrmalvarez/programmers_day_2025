@@ -153,20 +153,12 @@ export class RoomManager {
         g.fillRect(140, 80, 35, 25);
         g.fillRect(200, 65, 45, 35);
 
-        // Success message with pixel-perfect settings
-        const successText = this.scene.add.text(CONFIG.VIRTUAL_WIDTH / 2, 30, 'Store room unlocked. You did it!', {
-            fontSize: '10px',
-            fill: '#2ecc71',
-            fontFamily: 'Courier New, monospace'
-        }).setOrigin(0.5);
-
-        // Apply essential pixel-perfect settings
-        successText.setResolution(1);
-
-        // Force disable smoothing
-        if (successText.style) {
-            successText.style.smoothed = false;
-        }
+        // Success message using bitmap font - pixel perfect
+        const successText = this.scene.add.bitmapText(CONFIG.VIRTUAL_WIDTH / 2, 30, 'arcade', 'YOU DID IT!')
+            .setOrigin(0.5)
+            .setTint(0x2ecc71)
+            .setFontSize(7)
+            .setLineSpacing(10);
     }
 
     destroyBackground() {
