@@ -98,6 +98,11 @@ export class GameScene extends Phaser.Scene {
             callbackScope: this,
             loop: true
         });
+
+        // Show debug help message
+        console.log('🎮 Debug Controls:');
+        console.log('  M - Toggle collision mask/background view');
+        console.log('  S - Toggle room sprites visibility');
     }
 
     updateGame() {

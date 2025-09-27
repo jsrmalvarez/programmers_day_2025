@@ -167,9 +167,15 @@ export class RoomManager {
         // Clear existing background
         this.destroyBackground();
 
-        // Create background sprite if image is defined
+        // Create background sprite if image is defined (or mask if debug mode is on)
         if (roomConfig.background.image) {
-            this.backgroundSprite = this.scene.add.sprite(0, 0, roomConfig.background.image);
+            if (CONFIG.DEBUG.SHOW_MASK && roomConfig.background.mask) {
+                // Show mask instead of background for debugging
+                this.backgroundSprite = this.scene.add.sprite(0, 0, roomConfig.background.mask);
+            } else {
+                // Show normal background
+                this.backgroundSprite = this.scene.add.sprite(0, 0, roomConfig.background.image);
+            }
             this.backgroundSprite.setOrigin(0, 0); // Top-left origin
             this.backgroundSprite.setDepth(0); // Background layer
         }
@@ -234,6 +240,32 @@ export class RoomManager {
         if (this.backgroundSprite) {
             this.backgroundSprite.destroy();
             this.backgroundSprite = null;
+        }
+    }
+
+    // Debug method to refresh current room (for mask/background toggle)
+    refreshCurrentRoom() {
+        const currentRoom = this.scene.gameState.currentRoom;
+        const roomConfig = ROOMS[currentRoom];
+
+        if (roomConfig && roomConfig.background.image) {
+            // Destroy current background
+            this.destroyBackground();
+
+            // Create new background based on debug setting
+            if (CONFIG.DEBUG.SHOW_MASK && roomConfig.background.mask) {
+                // Show mask instead of background
+                this.backgroundSprite = this.scene.add.sprite(0, 0, roomConfig.background.mask);
+                this.backgroundSprite.setOrigin(0, 0);
+                this.backgroundSprite.setDepth(0);
+                console.log(`Debug: Showing collision mask for ${currentRoom}`);
+            } else {
+                // Show normal background
+                this.backgroundSprite = this.scene.add.sprite(0, 0, roomConfig.background.image);
+                this.backgroundSprite.setOrigin(0, 0);
+                this.backgroundSprite.setDepth(0);
+                console.log(`Debug: Showing background image for ${currentRoom}`);
+            }
         }
     }
 }

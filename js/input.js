@@ -30,6 +30,15 @@ export class InputManager {
             this.handleMouseMove(x, y);
         });
 
+        // Keyboard input for debug toggles
+        this.scene.input.keyboard.on('keydown-M', () => {
+            this.toggleMaskDebug();
+        });
+
+        this.scene.input.keyboard.on('keydown-S', () => {
+            this.toggleSpriteDebug();
+        });
+
         // Get tooltip element from DOM
         this.tooltip = document.getElementById('tooltip');
     }
@@ -273,5 +282,22 @@ export class InputManager {
 
     clearPendingInteraction() {
         this.pendingInteraction = null;
+    }
+
+    // Debug toggle methods
+    toggleMaskDebug() {
+        CONFIG.DEBUG.SHOW_MASK = !CONFIG.DEBUG.SHOW_MASK;
+        console.log(`Debug: Mask visibility ${CONFIG.DEBUG.SHOW_MASK ? 'ON' : 'OFF'}`);
+
+        // Refresh the current room to apply the change
+        this.scene.roomManager.refreshCurrentRoom();
+    }
+
+    toggleSpriteDebug() {
+        CONFIG.DEBUG.SHOW_SPRITES = !CONFIG.DEBUG.SHOW_SPRITES;
+        console.log(`Debug: Sprite visibility ${CONFIG.DEBUG.SHOW_SPRITES ? 'ON' : 'OFF'}`);
+
+        // Update sprite visibility
+        this.scene.roomSpriteManager.updateSpriteVisibility();
     }
 }

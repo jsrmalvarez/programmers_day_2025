@@ -24,6 +24,9 @@ export class RoomSpriteManager {
         for (const spriteConfig of roomConfig.sprites) {
             this.createSprite(spriteConfig);
         }
+
+        // Apply debug visibility setting
+        this.updateSpriteVisibility();
     }
 
     createSprite(config) {
@@ -159,5 +162,18 @@ export class RoomSpriteManager {
         }));
 
         return sprites.sort((a, b) => a.layer - b.layer);
+    }
+
+    // Debug method to toggle sprite visibility
+    updateSpriteVisibility() {
+        for (const sprite of this.sprites.values()) {
+            sprite.setVisible(CONFIG.DEBUG.SHOW_SPRITES);
+        }
+
+        if (CONFIG.DEBUG.SHOW_SPRITES) {
+            console.log(`Debug: Showing ${this.sprites.size} room sprites`);
+        } else {
+            console.log(`Debug: Hiding ${this.sprites.size} room sprites`);
+        }
     }
 }

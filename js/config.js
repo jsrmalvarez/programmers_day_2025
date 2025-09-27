@@ -18,6 +18,12 @@ export const CONFIG = {
         WIDTH: 12,          // Player sprite width
         HEIGHT: 8,         // Player sprite height
         FEET_OFFSET: 8     // Distance from sprite center to feet (bottom collision point)
+    },
+
+    // Debug settings
+    DEBUG: {
+        SHOW_MASK: false,       // Toggle with 'M' key
+        SHOW_SPRITES: true      // Toggle with 'S' key
     }
 };
 
