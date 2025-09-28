@@ -26,9 +26,7 @@ export let gameState = {
         lineDelay: 0,
         characters: [], // Array of character data for current screen
         mode: 'typing', // 'typing' or 'video'
-        videoPixels: [], // Array of colored rectangles for video mode
-        selectedGif: null, // Currently selected GIF for video mode
-        gifElement: null // HTML img element for animated GIF
+        pongGame: null // Pong game state for video mode
     },
     screen2: {
         timer: 0,
@@ -37,9 +35,7 @@ export let gameState = {
         lineDelay: 30, // Start with different timing
         characters: [], // Array of character data for current screen
         mode: 'typing', // 'typing' or 'video'
-        videoPixels: [], // Array of colored rectangles for video mode
-        selectedGif: null, // Currently selected GIF for video mode
-        gifElement: null // HTML img element for animated GIF
+        pongGame: null // Pong game state for video mode
     }
 };
 
@@ -67,7 +63,7 @@ export function resetGameState() {
         lineDelay: 0,
         characters: [],
         mode: 'typing',
-        videoPixels: []
+        pongGame: null
     };
 
     gameState.screen2 = {
@@ -77,7 +73,7 @@ export function resetGameState() {
         lineDelay: 30,
         characters: [],
         mode: 'typing',
-        videoPixels: []
+        pongGame: null
     };
 }
 

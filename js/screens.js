@@ -4,7 +4,7 @@
  */
 
 import { gameState } from './gameState.js';
-import { VIDEO_COLORS, TYPING_COLORS, GAME_GIFS, SCREENS, CONFIG } from './config.js';
+import { TYPING_COLORS, SCREENS, CONFIG } from './config.js';
 
 export class ScreenManager {
     constructor(scene) {
@@ -50,7 +50,7 @@ export class ScreenManager {
     }
 
     renderScreen(graphics, x, y, width, height, screenState) {
-        // Dark screen background
+        // Dark screen background - completely clear the screen
         graphics.fillStyle(0x001100);
         graphics.fillRect(x, y, width, height);
 
@@ -104,23 +104,124 @@ export class ScreenManager {
     }
 
     renderVideoMode(graphics, x, y, width, height, screenState) {
-        // If no GIF is selected, select one randomly
-        if (!screenState.selectedGif) {
-            screenState.selectedGif = GAME_GIFS[Math.floor(Math.random() * GAME_GIFS.length)];
+        // Initialize Pong game state if not exists
+        if (!screenState.pongGame) {
+            this.initPongGame(screenState, width, height);
         }
 
-        // Create or update animated GIF element
-        if (!screenState.gifElement) {
-            this.createAnimatedGif(screenState, x, y, width, height);
-        }
-
-        // Update GIF element position and size
-        if (screenState.gifElement) {
-            this.updateGifPosition(screenState.gifElement, x, y, width, height);
-        }
+        // Render Pong game
+        this.renderPongGame(graphics, x, y, width, height, screenState);
 
         // Add vignette effect around the edges
-        this.renderVignette(graphics, x, y, width, height);
+        //this.renderVignette(graphics, x, y, width, height);
+    }
+
+    initPongGame(screenState, width, height) {
+        // Initialize bouncing ball game state
+        screenState.pongGame = {
+            // Ball properties
+            ballX: Math.floor((width - 2) / 2),
+            ballY: Math.floor((height - 2) / 2),
+            ballVelX: (Math.random() > 0.5 ? 1 : -1) * (0.3 + Math.random() * 0.4),
+            ballVelY: (Math.random() > 0.5 ? 1 : -1) * (0.2 + Math.random() * 0.3),
+            ballSize: 1,
+
+            // Game area
+            gameWidth: width - 2, // Account for borders
+            gameHeight: height - 2
+        };
+    }
+
+    renderPongGame(graphics, x, y, width, height, screenState) {
+        const game = screenState.pongGame;
+        if (!game) return;
+
+        // Game area offset (account for border)
+        const gameX = x + 1;
+        const gameY = y + 1;
+
+        // Render paddles (follow ball Y position)
+        graphics.fillStyle(0xffffff); // White paddles
+        const paddleHeight = 2;
+        const paddleWidth = 1;
+
+        // Left paddle - follow ball Y, keep within bounds
+        const leftPaddleY = Math.max(0, Math.min(game.gameHeight - paddleHeight, game.ballY - paddleHeight/2));
+        graphics.fillRect(gameX, gameY + leftPaddleY, paddleWidth, paddleHeight);
+
+        // Right paddle - follow ball Y, keep within bounds
+        const rightPaddleY = Math.max(0, Math.min(game.gameHeight - paddleHeight, game.ballY - paddleHeight/2));
+        graphics.fillRect(gameX + game.gameWidth - paddleWidth, gameY + rightPaddleY, paddleWidth, paddleHeight);
+
+        // Render ball
+        graphics.fillStyle(0xffffff); // White ball
+        graphics.fillRect(gameX + game.ballX, gameY + game.ballY, game.ballSize, game.ballSize);
+
+        // Render center line (dashed vertical line)
+        graphics.fillStyle(0x444444);
+        for (let i = 0; i < game.gameHeight; i += 2) {
+            graphics.fillRect(gameX + Math.floor(game.gameWidth / 2), gameY + i, 1, 1);
+        }
+    }
+
+    updatePongGame(screenState) {
+        const game = screenState.pongGame;
+        if (!game) return;
+
+        // Update ball position
+        game.ballX += game.ballVelX;
+        game.ballY += game.ballVelY;
+
+        // Ball collision with top/bottom walls
+        if (game.ballY <= 0) {
+            game.ballVelY = Math.abs(game.ballVelY);
+            game.ballY = 0;
+        } else if (game.ballY >= game.gameHeight - game.ballSize) {
+            game.ballVelY = -Math.abs(game.ballVelY);
+            game.ballY = game.gameHeight - game.ballSize;
+        }
+
+        // Ball collision with left paddle
+        const paddleHeight = 2;
+        const paddleWidth = 1;
+        const leftPaddleY = Math.max(0, Math.min(game.gameHeight - paddleHeight, game.ballY - paddleHeight/2));
+
+        if (game.ballX <= paddleWidth &&
+            game.ballY + game.ballSize > leftPaddleY &&
+            game.ballY < leftPaddleY + paddleHeight) {
+            game.ballVelX = Math.abs(game.ballVelX);
+            game.ballX = paddleWidth;
+        }
+
+        // Ball collision with right paddle
+        const rightPaddleY = Math.max(0, Math.min(game.gameHeight - paddleHeight, game.ballY - paddleHeight/2));
+
+        if (game.ballX + game.ballSize >= game.gameWidth - paddleWidth &&
+            game.ballY + game.ballSize > rightPaddleY &&
+            game.ballY < rightPaddleY + paddleHeight) {
+            game.ballVelX = -Math.abs(game.ballVelX);
+            game.ballX = game.gameWidth - paddleWidth - game.ballSize;
+        }
+
+        // Ball out of bounds - reset to center
+        if (game.ballX < 0 || game.ballX > game.gameWidth) {
+            this.resetBall(game);
+        }
+
+        // Limit ball velocity
+        game.ballVelX = Math.max(-1.0, Math.min(1.0, game.ballVelX));
+        game.ballVelY = Math.max(-1.0, Math.min(1.0, game.ballVelY));
+    }
+
+    resetBall(game) {
+        game.ballX = Math.floor(game.gameWidth / 2);
+        game.ballY = Math.floor(game.gameHeight / 2);
+        game.ballVelX = (Math.random() > 0.5 ? 1 : -1) * (0.4 + Math.random() * 0.3);
+        game.ballVelY = (Math.random() > 0.5 ? 1 : -1) * (0.2 + Math.random() * 0.3);
+
+        // Ensure ball stays within bounds
+        game.ballX = Math.max(0, Math.min(game.gameWidth - game.ballSize, game.ballX));
+        game.ballY = Math.max(0, Math.min(game.gameHeight - game.ballSize, game.ballY));
     }
 
     renderVignette(graphics, x, y, width, height) {
@@ -144,44 +245,6 @@ export class ScreenManager {
         graphics.fillRect(x + width - 3, y + height - 3, 1, 1); // Bottom-right corner
     }
 
-    createAnimatedGif(screenState, x, y, width, height) {
-        // Create HTML img element for animated GIF
-        const img = document.createElement('img');
-        img.src = `assets/games_gif/${screenState.selectedGif.replace('_gif', '.gif')}`;
-        img.style.position = 'absolute';
-        img.style.imageRendering = 'pixelated'; // Maintain pixel art look
-        img.style.imageRendering = 'crisp-edges'; // Firefox fallback
-        img.style.zIndex = '5'; // Above canvas but below NPCs and UI
-        img.style.pointerEvents = 'none'; // Don't interfere with game input
-
-        // Add to DOM
-        document.body.appendChild(img);
-        screenState.gifElement = img;
-
-        // Position and size the GIF
-        this.updateGifPosition(img, x, y, width, height);
-    }
-
-    updateGifPosition(gifElement, screenX, screenY, screenWidth, screenHeight) {
-        // Get canvas position and scale
-        const canvas = this.scene.game.canvas;
-        const canvasRect = canvas.getBoundingClientRect();
-        const scaleX = canvasRect.width / this.scene.game.config.width;
-        const scaleY = canvasRect.height / this.scene.game.config.height;
-
-        // Calculate screen position in actual pixels
-        const actualX = canvasRect.left + (screenX * scaleX);
-        const actualY = canvasRect.top + (screenY * scaleY);
-        const actualWidth = (screenWidth - 2) * scaleX; // -2 for border
-        const actualHeight = (screenHeight - 2) * scaleY; // -2 for border
-
-        // Position the GIF element
-        gifElement.style.left = `${actualX + scaleX}px`; // +1 pixel for border
-        gifElement.style.top = `${actualY + scaleY}px`; // +1 pixel for border
-        gifElement.style.width = `${actualWidth}px`;
-        gifElement.style.height = `${actualHeight}px`;
-        gifElement.style.objectFit = 'contain'; // Maintain aspect ratio
-    }
 
     updateScreenAnimations() {
         // Only update screens if we're in room1 and screens exist
@@ -190,19 +253,21 @@ export class ScreenManager {
         }
 
         // Update screen modes based on player position relative to layering thresholds
-        // When player is "behind" screen  video mode
-        // When player is "in front" of screen : typing mode
+        // When player is "behind" screen: video mode
+        // When player is "in front" of screen: typing mode
 
-        const newScreen1Mode = gameState.playerY + 20 > SCREENS.screen1.layering.threshold ? 'typing' : 'video';
-        const newScreen2Mode = gameState.playerY + 20 > SCREENS.screen2.layering.threshold ? 'typing' : 'video';
+        const newScreen1Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREENS.screen1.layering.threshold ? 'typing' : 'video';
+        const newScreen2Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREENS.screen2.layering.threshold ? 'typing' : 'video';
 
         // Reset screen state if mode changed
         if (gameState.screen1.mode !== newScreen1Mode) {
+            console.log(`Screen1 mode changed: ${gameState.screen1.mode} → ${newScreen1Mode}`);
             gameState.screen1.mode = newScreen1Mode;
             this.resetScreenForMode(gameState.screen1);
         }
 
         if (gameState.screen2.mode !== newScreen2Mode) {
+            console.log(`Screen2 mode changed: ${gameState.screen2.mode} → ${newScreen2Mode}`);
             gameState.screen2.mode = newScreen2Mode;
             this.resetScreenForMode(gameState.screen2);
         }
@@ -224,48 +289,35 @@ export class ScreenManager {
             this.updateScreenGraphics();
         }
 
-        // Update GIF positions in case canvas moved/resized using SCREENS configuration
-        if (gameState.screen1.mode === 'video' && gameState.screen1.gifElement) {
-            const screen1Pos = SCREENS.screen1.position;
-            this.updateGifPosition(gameState.screen1.gifElement, screen1Pos.x, screen1Pos.y, screen1Pos.width, screen1Pos.height);
-        }
-        if (gameState.screen2.mode === 'video' && gameState.screen2.gifElement) {
-            const screen2Pos = SCREENS.screen2.position;
-            this.updateGifPosition(gameState.screen2.gifElement, screen2Pos.x, screen2Pos.y, screen2Pos.width, screen2Pos.height);
-        }
+        // No GIF position updates needed - using Phaser graphics for Pong game
 
     }
 
     resetScreenForMode(screenState) {
         if (screenState.mode === 'typing') {
             // Clean up video mode elements
-            if (screenState.gifElement) {
-                document.body.removeChild(screenState.gifElement);
-                screenState.gifElement = null;
-            }
-            screenState.selectedGif = null;
+            screenState.pongGame = null;
 
             // Reset typing mode
             screenState.characters = [];
             screenState.currentLine = 0;
             screenState.currentChar = 0;
             screenState.lineDelay = 0;
-            screenState.videoPixels = [];
         } else if (screenState.mode === 'video') {
-            // Clean up typing mode elements
+            // Clean up typing mode elements completely
             screenState.characters = [];
-            screenState.videoPixels = [];
+            screenState.currentLine = 0;
+            screenState.currentChar = 0;
+            screenState.lineDelay = 0;
 
-            // Select a new random GIF for this video session
-            screenState.selectedGif = null; // Will be selected in renderVideoMode
-
-            // GIF element will be created in renderVideoMode
+            // Reset Pong game state
+            screenState.pongGame = null;
         }
+
+        // Force immediate screen redraw to clear any remnants
+        this.updateScreenGraphics();
     }
 
-    getRandomVideoColor() {
-        return VIDEO_COLORS[Math.floor(Math.random() * VIDEO_COLORS.length)];
-    }
 
     updateSingleScreen(screenState) {
         if (screenState.mode === 'typing') {
@@ -337,21 +389,10 @@ export class ScreenManager {
     updateVideoMode(screenState) {
         screenState.timer++;
 
-        // Update video pixels every 2-4 frames for smooth animation
-        const updateSpeed = 2 + Math.random() * 2;
-        if (screenState.timer >= updateSpeed) {
+        // Update Pong game every frame for smooth animation
+        if (screenState.timer >= 1) {
             screenState.timer = 0;
-
-            // Randomly change some pixels
-            const changeCount = Math.floor(Math.random() * 5) + 1; // 1-5 pixels per update
-
-            for (let i = 0; i < changeCount; i++) {
-                const randomIndex = Math.floor(Math.random() * screenState.videoPixels.length);
-                if (screenState.videoPixels[randomIndex]) {
-                    screenState.videoPixels[randomIndex].color = this.getRandomVideoColor();
-                }
-            }
-
+            this.updatePongGame(screenState);
             return true; // Always needs update in video mode
         }
 
@@ -369,23 +410,9 @@ export class ScreenManager {
             this.screen2Graphics = null;
         }
 
-        // Clean up GIF elements
-        if (gameState.screen1.gifElement) {
-            if (gameState.screen1.gifElement.parentNode) {
-                document.body.removeChild(gameState.screen1.gifElement);
-            }
-            gameState.screen1.gifElement = null;
-        }
-        if (gameState.screen2.gifElement) {
-            if (gameState.screen2.gifElement.parentNode) {
-                document.body.removeChild(gameState.screen2.gifElement);
-            }
-            gameState.screen2.gifElement = null;
-        }
-
-        // Reset GIF selection
-        gameState.screen1.selectedGif = null;
-        gameState.screen2.selectedGif = null;
+        // Reset Pong game states
+        gameState.screen1.pongGame = null;
+        gameState.screen2.pongGame = null;
     }
 
     // Update screen depths based on player position
