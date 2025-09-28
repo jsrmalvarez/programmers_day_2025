@@ -53,7 +53,7 @@ export const SCREEN_POSITIONS = {
 // Screen Definitions with Dynamic Layering
 export const SCREENS = {
     screen1: {
-        position: { x: 95, y: 72, width: 20, height: 12 },
+        position: { x: 55, y: 86, width: 20, height: 12 },
         layering: {
             type: 'dynamic',
             threshold: 127, // Y position threshold (NPC feet position)
@@ -62,7 +62,7 @@ export const SCREENS = {
         }
     },
     screen2: {
-        position: { x: 195, y: 82, width: 20, height: 12 },
+        position: { x: 105, y: 86, width: 20, height: 12 },
         layering: {
             type: 'dynamic',
             threshold: 127, // Y position threshold (NPC feet position)

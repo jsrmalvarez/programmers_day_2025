@@ -4,7 +4,7 @@
  */
 
 import { gameState } from './gameState.js';
-import { SCREEN_POSITIONS, VIDEO_COLORS, TYPING_COLORS, GAME_GIFS, SCREENS, CONFIG } from './config.js';
+import { VIDEO_COLORS, TYPING_COLORS, GAME_GIFS, SCREENS, CONFIG } from './config.js';
 
 export class ScreenManager {
     constructor(scene) {
@@ -41,8 +41,12 @@ export class ScreenManager {
         this.screen2Graphics.clear();
 
 
-        this.renderScreen(this.screen1Graphics, 55, 86, 20, 12, gameState.screen1);
-        this.renderScreen(this.screen2Graphics, 105, 86, 20, 12, gameState.screen2);
+        // Render screens using SCREENS configuration
+        const screen1Pos = SCREENS.screen1.position;
+        const screen2Pos = SCREENS.screen2.position;
+
+        this.renderScreen(this.screen1Graphics, screen1Pos.x, screen1Pos.y, screen1Pos.width, screen1Pos.height, gameState.screen1);
+        this.renderScreen(this.screen2Graphics, screen2Pos.x, screen2Pos.y, screen2Pos.width, screen2Pos.height, gameState.screen2);
     }
 
     renderScreen(graphics, x, y, width, height, screenState) {
@@ -185,9 +189,12 @@ export class ScreenManager {
             return;
         }
 
-        // Update screen modes based on player Y position
-        const newScreen1Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREEN_POSITIONS.screen1Y ? 'typing' : 'video';
-        const newScreen2Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREEN_POSITIONS.screen2Y ? 'typing' : 'video';
+        // Update screen modes based on player position relative to layering thresholds
+        // When player is "behind" screen  video mode
+        // When player is "in front" of screen : typing mode
+
+        const newScreen1Mode = gameState.playerY + 20 > SCREENS.screen1.layering.threshold ? 'typing' : 'video';
+        const newScreen2Mode = gameState.playerY + 20 > SCREENS.screen2.layering.threshold ? 'typing' : 'video';
 
         // Reset screen state if mode changed
         if (gameState.screen1.mode !== newScreen1Mode) {
@@ -217,12 +224,14 @@ export class ScreenManager {
             this.updateScreenGraphics();
         }
 
-        // Update GIF positions in case canvas moved/resized
+        // Update GIF positions in case canvas moved/resized using SCREENS configuration
         if (gameState.screen1.mode === 'video' && gameState.screen1.gifElement) {
-            this.updateGifPosition(gameState.screen1.gifElement, 95, 72, 20, 12);
+            const screen1Pos = SCREENS.screen1.position;
+            this.updateGifPosition(gameState.screen1.gifElement, screen1Pos.x, screen1Pos.y, screen1Pos.width, screen1Pos.height);
         }
         if (gameState.screen2.mode === 'video' && gameState.screen2.gifElement) {
-            this.updateGifPosition(gameState.screen2.gifElement, 195, 82, 20, 12);
+            const screen2Pos = SCREENS.screen2.position;
+            this.updateGifPosition(gameState.screen2.gifElement, screen2Pos.x, screen2Pos.y, screen2Pos.width, screen2Pos.height);
         }
 
     }
