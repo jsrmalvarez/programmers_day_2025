@@ -24,7 +24,6 @@ export const CONFIG = {
     DEBUG: {
         SHOW_MASK: false,           // Toggle with 'M' key
         SHOW_SPRITES: true,         // Toggle with 'S' key
-        SHOW_COLLISION_POINTS: false, // Enable to see collision point debugging
         SHOW_HOTSPOTS: false        // Toggle with 'H' key
     }
 };
@@ -173,7 +172,7 @@ export const ROOMS = {
                  // Dynamic layering: if player Y > threshold, desk appears behind player
                  layering: {
                      type: 'dynamic',
-                     threshold: 183, // Y position threshold
+                     threshold: 181, // Y position threshold
                      aboveLayer: 25, // Layer when player Y < threshold
                      belowLayer: 15  // Layer when player Y > threshold
                  }

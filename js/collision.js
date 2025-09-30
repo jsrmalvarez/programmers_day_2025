@@ -175,10 +175,6 @@ export class CollisionManager {
             const roundedY = Math.round(point.y);
 
             if (!this.isWalkable(roundedX, roundedY)) {
-                // Optional debug logging for collision failures
-                if (CONFIG.DEBUG && CONFIG.DEBUG.SHOW_COLLISION_POINTS) {
-                    const pointNames = ['left edge', 'left quarter', 'center', 'right quarter', 'right edge'];
-                }
                 return false;
             }
         }

@@ -11,6 +11,11 @@ export class InputManager {
         this.scene = scene;
         this.tooltip = null;
         this.pendingInteraction = null;
+
+        // Debug features
+        this.debugCoords = false;
+        this.debugDot = null;
+        this.debugText = null;
     }
 
     setupInput() {
@@ -28,6 +33,7 @@ export class InputManager {
             const y = Math.floor(pointer.y * CONFIG.VIRTUAL_HEIGHT / this.scene.cameras.main.height);
 
             this.handleMouseMove(x, y);
+            this.updateCoordsDebug(x, y);
         });
 
         // Keyboard input for debug toggles
@@ -40,7 +46,7 @@ export class InputManager {
         });
 
         this.scene.input.keyboard.on('keydown-C', () => {
-            this.toggleCollisionDebug();
+            this.toggleCoordsDebug();
         });
 
         this.scene.input.keyboard.on('keydown-H', () => {
@@ -344,13 +350,48 @@ export class InputManager {
         this.scene.roomSpriteManager.updateSpriteVisibility();
     }
 
-    toggleCollisionDebug() {
-        CONFIG.DEBUG.SHOW_COLLISION_POINTS = !CONFIG.DEBUG.SHOW_COLLISION_POINTS;
-    }
-
     toggleHotspotDebug() {
         CONFIG.DEBUG.SHOW_HOTSPOTS = !CONFIG.DEBUG.SHOW_HOTSPOTS;
         // Trigger a redraw to show/hide hotspot rectangles
         this.scene.roomManager.refreshCurrentRoom();
+    }
+
+    toggleCoordsDebug() {
+        this.debugCoords = !this.debugCoords;
+
+        if (this.debugCoords) {
+            // Create debug dot and text
+            this.debugDot = this.scene.add.graphics();
+            this.debugDot.setDepth(1000); // Very high depth to be on top of everything
+
+            this.debugText = this.scene.add.bitmapText(10, 10, 'arcade', '', 7);
+            this.debugText.setDepth(1001);
+            this.debugText.setTint(0x00ff00); // Green color for visibility
+
+            console.log('DEBUG: Coordinates debug enabled - Press C to toggle off');
+        } else {
+            // Clean up debug elements
+            if (this.debugDot) {
+                this.debugDot.destroy();
+                this.debugDot = null;
+            }
+            if (this.debugText) {
+                this.debugText.destroy();
+                this.debugText = null;
+            }
+            console.log('DEBUG: Coordinates debug disabled');
+        }
+    }
+
+    updateCoordsDebug(x, y) {
+        if (!this.debugCoords || !this.debugDot || !this.debugText) return;
+
+        // Update debug dot position
+        this.debugDot.clear();
+        this.debugDot.fillStyle(0xff0000); // Red dot
+        this.debugDot.fillRect(x, y, 1, 1); // Single pixel dot at cursor position
+
+        // Update coordinates text
+        this.debugText.setText(`X: ${x}, Y: ${y}`);
     }
 }
