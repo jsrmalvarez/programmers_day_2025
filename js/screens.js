@@ -287,7 +287,8 @@ export class ScreenManager {
 
     updateScreenAnimations() {
         // Only update screens if we're in room1 and screens exist
-        if (gameState.currentRoom !== 'room1' || !this.screen1Graphics || !this.screen2Graphics) {
+        if (gameState.currentRoom !== 'room1' || !this.screen1Graphics || !this.screen2Graphics ||
+            !this.screen3Graphics || !this.screen4Graphics || !this.screen5Graphics || !this.screen6Graphics) {
             return;
         }
 
@@ -298,6 +299,9 @@ export class ScreenManager {
         const newScreen1Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREENS.screen1.layering.threshold ? 'typing' : 'video';
         const newScreen2Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREENS.screen2.layering.threshold ? 'typing' : 'video';
         const newScreen3Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREENS.screen3.layering.threshold ? 'typing' : 'video';
+        const newScreen4Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREENS.screen4.layering.threshold ? 'typing' : 'video';
+        const newScreen5Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREENS.screen5.layering.threshold ? 'typing' : 'video';
+        const newScreen6Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREENS.screen6.layering.threshold ? 'typing' : 'video';
 
         // Reset screen state if mode changed
         if (gameState.screen1.mode !== newScreen1Mode) {
@@ -315,6 +319,21 @@ export class ScreenManager {
             this.resetScreenForMode(gameState.screen3);
         }
 
+        if (gameState.screen4.mode !== newScreen4Mode) {
+            gameState.screen4.mode = newScreen4Mode;
+            this.resetScreenForMode(gameState.screen4);
+        }
+
+        if (gameState.screen5.mode !== newScreen5Mode) {
+            gameState.screen5.mode = newScreen5Mode;
+            this.resetScreenForMode(gameState.screen5);
+        }
+
+        if (gameState.screen6.mode !== newScreen6Mode) {
+            gameState.screen6.mode = newScreen6Mode;
+            this.resetScreenForMode(gameState.screen6);
+        }
+
         let needsUpdate = false;
 
         // Update Screen 1
@@ -329,6 +348,21 @@ export class ScreenManager {
 
         // Update Screen 3
         if (this.updateSingleScreen(gameState.screen3)) {
+            needsUpdate = true;
+        }
+
+        // Update Screen 4
+        if (this.updateSingleScreen(gameState.screen4)) {
+            needsUpdate = true;
+        }
+
+        // Update Screen 5
+        if (this.updateSingleScreen(gameState.screen5)) {
+            needsUpdate = true;
+        }
+
+        // Update Screen 6
+        if (this.updateSingleScreen(gameState.screen6)) {
             needsUpdate = true;
         }
 
