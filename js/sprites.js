@@ -22,37 +22,55 @@ export class SpriteManager {
     createPlayerSprites() {
         const graphics = this.scene.add.graphics();
 
-        // Player idle frame
-        graphics.fillStyle(0x4a90e2);
-        graphics.fillRect(0, 0, 12, 16);
-        graphics.fillStyle(0xf5a623);
-        graphics.fillRect(2, 2, 8, 6); // head
-        graphics.generateTexture('player_idle', 12, 16);
+        // Player idle frame - based on big NPC design but standing (taller)
+        this.drawPlayerTexture(graphics, 0x4a90e2, false); // Blue shirt, idle
+        graphics.generateTexture('player_idle', 24, 54); // Same size as big NPC
         graphics.clear();
 
-        // Player walk frame 1
-        graphics.fillStyle(0x4a90e2);
-        graphics.fillRect(0, 0, 12, 16);
-        graphics.fillStyle(0xf5a623);
-        graphics.fillRect(2, 2, 8, 6); // head
-        graphics.fillStyle(0x333333);
-        graphics.fillRect(1, 14, 3, 2); // left foot forward
-        graphics.fillRect(8, 15, 3, 1); // right foot back
-        graphics.generateTexture('player_walk1', 12, 16);
+        // Player walk frame 1 - left foot forward
+        this.drawPlayerTexture(graphics, 0x4a90e2, true, 'left'); // Blue shirt, walking left
+        graphics.generateTexture('player_walk1', 24, 54);
         graphics.clear();
 
-        // Player walk frame 2
-        graphics.fillStyle(0x4a90e2);
-        graphics.fillRect(0, 0, 12, 16);
-        graphics.fillStyle(0xf5a623);
-        graphics.fillRect(2, 2, 8, 6); // head
-        graphics.fillStyle(0x333333);
-        graphics.fillRect(8, 14, 3, 2); // right foot forward
-        graphics.fillRect(1, 15, 3, 1); // left foot back
-        graphics.generateTexture('player_walk2', 12, 16);
+        // Player walk frame 2 - right foot forward
+        this.drawPlayerTexture(graphics, 0x4a90e2, true, 'right'); // Blue shirt, walking right
+        graphics.generateTexture('player_walk2', 24, 54);
         graphics.clear();
 
         graphics.destroy();
+    }
+
+    drawPlayerTexture(graphics, shirtColor, isWalking = false, walkDirection = 'left') {
+        // Head (same as big NPC)
+        graphics.fillStyle(0xf5a623);
+        graphics.fillRect(6, 0, 12, 12);
+
+        // Body (taller than NPC since standing)
+        graphics.fillStyle(shirtColor);
+        graphics.fillRect(3, 12, 18, 30); // 30 pixels tall instead of 24
+
+        // Arms (same as big NPC)
+        graphics.fillStyle(shirtColor);
+        graphics.fillRect(0, 18, 6, 12);
+        graphics.fillRect(18, 18, 6, 12);
+
+        // Legs (longer than NPC since standing)
+        graphics.fillStyle(0x023252);
+        if (isWalking) {
+            if (walkDirection === 'left') {
+                // Left foot forward, right foot back
+                graphics.fillRect(3, 42, 7, 12); // Left leg
+                graphics.fillRect(14, 42, 7, 9); // Right leg (shorter, back)
+            } else {
+                // Right foot forward, left foot back
+                graphics.fillRect(3, 42, 7, 9); // Left leg (shorter, back)
+                graphics.fillRect(14, 42, 7, 12); // Right leg
+            }
+        } else {
+            // Both legs straight (idle)
+            graphics.fillRect(3, 42, 7, 12);
+            graphics.fillRect(14, 42, 7, 12);
+        }
     }
 
     createItemSprites() {
