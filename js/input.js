@@ -52,10 +52,32 @@ export class InputManager {
     }
 
     handleClick(x, y) {
-        // Check if clicking in inventory area
-        if (y >= CONFIG.VIRTUAL_HEIGHT - CONFIG.INVENTORY_HEIGHT) {
-            this.scene.uiManager.handleInventoryClick(x, y);
-            return;
+        // Check if clicking in inventory area (only when inventory is visible)
+        if (this.scene.uiManager.inventoryVisible) {
+            const inventoryHeight = 19; // Compact inventory height
+            const inventoryWidth = 170; // Inventory width (7 slots + button space)
+            const inventoryX = CONFIG.VIRTUAL_WIDTH - inventoryWidth - 10; // Right edge positioning
+            const inventoryY = CONFIG.VIRTUAL_HEIGHT - inventoryHeight;
+
+            if (y >= inventoryY && y <= CONFIG.VIRTUAL_HEIGHT &&
+                x >= inventoryX - 25 && x <= inventoryX + inventoryWidth + 25) { // Include button area
+                this.scene.uiManager.handleInventoryClick(x, y);
+                return;
+            }
+        } else {
+            // When inventory is hidden, only check for toggle button clicks
+            const inventoryHeight = 19;
+            const inventoryWidth = 170; // Inventory width (7 slots + button space)
+            const inventoryX = CONFIG.VIRTUAL_WIDTH - inventoryWidth - 10;
+            const inventoryY = CONFIG.VIRTUAL_HEIGHT - inventoryHeight;
+            const buttonX = inventoryX + 7 * 20 + 5; // After 7 slots + small padding
+            const buttonY = inventoryY + 2;
+
+            if (y >= buttonY && y <= buttonY + 16 &&
+                x >= buttonX && x <= buttonX + 16) {
+                this.scene.uiManager.handleInventoryClick(x, y);
+                return;
+            }
         }
 
         // Check hotspots
@@ -82,7 +104,19 @@ export class InputManager {
     handleMouseMove(x, y) {
         let tooltipText = '';
 
-        if (y < CONFIG.VIRTUAL_HEIGHT - CONFIG.INVENTORY_HEIGHT) {
+        // Check if mouse is in inventory area (only when inventory is visible)
+        let isInInventoryArea = false;
+        if (this.scene.uiManager.inventoryVisible) {
+            const inventoryHeight = 19; // Compact inventory height
+            const inventoryWidth = 170; // Inventory width (7 slots + button space)
+            const inventoryX = CONFIG.VIRTUAL_WIDTH - inventoryWidth - 10; // Right edge positioning
+            const inventoryY = CONFIG.VIRTUAL_HEIGHT - inventoryHeight;
+
+            isInInventoryArea = y >= inventoryY && y <= CONFIG.VIRTUAL_HEIGHT &&
+                               x >= inventoryX - 25 && x <= inventoryX + inventoryWidth + 25;
+        }
+
+        if (!isInInventoryArea) {
             // Check room hotspots
             const room = this.scene.rooms[gameState.currentRoom];
             for (const hotspot of room.hotspots) {
