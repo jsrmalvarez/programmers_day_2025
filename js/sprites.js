@@ -73,15 +73,17 @@ export class SpriteManager {
     createNPCSprites() {
         const graphics = this.scene.add.graphics();
 
-        // Create Sarah (red shirt)
         graphics.clear();
-        this.drawNPCTexture(graphics, 0xe74c3c); // Red
-        graphics.generateTexture('npc_sarah', 16, 36);
+        this.drawNPCTexture(graphics, 0xe74c3c);
+        graphics.generateTexture('npc_alice', 16, 36);
 
-        // Create Mike (green shirt)
         graphics.clear();
-        this.drawNPCTexture(graphics, 0x2ecc71); // Green
-        graphics.generateTexture('npc_mike', 16, 36);
+        this.drawNPCTexture(graphics, 0x2ecc71);
+        graphics.generateTexture('npc_bob', 16, 36);
+
+        graphics.clear();
+        this.drawNPCTexture(graphics, 0x2e71cc);
+        graphics.generateTexture('npc_charlie', 16, 36);
 
         graphics.destroy();
     }
@@ -114,13 +116,15 @@ export class SpriteManager {
         // Clear existing NPC sprites and overlays
         this.clearNPCSprites();
 
-        // Create Sarah sprite (visible Phaser sprite with proper depth)
-        this.scene.sarahSprite = this.scene.add.sprite(110, 89, 'npc_sarah');
+        this.scene.sarahSprite = this.scene.add.sprite(110, 89, 'npc_alice');
         this.scene.sarahSprite.setDepth(15); // Below player (depth 20)
         this.scene.sarahSprite.setVisible(true);
 
-        // Create Mike sprite (visible Phaser sprite with proper depth)
-        this.scene.mikeSprite = this.scene.add.sprite(210, 99, 'npc_mike');
+        this.scene.mikeSprite = this.scene.add.sprite(210, 99, 'npc_bob');
+        this.scene.mikeSprite.setDepth(15); // Below player (depth 20)
+        this.scene.mikeSprite.setVisible(true);
+
+        this.scene.mikeSprite = this.scene.add.sprite(120, 99, 'npc_charlie');
         this.scene.mikeSprite.setDepth(15); // Below player (depth 20)
         this.scene.mikeSprite.setVisible(true);
     }

@@ -5,7 +5,7 @@ A classic point-and-click adventure game built with Phaser 3, featuring pixel-pe
 ## 🎮 Game Features
 
 - **Pixel Art Style**: 320x200 virtual resolution with crisp, pixel-perfect scaling
-- **Interactive NPCs**: Talk to Sarah and Mike for hints
+- **Interactive NPCs**: Talk to NPCs for hints
 - **Puzzle Solving**: Find the key to unlock the storage room
 - **Animated Screens**: Dynamic computer screens that respond to player position
 - **Classic Adventure Mechanics**: Click-to-move, inventory system, hotspot interactions

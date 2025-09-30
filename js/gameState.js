@@ -31,11 +31,20 @@ export let gameState = {
     screen2: {
         timer: 0,
         currentLine: 0,
-        currentChar: 0,
-        lineDelay: 30, // Start with different timing
+        currentChar: 3,
+        lineDelay: 0, // Start with different timing
         characters: [], // Array of character data for current screen
         mode: 'typing', // 'typing' or 'video'
         pongGame: null // Pong game state for video mode
+    },
+    screen3: {
+        timer: 0,
+        currentLine: 0,
+        currentChar: 0,
+        lineDelay: 0,
+        characters: [],
+        mode: 'typing',
+        pongGame: null
     }
 };
 
@@ -68,9 +77,19 @@ export function resetGameState() {
 
     gameState.screen2 = {
         timer: 0,
-        currentLine: 0,
+        currentLine: 3,
         currentChar: 0,
-        lineDelay: 30,
+        lineDelay: 20,
+        characters: [],
+        mode: 'typing',
+        pongGame: null
+    };
+
+    gameState.screen3 = {
+        timer: 0,
+        currentLine: 4,
+        currentChar: 3,
+        lineDelay: 10,
         characters: [],
         mode: 'typing',
         pongGame: null

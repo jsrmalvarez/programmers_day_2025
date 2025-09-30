@@ -11,6 +11,7 @@ export class ScreenManager {
         this.scene = scene;
         this.screen1Graphics = null;
         this.screen2Graphics = null;
+        this.screen3Graphics = null;
     }
 
     createAnimatedScreens() {
@@ -22,10 +23,14 @@ export class ScreenManager {
             this.screen2Graphics.destroy();
         }
 
+        if (this.screen3Graphics) {
+            this.screen3Graphics.destroy();
+        }
+
         // Create graphics objects for both screens
         this.screen1Graphics = this.scene.add.graphics();
         this.screen2Graphics = this.scene.add.graphics();
-
+        this.screen3Graphics = this.scene.add.graphics();
         // Set initial depths based on dynamic layering configuration
         this.updateScreenLayers();
 
@@ -34,19 +39,21 @@ export class ScreenManager {
     }
 
     updateScreenGraphics() {
-        if (!this.screen1Graphics || !this.screen2Graphics) return;
+        if (!this.screen1Graphics || !this.screen2Graphics || !this.screen3Graphics) return;
 
         // Clear both screens
         this.screen1Graphics.clear();
         this.screen2Graphics.clear();
-
+        this.screen3Graphics.clear();
 
         // Render screens using SCREENS configuration
         const screen1Pos = SCREENS.screen1.position;
         const screen2Pos = SCREENS.screen2.position;
+        const screen3Pos = SCREENS.screen3.position;
 
         this.renderScreen(this.screen1Graphics, screen1Pos.x, screen1Pos.y, screen1Pos.width, screen1Pos.height, gameState.screen1);
         this.renderScreen(this.screen2Graphics, screen2Pos.x, screen2Pos.y, screen2Pos.width, screen2Pos.height, gameState.screen2);
+        this.renderScreen(this.screen3Graphics, screen3Pos.x, screen3Pos.y, screen3Pos.width, screen3Pos.height, gameState.screen3);
     }
 
     renderScreen(graphics, x, y, width, height, screenState) {
@@ -258,6 +265,7 @@ export class ScreenManager {
 
         const newScreen1Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREENS.screen1.layering.threshold ? 'typing' : 'video';
         const newScreen2Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREENS.screen2.layering.threshold ? 'typing' : 'video';
+        const newScreen3Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREENS.screen3.layering.threshold ? 'typing' : 'video';
 
         // Reset screen state if mode changed
         if (gameState.screen1.mode !== newScreen1Mode) {
@@ -270,6 +278,11 @@ export class ScreenManager {
             this.resetScreenForMode(gameState.screen2);
         }
 
+        if (gameState.screen3.mode !== newScreen3Mode) {
+            gameState.screen3.mode = newScreen3Mode;
+            this.resetScreenForMode(gameState.screen3);
+        }
+
         let needsUpdate = false;
 
         // Update Screen 1
@@ -279,6 +292,11 @@ export class ScreenManager {
 
         // Update Screen 2
         if (this.updateSingleScreen(gameState.screen2)) {
+            needsUpdate = true;
+        }
+
+        // Update Screen 3
+        if (this.updateSingleScreen(gameState.screen3)) {
             needsUpdate = true;
         }
 
@@ -438,6 +456,18 @@ export class ScreenManager {
 
             if (this.screen2Graphics.depth !== newDepth) {
                 this.screen2Graphics.setDepth(newDepth);
+            }
+        }
+
+        // Update screen3 depth
+        const screen3Config = SCREENS.screen3;
+        if (screen3Config.layering.type === 'dynamic') {
+            const playerFeetY = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
+            const threshold = screen3Config.layering.threshold;
+            const newDepth = playerFeetY < threshold ? screen3Config.layering.aboveLayer : screen3Config.layering.belowLayer;
+
+            if (this.screen3Graphics.depth !== newDepth) {
+                this.screen3Graphics.setDepth(newDepth);
             }
         }
     }
