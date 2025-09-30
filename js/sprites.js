@@ -246,31 +246,43 @@ export class SpriteManager {
     }
 
     drawRightOrientation(graphics, shirtColor, isWalking, walkFrame) {
-        // Head (no nose, side view)
+        // Head (no nose, side view) - mirrored
         graphics.fillStyle(0xf5a623);
         graphics.fillRect(6, 0, 12, 12);
 
-        // Body (taller than NPC since standing)
-        graphics.fillStyle(shirtColor);
-        graphics.fillRect(3, 12, 18, 30);
+        // Nose - mirrored (right side of head)
+        graphics.fillStyle(0xf5b643);
+        graphics.fillRect(18, 5, 1, 3);
+        graphics.fillRect(18, 6, 2, 3);
 
-        // Arms (same as big NPC)
+        // Body (taller than NPC since standing) - mirrored
         graphics.fillStyle(shirtColor);
-        graphics.fillRect(0, 18, 6, 12);
-        graphics.fillRect(18, 18, 6, 12);
+        graphics.fillRect(5, 12, 14, 24);
 
-        // Legs (side view - only one leg visible when idle, simple animation when walking)
+        // Arms (same as big NPC) - mirrored
+        graphics.fillStyle(shirtColor);
+        graphics.fillRect(9, 18, 6, 12);
+        graphics.fillStyle(0xf5a623);
+        graphics.fillRect(9, 30, 6, 4);
+
+        // Legs (side view - only one leg visible when idle, simple animation when walking) - mirrored
         graphics.fillStyle(0x023252);
         if (isWalking) {
-            // Simple leg animation - alternating visibility
+            // Simple leg animation - alternating visibility - mirrored
             if (walkFrame === 0) {
-                graphics.fillRect(8, 45, 8, 9); // Single leg back
+                graphics.fillStyle(0x022242);
+                graphics.fillRect(7, 36, 8, 22);
+                graphics.fillStyle(0x023252);
+                graphics.fillRect(10, 36, 8, 28);
             } else {
-                graphics.fillRect(8, 42, 8, 12); // Single leg forward
+                graphics.fillStyle(0x022242);
+                graphics.fillRect(10, 36, 8, 22);
+                graphics.fillStyle(0x023252);
+                graphics.fillRect(7, 36, 8, 28);
             }
         } else {
-            // Idle - only one leg visible
-            graphics.fillRect(8, 42, 8, 12);
+            // Idle - only one leg visible - mirrored
+            graphics.fillRect(8, 36, 8, 28);
         }
     }
 
