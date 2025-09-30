@@ -15,9 +15,9 @@ export const CONFIG = {
 
     // Player character dimensions and collision
     PLAYER: {
-        WIDTH: 12,          // Player sprite width
-        HEIGHT: 8,         // Player sprite height
-        FEET_OFFSET: 8     // Distance from sprite center to feet (bottom collision point)
+        WIDTH: 24,          // Player sprite width (updated for new design)
+        HEIGHT: 54,         // Player sprite height (updated for new design)
+        FEET_OFFSET: 27     // Distance from sprite center to feet (half of height)
     },
 
     // Debug settings
