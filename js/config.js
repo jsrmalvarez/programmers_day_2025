@@ -72,6 +72,33 @@ export const SCREENS = {
             aboveLayer: 26, // Layer when player Y < threshold (NPC in front)
             belowLayer: 11  // Layer when player Y > threshold (NPC behind)
         }
+    },
+    screen4: {
+        position: { x: 42, y: 122, width: 20, height: 12, big: true }, // Big screen for close NPC
+        layering: {
+            type: 'dynamic',
+            threshold: 181, // Y position threshold (NPC feet position)
+            aboveLayer: 28, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 13  // Layer when player Y > threshold (NPC behind)
+        }
+    },
+    screen5: {
+        position: { x: 97, y: 122, width: 20, height: 12, big: true }, // Big screen for close NPC
+        layering: {
+            type: 'dynamic',
+            threshold: 181, // Y position threshold (NPC feet position)
+            aboveLayer: 28, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 13  // Layer when player Y > threshold (NPC behind)
+        }
+    },
+    screen6: {
+        position: { x: 155, y: 122, width: 20, height: 12, big: true }, // Big screen for close NPC
+        layering: {
+            type: 'dynamic',
+            threshold: 181, // Y position threshold (NPC feet position)
+            aboveLayer: 28, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 13  // Layer when player Y > threshold (NPC behind)
+        }
     }
 };
 
@@ -179,8 +206,8 @@ export const NPCS = {
         layering: {
             type: 'dynamic',
             threshold: 181, // Y position threshold (NPC feet position)
-            aboveLayer: 27, // Layer when player Y < threshold (NPC in front)
-            belowLayer: 12  // Layer when player Y > threshold (NPC behind)
+            aboveLayer: 29, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 14  // Layer when player Y > threshold (NPC behind)
         }
     },
     eve: {
@@ -200,8 +227,8 @@ export const NPCS = {
         layering: {
             type: 'dynamic',
             threshold: 181, // Y position threshold (NPC feet position)
-            aboveLayer: 27, // Layer when player Y < threshold (NPC in front)
-            belowLayer: 12  // Layer when player Y > threshold (NPC behind)
+            aboveLayer: 29, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 14  // Layer when player Y > threshold (NPC behind)
         }
     },
     frank: {
@@ -221,8 +248,8 @@ export const NPCS = {
         layering: {
             type: 'dynamic',
             threshold: 181, // Y position threshold (NPC feet position)
-            aboveLayer: 27, // Layer when player Y < threshold (NPC in front)
-            belowLayer: 12  // Layer when player Y > threshold (NPC behind)
+            aboveLayer: 29, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 14  // Layer when player Y > threshold (NPC behind)
         }
     }
 };

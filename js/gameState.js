@@ -45,6 +45,33 @@ export let gameState = {
         characters: [],
         mode: 'typing',
         pongGame: null
+    },
+    screen4: {
+        timer: 0,
+        currentLine: 0,
+        currentChar: 0,
+        lineDelay: 0,
+        characters: [],
+        mode: 'typing',
+        pongGame: null
+    },
+    screen5: {
+        timer: 0,
+        currentLine: 0,
+        currentChar: 0,
+        lineDelay: 0,
+        characters: [],
+        mode: 'typing',
+        pongGame: null
+    },
+    screen6: {
+        timer: 0,
+        currentLine: 0,
+        currentChar: 0,
+        lineDelay: 0,
+        characters: [],
+        mode: 'typing',
+        pongGame: null
     }
 };
 
@@ -90,6 +117,36 @@ export function resetGameState() {
         currentLine: 4,
         currentChar: 3,
         lineDelay: 10,
+        characters: [],
+        mode: 'typing',
+        pongGame: null
+    };
+
+    gameState.screen4 = {
+        timer: 0,
+        currentLine: 0,
+        currentChar: 0,
+        lineDelay: 0,
+        characters: [],
+        mode: 'typing',
+        pongGame: null
+    };
+
+    gameState.screen5 = {
+        timer: 0,
+        currentLine: 0,
+        currentChar: 0,
+        lineDelay: 0,
+        characters: [],
+        mode: 'typing',
+        pongGame: null
+    };
+
+    gameState.screen6 = {
+        timer: 0,
+        currentLine: 0,
+        currentChar: 0,
+        lineDelay: 0,
         characters: [],
         mode: 'typing',
         pongGame: null

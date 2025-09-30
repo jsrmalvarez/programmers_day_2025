@@ -12,6 +12,9 @@ export class ScreenManager {
         this.screen1Graphics = null;
         this.screen2Graphics = null;
         this.screen3Graphics = null;
+        this.screen4Graphics = null;
+        this.screen5Graphics = null;
+        this.screen6Graphics = null;
     }
 
     createAnimatedScreens() {
@@ -22,15 +25,27 @@ export class ScreenManager {
         if (this.screen2Graphics) {
             this.screen2Graphics.destroy();
         }
-
         if (this.screen3Graphics) {
             this.screen3Graphics.destroy();
         }
+        if (this.screen4Graphics) {
+            this.screen4Graphics.destroy();
+        }
+        if (this.screen5Graphics) {
+            this.screen5Graphics.destroy();
+        }
+        if (this.screen6Graphics) {
+            this.screen6Graphics.destroy();
+        }
 
-        // Create graphics objects for both screens
+        // Create graphics objects for all screens
         this.screen1Graphics = this.scene.add.graphics();
         this.screen2Graphics = this.scene.add.graphics();
         this.screen3Graphics = this.scene.add.graphics();
+        this.screen4Graphics = this.scene.add.graphics();
+        this.screen5Graphics = this.scene.add.graphics();
+        this.screen6Graphics = this.scene.add.graphics();
+
         // Set initial depths based on dynamic layering configuration
         this.updateScreenLayers();
 
@@ -39,45 +54,61 @@ export class ScreenManager {
     }
 
     updateScreenGraphics() {
-        if (!this.screen1Graphics || !this.screen2Graphics || !this.screen3Graphics) return;
+        if (!this.screen1Graphics || !this.screen2Graphics || !this.screen3Graphics ||
+            !this.screen4Graphics || !this.screen5Graphics || !this.screen6Graphics) return;
 
-        // Clear both screens
+        // Clear all screens
         this.screen1Graphics.clear();
         this.screen2Graphics.clear();
         this.screen3Graphics.clear();
+        this.screen4Graphics.clear();
+        this.screen5Graphics.clear();
+        this.screen6Graphics.clear();
 
         // Render screens using SCREENS configuration
         const screen1Pos = SCREENS.screen1.position;
         const screen2Pos = SCREENS.screen2.position;
         const screen3Pos = SCREENS.screen3.position;
+        const screen4Pos = SCREENS.screen4.position;
+        const screen5Pos = SCREENS.screen5.position;
+        const screen6Pos = SCREENS.screen6.position;
 
-        this.renderScreen(this.screen1Graphics, screen1Pos.x, screen1Pos.y, screen1Pos.width, screen1Pos.height, gameState.screen1);
-        this.renderScreen(this.screen2Graphics, screen2Pos.x, screen2Pos.y, screen2Pos.width, screen2Pos.height, gameState.screen2);
-        this.renderScreen(this.screen3Graphics, screen3Pos.x, screen3Pos.y, screen3Pos.width, screen3Pos.height, gameState.screen3);
+        this.renderScreen(this.screen1Graphics, screen1Pos.x, screen1Pos.y, screen1Pos.width, screen1Pos.height, gameState.screen1, screen1Pos.big);
+        this.renderScreen(this.screen2Graphics, screen2Pos.x, screen2Pos.y, screen2Pos.width, screen2Pos.height, gameState.screen2, screen2Pos.big);
+        this.renderScreen(this.screen3Graphics, screen3Pos.x, screen3Pos.y, screen3Pos.width, screen3Pos.height, gameState.screen3, screen3Pos.big);
+        this.renderScreen(this.screen4Graphics, screen4Pos.x, screen4Pos.y, screen4Pos.width, screen4Pos.height, gameState.screen4, screen4Pos.big);
+        this.renderScreen(this.screen5Graphics, screen5Pos.x, screen5Pos.y, screen5Pos.width, screen5Pos.height, gameState.screen5, screen5Pos.big);
+        this.renderScreen(this.screen6Graphics, screen6Pos.x, screen6Pos.y, screen6Pos.width, screen6Pos.height, gameState.screen6, screen6Pos.big);
     }
 
-    renderScreen(graphics, x, y, width, height, screenState) {
+    renderScreen(graphics, x, y, width, height, screenState, isBig = false) {
+        // Scale dimensions if big mode
+        const scale = isBig ? 1.5 : 1;
+        const scaledWidth = width * scale;
+        const scaledHeight = height * scale;
+
         // Dark screen background - completely clear the screen
         graphics.fillStyle(0x001100);
-        graphics.fillRect(x, y, width, height);
+        graphics.fillRect(x, y, scaledWidth, scaledHeight);
 
         // Blue screen border/glow
         graphics.lineStyle(1, 0x3498db);
-        graphics.strokeRect(x, y, width, height);
+        graphics.strokeRect(x, y, scaledWidth, scaledHeight);
 
         if (screenState.mode === 'typing') {
-            this.renderTypingMode(graphics, x, y, width, height, screenState);
+            this.renderTypingMode(graphics, x, y, scaledWidth, scaledHeight, screenState, isBig);
         } else if (screenState.mode === 'video') {
-            this.renderVideoMode(graphics, x, y, width, height, screenState);
+            this.renderVideoMode(graphics, x, y, scaledWidth, scaledHeight, screenState, isBig);
         }
     }
 
-    renderTypingMode(graphics, x, y, width, height, screenState) {
-        // Character rendering parameters
-        const charWidth = 1;
-        const charHeight = 1;
-        const charSpacingX = 1;
-        const charSpacingY = 1;
+    renderTypingMode(graphics, x, y, width, height, screenState, isBig = false) {
+        // Character rendering parameters - scale if big mode
+        const scale = isBig ? 1.5 : 1;
+        const charWidth = 1 * scale;
+        const charHeight = 1 * scale;
+        const charSpacingX = 1 * scale;
+        const charSpacingY = 1 * scale;
         const lineHeight = charHeight + charSpacingY;
 
         const maxCharsPerLine = Math.floor((width - 2) / charSpacingX);
@@ -110,28 +141,29 @@ export class ScreenManager {
         }
     }
 
-    renderVideoMode(graphics, x, y, width, height, screenState) {
+    renderVideoMode(graphics, x, y, width, height, screenState, isBig = false) {
         // Initialize Pong game state if not exists
         if (!screenState.pongGame) {
-            this.initPongGame(screenState, width, height);
+            this.initPongGame(screenState, width, height, isBig);
         }
 
         // Render Pong game
-        this.renderPongGame(graphics, x, y, width, height, screenState);
+        this.renderPongGame(graphics, x, y, width, height, screenState, isBig);
 
         // Add vignette effect around the edges
         //this.renderVignette(graphics, x, y, width, height);
     }
 
-    initPongGame(screenState, width, height) {
+    initPongGame(screenState, width, height, isBig = false) {
         // Initialize bouncing ball game state
+        const scale = isBig ? 1.5 : 1;
         screenState.pongGame = {
             // Ball properties
             ballX: Math.floor((width - 2) / 2),
             ballY: Math.floor((height - 2) / 2),
-            ballVelX: (Math.random() > 0.5 ? 1 : -1) * (0.3 + Math.random() * 0.4),
-            ballVelY: (Math.random() > 0.5 ? 1 : -1) * (0.2 + Math.random() * 0.3),
-            ballSize: 1,
+            ballVelX: (Math.random() > 0.5 ? 1 : -1) * (0.3 + Math.random() * 0.4) * scale,
+            ballVelY: (Math.random() > 0.5 ? 1 : -1) * (0.2 + Math.random() * 0.3) * scale,
+            ballSize: 1 * scale,
 
             // Game area
             gameWidth: width - 2, // Account for borders
@@ -139,7 +171,7 @@ export class ScreenManager {
         };
     }
 
-    renderPongGame(graphics, x, y, width, height, screenState) {
+    renderPongGame(graphics, x, y, width, height, screenState, isBig = false) {
         const game = screenState.pongGame;
         if (!game) return;
 
@@ -425,15 +457,36 @@ export class ScreenManager {
             this.screen2Graphics.destroy();
             this.screen2Graphics = null;
         }
+        if (this.screen3Graphics) {
+            this.screen3Graphics.destroy();
+            this.screen3Graphics = null;
+        }
+        if (this.screen4Graphics) {
+            this.screen4Graphics.destroy();
+            this.screen4Graphics = null;
+        }
+        if (this.screen5Graphics) {
+            this.screen5Graphics.destroy();
+            this.screen5Graphics = null;
+        }
+        if (this.screen6Graphics) {
+            this.screen6Graphics.destroy();
+            this.screen6Graphics = null;
+        }
 
         // Reset Pong game states
         gameState.screen1.pongGame = null;
         gameState.screen2.pongGame = null;
+        gameState.screen3.pongGame = null;
+        gameState.screen4.pongGame = null;
+        gameState.screen5.pongGame = null;
+        gameState.screen6.pongGame = null;
     }
 
     // Update screen depths based on player position
     updateScreenLayers() {
-        if (!this.screen1Graphics || !this.screen2Graphics) return;
+        if (!this.screen1Graphics || !this.screen2Graphics || !this.screen3Graphics ||
+            !this.screen4Graphics || !this.screen5Graphics || !this.screen6Graphics) return;
 
         // Update screen1 depth
         const screen1Config = SCREENS.screen1;
@@ -468,6 +521,42 @@ export class ScreenManager {
 
             if (this.screen3Graphics.depth !== newDepth) {
                 this.screen3Graphics.setDepth(newDepth);
+            }
+        }
+
+        // Update screen4 depth
+        const screen4Config = SCREENS.screen4;
+        if (screen4Config.layering.type === 'dynamic') {
+            const playerFeetY = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
+            const threshold = screen4Config.layering.threshold;
+            const newDepth = playerFeetY < threshold ? screen4Config.layering.aboveLayer : screen4Config.layering.belowLayer;
+
+            if (this.screen4Graphics.depth !== newDepth) {
+                this.screen4Graphics.setDepth(newDepth);
+            }
+        }
+
+        // Update screen5 depth
+        const screen5Config = SCREENS.screen5;
+        if (screen5Config.layering.type === 'dynamic') {
+            const playerFeetY = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
+            const threshold = screen5Config.layering.threshold;
+            const newDepth = playerFeetY < threshold ? screen5Config.layering.aboveLayer : screen5Config.layering.belowLayer;
+
+            if (this.screen5Graphics.depth !== newDepth) {
+                this.screen5Graphics.setDepth(newDepth);
+            }
+        }
+
+        // Update screen6 depth
+        const screen6Config = SCREENS.screen6;
+        if (screen6Config.layering.type === 'dynamic') {
+            const playerFeetY = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
+            const threshold = screen6Config.layering.threshold;
+            const newDepth = playerFeetY < threshold ? screen6Config.layering.aboveLayer : screen6Config.layering.belowLayer;
+
+            if (this.screen6Graphics.depth !== newDepth) {
+                this.screen6Graphics.setDepth(newDepth);
             }
         }
     }
