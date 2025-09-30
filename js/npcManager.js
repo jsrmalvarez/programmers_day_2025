@@ -44,7 +44,6 @@ export class NPC {
 
             if (this.sprite.depth !== newDepth) {
                 this.sprite.setDepth(newDepth);
-                console.log(`NPC ${this.name}: Player feet Y=${playerFeetY}, Threshold=${threshold}, Depth: ${this.sprite.depth} → ${newDepth}`);
             }
         } else {
             // Static layering fallback

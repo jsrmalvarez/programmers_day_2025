@@ -261,13 +261,11 @@ export class ScreenManager {
 
         // Reset screen state if mode changed
         if (gameState.screen1.mode !== newScreen1Mode) {
-            console.log(`Screen1 mode changed: ${gameState.screen1.mode} → ${newScreen1Mode}`);
             gameState.screen1.mode = newScreen1Mode;
             this.resetScreenForMode(gameState.screen1);
         }
 
         if (gameState.screen2.mode !== newScreen2Mode) {
-            console.log(`Screen2 mode changed: ${gameState.screen2.mode} → ${newScreen2Mode}`);
             gameState.screen2.mode = newScreen2Mode;
             this.resetScreenForMode(gameState.screen2);
         }
@@ -428,7 +426,6 @@ export class ScreenManager {
 
             if (this.screen1Graphics.depth !== newDepth) {
                 this.screen1Graphics.setDepth(newDepth);
-                console.log(`Screen1: Player feet Y=${playerFeetY}, Threshold=${threshold}, Depth: ${this.screen1Graphics.depth} → ${newDepth}`);
             }
         }
 
@@ -441,7 +438,6 @@ export class ScreenManager {
 
             if (this.screen2Graphics.depth !== newDepth) {
                 this.screen2Graphics.setDepth(newDepth);
-                console.log(`Screen2: Player feet Y=${playerFeetY}, Threshold=${threshold}, Depth: ${this.screen2Graphics.depth} → ${newDepth}`);
             }
         }
     }

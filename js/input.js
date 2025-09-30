@@ -271,7 +271,6 @@ export class InputManager {
                 } else {
                     // Hit a wall, stop movement
                     const feet = this.scene.collisionManager.getPlayerFeetPosition(nextX, nextY);
-                    console.log(`Player hit wall at feet position (${feet.x}, ${feet.y}), stopping movement`);
                     gameState.isWalking = false;
 
                     // Clear any pending interaction since we couldn't reach the target
@@ -335,33 +334,22 @@ export class InputManager {
     // Debug toggle methods
     toggleMaskDebug() {
         CONFIG.DEBUG.SHOW_MASK = !CONFIG.DEBUG.SHOW_MASK;
-        console.log(`Debug: Mask visibility ${CONFIG.DEBUG.SHOW_MASK ? 'ON' : 'OFF'}`);
-
         // Refresh the current room to apply the change
         this.scene.roomManager.refreshCurrentRoom();
     }
 
     toggleSpriteDebug() {
         CONFIG.DEBUG.SHOW_SPRITES = !CONFIG.DEBUG.SHOW_SPRITES;
-        console.log(`Debug: Sprite visibility ${CONFIG.DEBUG.SHOW_SPRITES ? 'ON' : 'OFF'}`);
-
         // Update sprite visibility
         this.scene.roomSpriteManager.updateSpriteVisibility();
     }
 
     toggleCollisionDebug() {
         CONFIG.DEBUG.SHOW_COLLISION_POINTS = !CONFIG.DEBUG.SHOW_COLLISION_POINTS;
-        console.log(`Debug: Collision point logging ${CONFIG.DEBUG.SHOW_COLLISION_POINTS ? 'ON' : 'OFF'}`);
-
-        if (CONFIG.DEBUG.SHOW_COLLISION_POINTS) {
-            console.log('Now showing detailed collision point information when player hits walls');
-        }
     }
 
     toggleHotspotDebug() {
         CONFIG.DEBUG.SHOW_HOTSPOTS = !CONFIG.DEBUG.SHOW_HOTSPOTS;
-        console.log(`Debug: Hotspot visibility ${CONFIG.DEBUG.SHOW_HOTSPOTS ? 'ON' : 'OFF'}`);
-
         // Trigger a redraw to show/hide hotspot rectangles
         this.scene.roomManager.refreshCurrentRoom();
     }

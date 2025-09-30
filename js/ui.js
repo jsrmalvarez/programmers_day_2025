@@ -214,15 +214,9 @@ export class UIManager {
                 slot.item = item;
                 // Center the item sprite in the smaller slot
                 slot.sprite = this.scene.add.sprite(slot.x + slot.width/2, slot.y + slot.height/2, item.sprite);
-                slot.sprite.setDepth(103);
+                slot.sprite.setDepth(100); // Below toggle button (depth 102)
                 slot.sprite.setVisible(this.inventoryVisible);
                 addToInventory(item);
-
-                // Ensure toggle button stays visible after adding item
-                if (this.toggleButton) {
-                    this.toggleButton.setVisible(true);
-                    this.updateToggleButton();
-                }
                 break;
             }
         }

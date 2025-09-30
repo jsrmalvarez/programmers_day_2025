@@ -102,7 +102,6 @@ export class RoomSpriteManager {
         // Only update and log if depth actually changes
         if (currentDepth !== newDepth) {
             sprite.setDepth(newDepth);
-            console.log(`Dynamic layering: Player feet Y=${playerFeetY}, Threshold=${threshold}, Sprite '${spriteId}' depth: ${currentDepth} → ${newDepth}`);
         }
     }
 
@@ -168,12 +167,6 @@ export class RoomSpriteManager {
     updateSpriteVisibility() {
         for (const sprite of this.sprites.values()) {
             sprite.setVisible(CONFIG.DEBUG.SHOW_SPRITES);
-        }
-
-        if (CONFIG.DEBUG.SHOW_SPRITES) {
-            console.log(`Debug: Showing ${this.sprites.size} room sprites`);
-        } else {
-            console.log(`Debug: Hiding ${this.sprites.size} room sprites`);
         }
     }
 }

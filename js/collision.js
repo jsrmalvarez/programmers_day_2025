@@ -14,13 +14,11 @@ export class CollisionManager {
     }
 
     loadMask(maskKey) {
-        console.log(`Loading collision mask: ${maskKey}`);
 
         // Get the mask texture from Phaser
         const maskTexture = this.scene.textures.get(maskKey);
         if (!maskTexture) {
             console.warn(`Collision mask texture '${maskKey}' not found in Phaser textures`);
-            console.log('Available textures:', Object.keys(this.scene.textures.list));
             return false;
         }
 
@@ -48,8 +46,6 @@ export class CollisionManager {
         this.maskWidth = source.width;
         this.maskHeight = source.height;
 
-        console.log(`Mask dimensions: ${this.maskWidth}x${this.maskHeight}`);
-
         try {
             // Draw the mask image to canvas
             ctx.drawImage(source.image, 0, 0);
@@ -58,14 +54,6 @@ export class CollisionManager {
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             this.maskData = imageData.data;
 
-            console.log(`Mask loaded successfully. Data length: ${this.maskData.length}`);
-
-            // Test a few pixels for debugging
-            console.log(`Sample pixels:`, {
-                topLeft: this.isWalkable(0, 0),
-                center: this.isWalkable(Math.floor(this.maskWidth/2), Math.floor(this.maskHeight/2)),
-                bottomRight: this.isWalkable(this.maskWidth-1, this.maskHeight-1)
-            });
 
             return true;
         } catch (error) {
@@ -95,11 +83,6 @@ export class CollisionManager {
         const alpha = this.maskData[index + 3];
 
         const isWalkable = red > 128; // Threshold for walkable (white-ish pixels)
-
-        // Debug logging for important collision checks (reduce spam)
-        if (Math.abs(x - clampedX) < 1 && Math.abs(y - clampedY) < 1 && !isWalkable) {
-            console.log(`BLOCKED at (${x}, ${y}): RGBA(${red}, ${green}, ${blue}, ${alpha})`);
-        }
 
         return isWalkable;
     }
@@ -195,7 +178,6 @@ export class CollisionManager {
                 // Optional debug logging for collision failures
                 if (CONFIG.DEBUG && CONFIG.DEBUG.SHOW_COLLISION_POINTS) {
                     const pointNames = ['left edge', 'left quarter', 'center', 'right quarter', 'right edge'];
-                    console.log(`Collision: Player ${pointNames[i]} at (${roundedX}, ${roundedY}) is blocked`);
                 }
                 return false;
             }

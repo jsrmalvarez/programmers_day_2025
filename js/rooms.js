@@ -269,13 +269,11 @@ export class RoomManager {
                 this.backgroundSprite = this.scene.add.sprite(0, 0, roomConfig.background.mask);
                 this.backgroundSprite.setOrigin(0, 0);
                 this.backgroundSprite.setDepth(0);
-                console.log(`Debug: Showing collision mask for ${currentRoom}`);
             } else {
                 // Show normal background
                 this.backgroundSprite = this.scene.add.sprite(0, 0, roomConfig.background.image);
                 this.backgroundSprite.setOrigin(0, 0);
                 this.backgroundSprite.setDepth(0);
-                console.log(`Debug: Showing background image for ${currentRoom}`);
             }
         }
 
