@@ -76,18 +76,18 @@ export class SpriteManager {
         // Create Sarah (red shirt)
         graphics.clear();
         this.drawNPCTexture(graphics, 0xe74c3c); // Red
-        graphics.generateTexture('npc_sarah', 16, 24);
+        graphics.generateTexture('npc_sarah', 16, 36);
 
         // Create Mike (green shirt)
         graphics.clear();
         this.drawNPCTexture(graphics, 0x2ecc71); // Green
-        graphics.generateTexture('npc_mike', 16, 24);
+        graphics.generateTexture('npc_mike', 16, 36);
 
         graphics.destroy();
     }
 
     drawNPCTexture(graphics, shirtColor) {
-        // Body (centered in 16x24 texture)
+
         graphics.fillStyle(shirtColor);
         graphics.fillRect(2, 8, 12, 16);
 
@@ -99,6 +99,15 @@ export class SpriteManager {
         graphics.fillStyle(shirtColor);
         graphics.fillRect(0, 12, 4, 8); // Left arm
         graphics.fillRect(12, 12, 4, 8); // Right arm
+
+        // Legs
+        graphics.fillStyle(0x023252);
+        graphics.fillRect(2, 24, 5, 12); // Left leg
+        graphics.fillRect(9, 24, 5, 12); // Right leg
+
+        // Chair
+        graphics.fillStyle(0x5a5a5a);
+        graphics.fillRect(1, 14, 14, 14);
     }
 
     createNPCSpritesInScene() {

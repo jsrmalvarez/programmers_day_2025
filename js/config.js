@@ -98,7 +98,7 @@ export const GAME_GIFS = [
 export const NPCS = {
     sarah: {
         name: 'Sarah',
-        position: { x: 55, y: 106 },
+        position: { x: 55, y: 112 },
         shirtColor: 0xe74c3c, // Red
         dialogs: {
             beforeDoorUnlocked: [
@@ -109,7 +109,7 @@ export const NPCS = {
                 "Don't mess with anything in the storage room."
             ]
         },
-        hotspot: { x: 45, y: 96, width: 20, height: 30 },
+        hotspot: { x: 45, y: 96, width: 20, height: 35 },
         // Dynamic layering based on player position
         layering: {
             type: 'dynamic',
@@ -120,7 +120,7 @@ export const NPCS = {
     },
     mike: {
         name: 'Mike',
-        position: { x: 105, y: 106 },
+        position: { x: 105, y: 112 },
         shirtColor: 0x2ecc71, // Green
         dialogs: {
             beforeDoorUnlocked: [
@@ -131,7 +131,7 @@ export const NPCS = {
                 "Congratulations! You've unlocked the door."
             ]
         },
-        hotspot: { x: 95, y: 96, width: 20, height: 30 },
+        hotspot: { x: 95, y: 96, width: 20, height: 35 },
         // Dynamic layering based on player position
         layering: {
             type: 'dynamic',
