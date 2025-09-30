@@ -285,6 +285,34 @@ export class ScreenManager {
     }
 
 
+    // Helper function to determine screen mode based on player position and orientation
+    getScreenMode(screenConfig) {
+        const playerFeetY = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
+        const playerLeftX = gameState.playerX - CONFIG.PLAYER.WIDTH / 2;
+        const playerRightX = gameState.playerX + CONFIG.PLAYER.WIDTH / 2;
+        const screenLeftX = screenConfig.position.x;
+        const screenRightX = screenConfig.position.x + screenConfig.position.width;
+
+        // Check if player is behind screen (Y-based)
+        const isBehindScreen = playerFeetY <= screenConfig.layering.threshold;
+
+        // Check if player is looking away from screen (X-based)
+        const isLookingAway = (
+            // Player is to the left of screen and looking left
+            (playerRightX < screenLeftX && gameState.playerOrientation === 'left') ||
+            // Player is to the right of screen and looking right
+            (playerLeftX > screenRightX && gameState.playerOrientation === 'right')
+        );
+        /*console.log(screenConfig);
+        if(screenConfig.position.x === 55) {
+        console.log(gameState.playerOrientation);
+        console.log('islookingaway', isLookingAway);
+        }*/
+
+        // Switch to video mode if player is behind screen OR looking away
+        return (isBehindScreen || isLookingAway) ? 'video' : 'typing';
+    }
+
     updateScreenAnimations() {
         // Only update screens if we're in room1 and screens exist
         if (gameState.currentRoom !== 'room1' || !this.screen1Graphics || !this.screen2Graphics ||
@@ -292,16 +320,16 @@ export class ScreenManager {
             return;
         }
 
-        // Update screen modes based on player position relative to layering thresholds
-        // When player is "behind" screen: video mode
-        // When player is "in front" of screen: typing mode
+        // Update screen modes based on player position and orientation
+        // Video mode when: player is behind screen OR looking away from screen
+        // Typing mode when: player is in front of screen AND looking at screen
 
-        const newScreen1Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREENS.screen1.layering.threshold ? 'typing' : 'video';
-        const newScreen2Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREENS.screen2.layering.threshold ? 'typing' : 'video';
-        const newScreen3Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREENS.screen3.layering.threshold ? 'typing' : 'video';
-        const newScreen4Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREENS.screen4.layering.threshold ? 'typing' : 'video';
-        const newScreen5Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREENS.screen5.layering.threshold ? 'typing' : 'video';
-        const newScreen6Mode = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET > SCREENS.screen6.layering.threshold ? 'typing' : 'video';
+        const newScreen1Mode = this.getScreenMode(SCREENS.screen1);
+        const newScreen2Mode = this.getScreenMode(SCREENS.screen2);
+        const newScreen3Mode = this.getScreenMode(SCREENS.screen3);
+        const newScreen4Mode = this.getScreenMode(SCREENS.screen4);
+        const newScreen5Mode = this.getScreenMode(SCREENS.screen5);
+        const newScreen6Mode = this.getScreenMode(SCREENS.screen6);
 
         // Reset screen state if mode changed
         if (gameState.screen1.mode !== newScreen1Mode) {
