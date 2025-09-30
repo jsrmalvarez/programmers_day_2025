@@ -18,6 +18,7 @@ export let gameState = {
     isWalking: false,
     walkFrame: 0,
     walkTimer: 0,
+    playerOrientation: 'front', // 'front', 'back', 'left', 'right'
     // Screen animation states (independent)
     screen1: {
         timer: 0,

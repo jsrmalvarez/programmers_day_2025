@@ -318,18 +318,40 @@ export class InputManager {
             return;
         }
 
+        // Determine orientation based on movement direction
+        this.updatePlayerOrientation();
+
         if (gameState.isWalking) {
             gameState.walkTimer++;
             if (gameState.walkTimer >= 15) { // Change frame every 0.25 seconds at 60fps
                 gameState.walkTimer = 0;
                 gameState.walkFrame = (gameState.walkFrame + 1) % 2;
 
-                // Update sprite texture
-                this.scene.playerSprite.setTexture(gameState.walkFrame === 0 ? 'player_walk1' : 'player_walk2');
+                // Update sprite texture based on orientation
+                const walkTexture = gameState.walkFrame === 0 ?
+                    `player_${gameState.playerOrientation}_walk1` :
+                    `player_${gameState.playerOrientation}_walk2`;
+                this.scene.playerSprite.setTexture(walkTexture);
             }
         } else {
             // Use idle texture when not walking
-            this.scene.playerSprite.setTexture('player_idle');
+            this.scene.playerSprite.setTexture(`player_${gameState.playerOrientation}_idle`);
+        }
+    }
+
+    updatePlayerOrientation() {
+        if (!gameState.isWalking) return; // Don't change orientation when not moving
+
+        const deltaX = gameState.targetX - gameState.playerX;
+        const deltaY = gameState.targetY - gameState.playerY;
+
+        // Determine orientation based on movement direction
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            // Horizontal movement is dominant
+            gameState.playerOrientation = deltaX > 0 ? 'right' : 'left';
+        } else {
+            // Vertical movement is dominant
+            gameState.playerOrientation = deltaY > 0 ? 'front' : 'back';
         }
     }
 

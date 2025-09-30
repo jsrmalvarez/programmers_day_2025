@@ -3,6 +3,8 @@
  * Handles all sprite generation and texture creation
  */
 
+import { CONFIG } from './config.js';
+
 export class SpriteManager {
     constructor(scene) {
         this.scene = scene;
@@ -22,54 +24,253 @@ export class SpriteManager {
     createPlayerSprites() {
         const graphics = this.scene.add.graphics();
 
-        // Player idle frame - based on big NPC design but standing (taller)
-        this.drawPlayerTexture(graphics, 0x4a90e2, false); // Blue shirt, idle
-        graphics.generateTexture('player_idle', 24, 54); // Same size as big NPC
+        // FRONT ORIENTATION (towards player)
+        // Front idle
+        this.drawPlayerTexture(graphics, 0x4a90e2, false, 'front');
+        graphics.generateTexture('player_front_idle', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
         graphics.clear();
 
-        // Player walk frame 1 - left foot forward
-        this.drawPlayerTexture(graphics, 0x4a90e2, true, 'left'); // Blue shirt, walking left
-        graphics.generateTexture('player_walk1', 24, 54);
+        // Front walk frame 1 - left foot forward
+        this.drawPlayerTexture(graphics, 0x4a90e2, true, 'front', 0);
+        graphics.generateTexture('player_front_walk1', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
         graphics.clear();
 
-        // Player walk frame 2 - right foot forward
-        this.drawPlayerTexture(graphics, 0x4a90e2, true, 'right'); // Blue shirt, walking right
-        graphics.generateTexture('player_walk2', 24, 54);
+        // Front walk frame 2 - right foot forward
+        this.drawPlayerTexture(graphics, 0x4a90e2, true, 'front', 1);
+        graphics.generateTexture('player_front_walk2', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.clear();
+
+        // BACK ORIENTATION (away from player)
+        // Back idle
+        this.drawPlayerTexture(graphics, 0x4a90e2, false, 'back');
+        graphics.generateTexture('player_back_idle', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.clear();
+
+        // Back walk frame 1 - left foot forward
+        this.drawPlayerTexture(graphics, 0x4a90e2, true, 'back', 0);
+        graphics.generateTexture('player_back_walk1', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.clear();
+
+        // Back walk frame 2 - right foot forward
+        this.drawPlayerTexture(graphics, 0x4a90e2, true, 'back', 1);
+        graphics.generateTexture('player_back_walk2', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.clear();
+
+        // LEFT ORIENTATION (side view)
+        // Left idle
+        this.drawPlayerTexture(graphics, 0x4a90e2, false, 'left');
+        graphics.generateTexture('player_left_idle', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.clear();
+
+        // Left walk frame 1
+        this.drawPlayerTexture(graphics, 0x4a90e2, true, 'left', 0);
+        graphics.generateTexture('player_left_walk1', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.clear();
+
+        // Left walk frame 2
+        this.drawPlayerTexture(graphics, 0x4a90e2, true, 'left', 1);
+        graphics.generateTexture('player_left_walk2', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.clear();
+
+        // RIGHT ORIENTATION (side view, mirrored)
+        // Right idle
+        this.drawPlayerTexture(graphics, 0x4a90e2, false, 'right');
+        graphics.generateTexture('player_right_idle', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.clear();
+
+        // Right walk frame 1
+        this.drawPlayerTexture(graphics, 0x4a90e2, true, 'right', 0);
+        graphics.generateTexture('player_right_walk1', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.clear();
+
+        // Right walk frame 2
+        this.drawPlayerTexture(graphics, 0x4a90e2, true, 'right', 1);
+        graphics.generateTexture('player_right_walk2', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
         graphics.clear();
 
         graphics.destroy();
     }
 
-    drawPlayerTexture(graphics, shirtColor, isWalking = false, walkDirection = 'left') {
-        // Head (same as big NPC)
+    drawPlayerTexture(graphics, shirtColor, isWalking = false, orientation = 'front', walkFrame = 0) {
+        if (orientation === 'front') {
+            this.drawFrontOrientation(graphics, shirtColor, isWalking, walkFrame);
+        } else if (orientation === 'back') {
+            this.drawBackOrientation(graphics, shirtColor, isWalking, walkFrame);
+        } else if (orientation === 'left') {
+            this.drawLeftOrientation(graphics, shirtColor, isWalking, walkFrame);
+        } else if (orientation === 'right') {
+            this.drawRightOrientation(graphics, shirtColor, isWalking, walkFrame);
+        }
+    }
+
+    drawFrontOrientation(graphics, shirtColor, isWalking, walkFrame) {
+        // Head with nose (front view)
         graphics.fillStyle(0xf5a623);
         graphics.fillRect(6, 0, 12, 12);
 
-        // Body (taller than NPC since standing)
+        // Minimalistic nose
+        graphics.fillStyle(0xf5b643);
+        graphics.fillRect(11, 5, 1, 3);
+        graphics.fillStyle(0xc59613);
+        graphics.fillRect(11, 8, 2, 1);
+
+
+        // Waist
+        graphics.fillStyle(0x023252);
+        graphics.fillRect(3, 36, 18, 6);
+
+        // Legs (longer than NPC since standing)
+        graphics.fillStyle(0x023252);
+        if (isWalking) {
+            if (walkFrame === 0) {
+                graphics.fillRect(3, 36, 7, 28);
+                graphics.fillRect(14, 36, 7, 22);
+            } else {
+                graphics.fillRect(3, 36, 7, 22);
+                graphics.fillRect(14, 36, 7, 28);
+            }
+        } else {
+            // Both legs straight (idle)
+            graphics.fillRect(3, 36, 7, 28);
+            graphics.fillRect(14, 36, 7, 28);
+        }
+
+        // Body
         graphics.fillStyle(shirtColor);
-        graphics.fillRect(3, 12, 18, 30); // 30 pixels tall instead of 24
+        graphics.fillRect(3, 12, 18, 24);
+
+
+        // Collar
+        graphics.fillStyle(0xAAAAAA);
+        graphics.fillRect(8, 12, 8, 4);
+
+        // Buttons
+        graphics.fillStyle(0xAAAAAA);
+        graphics.fillRect(11, 20, 2, 2);
+        graphics.fillRect(11, 28, 2, 2);
+
 
         // Arms (same as big NPC)
         graphics.fillStyle(shirtColor);
         graphics.fillRect(0, 18, 6, 12);
         graphics.fillRect(18, 18, 6, 12);
 
+
+        // Hands
+        graphics.fillStyle(0xf5a623);
+        graphics.fillRect(0, 30, 6, 4);
+        graphics.fillRect(18, 30, 6, 4);
+    }
+
+    drawBackOrientation(graphics, shirtColor, isWalking, walkFrame) {
+        // Head with nose (front view)
+        graphics.fillStyle(0xf5a623);
+        graphics.fillRect(6, 0, 12, 12);
+
+        // Waist
+        graphics.fillStyle(0x023252);
+        graphics.fillRect(3, 36, 18, 6);
+
         // Legs (longer than NPC since standing)
         graphics.fillStyle(0x023252);
         if (isWalking) {
-            if (walkDirection === 'left') {
-                // Left foot forward, right foot back
-                graphics.fillRect(3, 42, 7, 12); // Left leg
-                graphics.fillRect(14, 42, 7, 9); // Right leg (shorter, back)
+            if (walkFrame === 0) {
+                graphics.fillRect(3, 36, 7, 28);
+                graphics.fillRect(14, 36, 7, 22);
             } else {
-                // Right foot forward, left foot back
-                graphics.fillRect(3, 42, 7, 9); // Left leg (shorter, back)
-                graphics.fillRect(14, 42, 7, 12); // Right leg
+                graphics.fillRect(3, 36, 7, 22);
+                graphics.fillRect(14, 36, 7, 28);
             }
         } else {
             // Both legs straight (idle)
-            graphics.fillRect(3, 42, 7, 12);
-            graphics.fillRect(14, 42, 7, 12);
+            graphics.fillRect(3, 36, 7, 28);
+            graphics.fillRect(14, 36, 7, 28);
+        }
+
+        // Body
+        graphics.fillStyle(shirtColor);
+        graphics.fillRect(3, 12, 18, 24);
+
+        // Arms (same as big NPC)
+        graphics.fillStyle(shirtColor);
+        graphics.fillRect(0, 18, 6, 12);
+        graphics.fillRect(18, 18, 6, 12);
+
+
+        // Hands
+        graphics.fillStyle(0xf5a623);
+        graphics.fillRect(0, 30, 6, 4);
+        graphics.fillRect(18, 30, 6, 4);
+    }
+
+    drawLeftOrientation(graphics, shirtColor, isWalking, walkFrame) {
+        // Head (no nose, side view)
+        graphics.fillStyle(0xf5a623);
+        graphics.fillRect(6, 0, 12, 12);
+
+        // Nose
+        graphics.fillStyle(0xf5b643);
+        graphics.fillRect(5, 5, 1, 3);
+        graphics.fillRect(4, 6, 2, 3);
+
+
+        // Body (taller than NPC since standing)
+        graphics.fillStyle(shirtColor);
+        graphics.fillRect(5, 12, 14, 24);
+
+        // Arms (same as big NPC)
+        graphics.fillStyle(shirtColor);
+        graphics.fillRect(9, 18, 6, 12);
+        graphics.fillStyle(0xf5a623);
+        graphics.fillRect(9, 30, 6, 4);
+
+        // Legs (side view - only one leg visible when idle, simple animation when walking)
+        graphics.fillStyle(0x023252);
+        if (isWalking) {
+            // Simple leg animation - alternating visibility
+            if (walkFrame === 0) {
+                graphics.fillStyle(0x022242);
+                graphics.fillRect(9, 36, 8, 22);
+                graphics.fillStyle(0x023252);
+                graphics.fillRect(6, 36, 8, 28);
+            } else {
+                graphics.fillStyle(0x022242);
+                graphics.fillRect(6, 36, 8, 22);
+                graphics.fillStyle(0x023252);
+                graphics.fillRect(9, 36, 8, 28);
+            }
+        } else {
+            // Idle - only one leg visible
+            graphics.fillRect(8, 36, 8, 28);
+        }
+    }
+
+    drawRightOrientation(graphics, shirtColor, isWalking, walkFrame) {
+        // Head (no nose, side view)
+        graphics.fillStyle(0xf5a623);
+        graphics.fillRect(6, 0, 12, 12);
+
+        // Body (taller than NPC since standing)
+        graphics.fillStyle(shirtColor);
+        graphics.fillRect(3, 12, 18, 30);
+
+        // Arms (same as big NPC)
+        graphics.fillStyle(shirtColor);
+        graphics.fillRect(0, 18, 6, 12);
+        graphics.fillRect(18, 18, 6, 12);
+
+        // Legs (side view - only one leg visible when idle, simple animation when walking)
+        graphics.fillStyle(0x023252);
+        if (isWalking) {
+            // Simple leg animation - alternating visibility
+            if (walkFrame === 0) {
+                graphics.fillRect(8, 45, 8, 9); // Single leg back
+            } else {
+                graphics.fillRect(8, 42, 8, 12); // Single leg forward
+            }
+        } else {
+            // Idle - only one leg visible
+            graphics.fillRect(8, 42, 8, 12);
         }
     }
 

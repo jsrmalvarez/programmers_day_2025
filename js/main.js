@@ -163,7 +163,7 @@ export class GameScene extends Phaser.Scene {
         }
 
         // Create player sprite (visible, with proper depth layering)
-        this.playerSprite = this.add.sprite(gameState.playerX, gameState.playerY, 'player_idle');
+        this.playerSprite = this.add.sprite(gameState.playerX, gameState.playerY, 'player_front_idle');
         this.playerSprite.setDepth(20); // Layer 20 - between room sprites
         this.playerSprite.setVisible(true);
     }
