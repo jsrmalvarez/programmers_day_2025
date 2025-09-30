@@ -43,6 +43,10 @@ export class InputManager {
             this.toggleCollisionDebug();
         });
 
+        this.scene.input.keyboard.on('keydown-H', () => {
+            this.toggleHotspotDebug();
+        });
+
         // Get tooltip element from DOM
         this.tooltip = document.getElementById('tooltip');
     }
@@ -318,5 +322,13 @@ export class InputManager {
         if (CONFIG.DEBUG.SHOW_COLLISION_POINTS) {
             console.log('Now showing detailed collision point information when player hits walls');
         }
+    }
+
+    toggleHotspotDebug() {
+        CONFIG.DEBUG.SHOW_HOTSPOTS = !CONFIG.DEBUG.SHOW_HOTSPOTS;
+        console.log(`Debug: Hotspot visibility ${CONFIG.DEBUG.SHOW_HOTSPOTS ? 'ON' : 'OFF'}`);
+
+        // Trigger a redraw to show/hide hotspot rectangles
+        this.scene.roomManager.refreshCurrentRoom();
     }
 }

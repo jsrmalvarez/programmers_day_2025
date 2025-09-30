@@ -4,6 +4,7 @@
  */
 
 import { CONFIG, ROOMS } from './config.js';
+import { gameState } from './gameState.js';
 
 export class RoomManager {
     constructor(scene) {
@@ -185,6 +186,9 @@ export class RoomManager {
             this.scene.collisionManager.loadMask(roomConfig.background.mask);
         }
 
+        // Initialize hotspot debug rendering
+        this.renderHotspotDebug();
+
         // Create room sprites with layers
         this.scene.roomSpriteManager.createSpritesForRoom(roomConfig);
 
@@ -272,6 +276,38 @@ export class RoomManager {
                 this.backgroundSprite.setOrigin(0, 0);
                 this.backgroundSprite.setDepth(0);
                 console.log(`Debug: Showing background image for ${currentRoom}`);
+            }
+        }
+
+        // Update hotspot debug rendering
+        this.updateHotspotDebug();
+    }
+
+    renderHotspotDebug() {
+        // Create graphics object for hotspot debug rectangles
+        if (!this.hotspotDebugGraphics) {
+            this.hotspotDebugGraphics = this.scene.add.graphics();
+            this.hotspotDebugGraphics.setDepth(100); // High depth to show on top
+        }
+
+        this.updateHotspotDebug();
+    }
+
+    updateHotspotDebug() {
+        if (!this.hotspotDebugGraphics) return;
+
+        // Clear previous hotspot rectangles
+        this.hotspotDebugGraphics.clear();
+
+        if (CONFIG.DEBUG.SHOW_HOTSPOTS) {
+            // Draw red rectangles for all hotspots in current room
+            this.hotspotDebugGraphics.lineStyle(1, 0xff0000); // Red outline
+            this.hotspotDebugGraphics.fillStyle(0xff0000, 0.2); // Semi-transparent red fill
+
+            const room = this.scene.rooms[gameState.currentRoom];
+            for (const hotspot of room.hotspots) {
+                this.hotspotDebugGraphics.fillRect(hotspot.x, hotspot.y, hotspot.width, hotspot.height);
+                this.hotspotDebugGraphics.strokeRect(hotspot.x, hotspot.y, hotspot.width, hotspot.height);
             }
         }
     }
