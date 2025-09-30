@@ -78,38 +78,74 @@ export class SpriteManager {
         graphics.generateTexture('npc_alice', 16, 36);
 
         graphics.clear();
-        this.drawNPCTexture(graphics, 0x2ecc71);
+        this.drawNPCTexture(graphics, 0x3ce74c);
         graphics.generateTexture('npc_bob', 16, 36);
 
         graphics.clear();
-        this.drawNPCTexture(graphics, 0x2e71cc);
+        this.drawNPCTexture(graphics, 0x4c3ce7);
         graphics.generateTexture('npc_charlie', 16, 36);
+
+        graphics.clear();
+        this.drawNPCTexture(graphics, 0xee712e, true);
+        graphics.generateTexture('npc_david', 24, 54);
+
+        graphics.clear();
+        this.drawNPCTexture(graphics, 0x2ecc71, true);
+        graphics.generateTexture('npc_eve', 24, 54);
+
+        graphics.clear();
+        this.drawNPCTexture(graphics, 0x2e71cc, true);
+        graphics.generateTexture('npc_frank', 24, 54);
 
         graphics.destroy();
     }
 
-    drawNPCTexture(graphics, shirtColor) {
+    drawNPCTexture(graphics, shirtColor, big = false) {
 
-        graphics.fillStyle(shirtColor);
-        graphics.fillRect(2, 8, 12, 16);
+        if(big == false) {
+            graphics.fillStyle(shirtColor);
+            graphics.fillRect(2, 8, 12, 16);
 
-        // Head
-        graphics.fillStyle(0xf5a623);
-        graphics.fillRect(4, 0, 8, 8);
+            // Head
+            graphics.fillStyle(0xf5a623);
+            graphics.fillRect(4, 0, 8, 8);
 
-        // Arms
-        graphics.fillStyle(shirtColor);
-        graphics.fillRect(0, 12, 4, 8); // Left arm
-        graphics.fillRect(12, 12, 4, 8); // Right arm
+            // Arms
+            graphics.fillStyle(shirtColor);
+            graphics.fillRect(0, 12, 4, 8); // Left arm
+            graphics.fillRect(12, 12, 4, 8); // Right arm
 
-        // Legs
-        graphics.fillStyle(0x023252);
-        graphics.fillRect(2, 24, 5, 12); // Left leg
-        graphics.fillRect(9, 24, 5, 12); // Right leg
+            // Legs
+            graphics.fillStyle(0x023252);
+            graphics.fillRect(2, 24, 5, 12); // Left leg
+            graphics.fillRect(9, 24, 5, 12); // Right leg
 
-        // Chair
-        graphics.fillStyle(0x5a5a5a);
-        graphics.fillRect(1, 14, 14, 14);
+            // Chair
+            graphics.fillStyle(0x5a5a5a);
+            graphics.fillRect(1, 14, 14, 14);
+        }
+        else {
+            graphics.fillStyle(shirtColor);
+            graphics.fillRect(3, 12, 18, 24);
+
+            // Head
+            graphics.fillStyle(0xf5a623);
+            graphics.fillRect(6, 0, 12, 12);
+
+            // Arms
+            graphics.fillStyle(shirtColor);
+            graphics.fillRect(0, 18, 6, 12);
+            graphics.fillRect(18, 18, 6, 12);
+
+            // Legs
+            graphics.fillStyle(0x023252);
+            graphics.fillRect(3, 36, 7, 18);
+            graphics.fillRect(14, 36, 7, 18);
+
+            // Chair
+            graphics.fillStyle(0x5a5a5a);
+            graphics.fillRect(2, 21, 20, 21);
+        }
     }
 
     createNPCSpritesInScene() {
@@ -125,6 +161,18 @@ export class SpriteManager {
         this.scene.mikeSprite.setVisible(true);
 
         this.scene.mikeSprite = this.scene.add.sprite(120, 99, 'npc_charlie');
+        this.scene.mikeSprite.setDepth(15); // Below player (depth 20)
+        this.scene.mikeSprite.setVisible(true);
+
+        this.scene.mikeSprite = this.scene.add.sprite(120, 99, 'npc_david');
+        this.scene.mikeSprite.setDepth(15); // Below player (depth 20)
+        this.scene.mikeSprite.setVisible(true);
+
+        this.scene.mikeSprite = this.scene.add.sprite(120, 99, 'npc_eve');
+        this.scene.mikeSprite.setDepth(15); // Below player (depth 20)
+        this.scene.mikeSprite.setVisible(true);
+
+        this.scene.mikeSprite = this.scene.add.sprite(120, 99, 'npc_frank');
         this.scene.mikeSprite.setDepth(15); // Below player (depth 20)
         this.scene.mikeSprite.setVisible(true);
     }

@@ -101,8 +101,70 @@ export const GAME_GIFS = [
 export const NPCS = {
     alice: {
         name: 'Alice',
-        position: { x: 60, y: 112 },
-        shirtColor: 0xe74c3c, // Red
+        position: { x: 60, y: 110 },
+        dialogs: {
+            beforeDoorUnlocked: [
+                "The boss lost a key... maybe it's in a drawer.",
+                "Seriously, check the drawer near the door."
+            ],
+            afterDoorUnlocked: [
+                "Don't mess with anything in the storage room."
+            ]
+        },
+        hotspot: { x: 50, y: 89, width: 20, height: 40 },
+        // Dynamic layering based on player position
+        layering: {
+            type: 'dynamic',
+            threshold: 127, // Y position threshold (NPC feet position)
+            aboveLayer: 27, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 12  // Layer when player Y > threshold (NPC behind)
+        }
+    },
+    bob: {
+        name: 'Bob',
+        position: { x: 112, y: 110 },
+        dialogs: {
+            beforeDoorUnlocked: [
+                "Doors don't open by wishing. Find the key.",
+                "Try the drawer at the desk."
+            ],
+            afterDoorUnlocked: [
+                "Congratulations! You've unlocked the door."
+            ]
+        },
+        hotspot: { x: 102, y: 89, width: 20, height: 40 },
+        // Dynamic layering based on player position
+        layering: {
+            type: 'dynamic',
+            threshold: 127, // Y position threshold (NPC feet position)
+            aboveLayer: 27, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 12  // Layer when player Y > threshold (NPC behind)
+        }
+    },
+    charlie: {
+        name: 'Charlie',
+        position: { x: 172, y: 110 },
+        dialogs: {
+            beforeDoorUnlocked: [
+                "Door? I'm not sure what you're talking about.",
+                "Key? I don't have one."
+            ],
+            afterDoorUnlocked: [
+                "I'm not sure what you're talking about."
+            ]
+        },
+        hotspot: { x: 162, y: 89, width: 20, height: 40 },
+        // Dynamic layering based on player position
+        layering: {
+            type: 'dynamic',
+            threshold: 127, // Y position threshold (NPC feet position)
+            aboveLayer: 27, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 12  // Layer when player Y > threshold (NPC behind)
+        }
+    },
+    david: {
+        name: 'David',
+        position: { x: 52, y: 155 },
         dialogs: {
             beforeDoorUnlocked: [
                 "The boss lost a key... maybe it's in a drawer.",
@@ -116,15 +178,14 @@ export const NPCS = {
         // Dynamic layering based on player position
         layering: {
             type: 'dynamic',
-            threshold: 127, // Y position threshold (NPC feet position)
+            threshold: 181, // Y position threshold (NPC feet position)
             aboveLayer: 27, // Layer when player Y < threshold (NPC in front)
             belowLayer: 12  // Layer when player Y > threshold (NPC behind)
         }
     },
-    bob: {
-        name: 'Bob',
-        position: { x: 112, y: 112 },
-        shirtColor: 0x2ecc71, // Green
+    eve: {
+        name: 'Eve',
+        position: { x: 110, y: 155 },
         dialogs: {
             beforeDoorUnlocked: [
                 "Doors don't open by wishing. Find the key.",
@@ -138,15 +199,14 @@ export const NPCS = {
         // Dynamic layering based on player position
         layering: {
             type: 'dynamic',
-            threshold: 127, // Y position threshold (NPC feet position)
+            threshold: 181, // Y position threshold (NPC feet position)
             aboveLayer: 27, // Layer when player Y < threshold (NPC in front)
             belowLayer: 12  // Layer when player Y > threshold (NPC behind)
         }
     },
-    charlie: {
-        name: 'Charlie',
-        position: { x: 172, y: 112 },
-        shirtColor: 0x2e71cc, // Blue
+    frank: {
+        name: 'Frank',
+        position: { x: 175, y: 155 },
         dialogs: {
             beforeDoorUnlocked: [
                 "Door? I'm not sure what you're talking about.",
@@ -160,7 +220,7 @@ export const NPCS = {
         // Dynamic layering based on player position
         layering: {
             type: 'dynamic',
-            threshold: 127, // Y position threshold (NPC feet position)
+            threshold: 181, // Y position threshold (NPC feet position)
             aboveLayer: 27, // Layer when player Y < threshold (NPC in front)
             belowLayer: 12  // Layer when player Y > threshold (NPC behind)
         }
@@ -199,7 +259,7 @@ export const ROOMS = {
                      type: 'dynamic',
                      threshold: 181, // Y position threshold
                      aboveLayer: 25, // Layer when player Y < threshold
-                     belowLayer: 15  // Layer when player Y > threshold
+                     belowLayer: 10  // Layer when player Y > threshold
                  }
              },
 
