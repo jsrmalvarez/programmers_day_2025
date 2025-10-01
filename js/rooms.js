@@ -21,7 +21,7 @@ export class RoomManager {
                 hotspots: [
                     {
                         name: 'Door',
-                        x: 280, y: 80, width: 30, height: 60,
+                        x: 79, y: 26, width: 40, height: 65,
                         action: this.scene.interactDoor.bind(this.scene)
                     },
                     {
@@ -34,13 +34,13 @@ export class RoomManager {
                 walkableBounds: { x: 20, y: 60, width: 280, height: 100 }
             },
             room2: {
-                name: 'Storage Room',
-                background: this.createStorageBackground.bind(this),
+                name: 'Terrace',
+                background: this.createTerraceBackground.bind(this),
                 hotspots: [
                     {
                         name: 'Door',
-                        x: 20, y: 80, width: 30, height: 60,
-                        action: this.scene.returnToRoom1.bind(this.scene)
+                        x: 312, y: 85, width: 15, height: 75,
+                        action: this.scene.interactDoor.bind(this.scene)
                     }
                 ],
                 walkableBounds: { x: 20, y: 60, width: 280, height: 100 }
@@ -120,7 +120,7 @@ export class RoomManager {
         }
     }
 
-    createStorageBackground() {
+    createTerraceBackground() {
         if (this.backgroundGraphics) {
             this.backgroundGraphics.destroy();
         }
@@ -128,34 +128,9 @@ export class RoomManager {
         this.backgroundGraphics = this.scene.add.graphics();
         const g = this.backgroundGraphics;
 
-        // Floor
-        g.fillStyle(0x7f8c8d);
-        g.fillRect(0, 0, CONFIG.VIRTUAL_WIDTH, CONFIG.VIRTUAL_HEIGHT - CONFIG.INVENTORY_HEIGHT);
+        // Clear existing NPCs
+        this.scene.npcManager.clearAllNPCs();
 
-        // Walls
-        g.fillStyle(0xbdc3c7);
-        g.fillRect(0, 0, CONFIG.VIRTUAL_WIDTH, 50);
-        g.fillRect(0, 0, 20, CONFIG.VIRTUAL_HEIGHT - CONFIG.INVENTORY_HEIGHT);
-        g.fillRect(CONFIG.VIRTUAL_WIDTH - 20, 0, 20, CONFIG.VIRTUAL_HEIGHT - CONFIG.INVENTORY_HEIGHT);
-
-        // Door back to room 1
-        g.fillStyle(0x27ae60);
-        g.fillRect(20, 80, 30, 60);
-        g.fillStyle(0x2c3e50);
-        g.fillRect(25, 85, 20, 50);
-
-        // Storage boxes
-        g.fillStyle(0x8b4513);
-        g.fillRect(80, 70, 40, 30);
-        g.fillRect(140, 80, 35, 25);
-        g.fillRect(200, 65, 45, 35);
-
-        // Success message using bitmap font - pixel perfect
-        const successText = this.scene.add.bitmapText(CONFIG.VIRTUAL_WIDTH / 2, 30, 'arcade', 'YOU DID IT!')
-            .setOrigin(0.5)
-            .setTint(0x2ecc71)
-            .setFontSize(7)
-            .setLineSpacing(10);
     }
 
     createImageBasedRoom(roomId) {
@@ -195,22 +170,24 @@ export class RoomManager {
         // Update dynamic layering based on current player position
         this.scene.roomSpriteManager.updateAllDynamicLayers();
 
-        // Create NPCs using new NPC management system
-        this.scene.npcManager.createAllNPCs();
-
-        // Add NPC hotspots to the room after NPCs are created
-        const npcHotspots = this.scene.npcManager.getAllHotspots();
-        this.scene.rooms[roomId].hotspots.push(...npcHotspots);
-
-        // Create animated screens (for room1 only, for now)
         if (roomId === 'room1') {
+            // Create NPCs using new NPC management system
+            this.scene.npcManager.createAllNPCs();
+
+            // Add NPC hotspots to the room after NPCs are created
+            const npcHotspots = this.scene.npcManager.getAllHotspots();
+            this.scene.rooms[roomId].hotspots.push(...npcHotspots);
+
+            // Create animated screens
+
             this.scene.screenManager.createAnimatedScreens();
         }
 
         // Update all dynamic layering based on current player position
         this.scene.roomSpriteManager.updateAllDynamicLayers();
-        this.scene.npcManager.updateAllNPCLayers();
+
         if (roomId === 'room1') {
+            this.scene.npcManager.updateAllNPCLayers();
             this.scene.screenManager.updateScreenLayers();
         }
 
@@ -235,11 +212,11 @@ export class RoomManager {
             }
         } else if (roomId === 'room2') {
             // Success message using bitmap font - pixel perfect
-            const successText = this.scene.add.bitmapText(CONFIG.VIRTUAL_WIDTH / 2, 30, 'arcade', 'YOU DID IT!')
+         /*   const successText = this.scene.add.bitmapText(CONFIG.VIRTUAL_WIDTH / 2, 30, 'arcade', 'YOU DID IT!')
                 .setOrigin(0.5)
                 .setTint(0x2ecc71)
                 .setFontSize(7)
-                .setLineSpacing(10);
+                .setLineSpacing(10);*/
         }
     }
 

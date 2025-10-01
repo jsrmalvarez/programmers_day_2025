@@ -11,8 +11,8 @@ export let gameState = {
     doorUnlocked: false,
     drawerOpen: false,
     keyTaken: false,
-    playerX: 160,
-    playerY: 120,
+    playerX: 263,
+    playerY: 186,
     targetX: 160,
     targetY: 120,
     isWalking: false,
@@ -175,6 +175,10 @@ export function setPlayerPosition(x, y) {
     gameState.targetX = x;
     gameState.targetY = y;
     gameState.isWalking = false;
+}
+
+export function setPlayerOrientation(orientation) {
+    gameState.playerOrientation = orientation;
 }
 
 export function setPlayerTarget(x, y) {

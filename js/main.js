@@ -4,7 +4,7 @@
  */
 
 import { CONFIG, ITEMS, ROOMS } from './config.js';
-import { gameState, setPlayerPosition } from './gameState.js';
+import { gameState, setPlayerPosition, setPlayerOrientation } from './gameState.js';
 import { SpriteManager } from './sprites.js';
 import { ScreenManager } from './screens.js';
 import { RoomManager } from './rooms.js';
@@ -171,7 +171,8 @@ export class GameScene extends Phaser.Scene {
     // Interaction handlers
     interactDoor() {
         if (gameState.currentRoom === 'room1') {
-            if (!gameState.doorUnlocked) {
+            console.log('interacting with door in room 1');
+            /*if (!gameState.doorUnlocked) {
                 if (gameState.selectedItem && gameState.selectedItem === ITEMS.key) {
                     // Unlock door
                     gameState.doorUnlocked = true;
@@ -182,11 +183,18 @@ export class GameScene extends Phaser.Scene {
                 } else {
                     this.uiManager.showMessage("It's locked.");
                 }
-            } else {
+            } else {*/
                 // Enter room 2
-                setPlayerPosition(50, 110);
+                setPlayerPosition(299, 141);
+                setPlayerOrientation('left');
                 this.switchToRoom('room2');
-            }
+            //}
+        }
+        else if (gameState.currentRoom === 'room2') {
+            console.log('returning to room 1');
+            setPlayerPosition(97, 70);
+            setPlayerOrientation('front');
+            this.switchToRoom('room1');
         }
     }
 
@@ -214,11 +222,6 @@ export class GameScene extends Phaser.Scene {
         if (npc) {
             npc.talk();
         }
-    }
-
-    returnToRoom1() {
-        setPlayerPosition(250, 110);
-        this.switchToRoom('room1');
     }
 
 }

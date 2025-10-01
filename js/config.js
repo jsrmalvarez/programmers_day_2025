@@ -289,25 +289,24 @@ export const ROOMS = {
                      belowLayer: 10  // Layer when player Y > threshold
                  }
              },
-
-            // {
-            //     id: 'plant',
-            //     image: 'plant_sprite',
-            //     x: 250, y: 80,
-            //     layer: 25 // This appears in front of player
-            // }
-        ],
-        walkableBounds: { x: 20, y: 60, width: 280, height: 100 } // Fallback bounds
+        ]
     },
     room2: {
-        name: 'Storage Room',
+        name: 'Terrace',
         background: {
             image: 'room2_bg',
             mask: 'room2_mask'
         },
         sprites: [
-            // Storage room sprites would go here
-        ],
-        walkableBounds: { x: 20, y: 60, width: 280, height: 100 }
+            {
+                id: 'structure',
+                image: 'structure',
+                x: 39, y: 0,
+                layering: {
+                    type: 'static',
+                    layer: 25
+                }
+            }
+        ]
     }
 };
