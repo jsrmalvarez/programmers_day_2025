@@ -138,7 +138,7 @@ export const NPCS = {
                 "Don't mess with anything in the storage room."
             ]
         },
-        hotspot: { x: 50, y: 89, width: 20, height: 40 },
+        hotspot: { x: 50, y: 89, width: 20, height: 36 },
         // Dynamic layering based on player position
         layering: {
             type: 'dynamic',
@@ -159,7 +159,7 @@ export const NPCS = {
                 "Congratulations! You've unlocked the door."
             ]
         },
-        hotspot: { x: 102, y: 89, width: 20, height: 40 },
+        hotspot: { x: 102, y: 89, width: 20, height: 36 },
         // Dynamic layering based on player position
         layering: {
             type: 'dynamic',
@@ -180,7 +180,7 @@ export const NPCS = {
                 "I'm not sure what you're talking about."
             ]
         },
-        hotspot: { x: 162, y: 89, width: 20, height: 40 },
+        hotspot: { x: 162, y: 89, width: 20, height: 36 },
         // Dynamic layering based on player position
         layering: {
             type: 'dynamic',
@@ -201,7 +201,7 @@ export const NPCS = {
                 "Don't mess with anything in the storage room."
             ]
         },
-        hotspot: { x: 50, y: 91, width: 20, height: 40 },
+        hotspot: { x: 40, y: 125, width: 25, height: 56 },
         // Dynamic layering based on player position
         layering: {
             type: 'dynamic',
@@ -222,7 +222,7 @@ export const NPCS = {
                 "Congratulations! You've unlocked the door."
             ]
         },
-        hotspot: { x: 102, y: 91, width: 20, height: 40 },
+        hotspot: { x: 98, y: 125, width: 25, height: 56 },
         // Dynamic layering based on player position
         layering: {
             type: 'dynamic',
@@ -243,7 +243,7 @@ export const NPCS = {
                 "I'm not sure what you're talking about."
             ]
         },
-        hotspot: { x: 162, y: 91, width: 20, height: 40 },
+        hotspot: { x: 162, y: 125, width: 25, height: 56 },
         // Dynamic layering based on player position
         layering: {
             type: 'dynamic',
