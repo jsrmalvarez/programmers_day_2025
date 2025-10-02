@@ -14,38 +14,44 @@ export class RoomManager {
     }
 
     createRooms() {
-        return {
-            room1: {
-                name: 'Office',
-                background: this.createOfficeBackground.bind(this),
-                hotspots: [
-                    {
-                        name: 'Door',
-                        x: 79, y: 26, width: 40, height: 65,
-                        action: this.scene.interactDoor.bind(this.scene)
-                    },
-                    {
-                        name: 'Drawer',
-                        x: 50, y: 100, width: 40, height: 20,
-                        action: this.scene.interactDrawer.bind(this.scene)
-                    }
-                    // NPC hotspots will be added dynamically after NPCs are created
-                ],
-                walkableBounds: { x: 20, y: 60, width: 280, height: 100 }
-            },
-            room2: {
-                name: 'Terrace',
-                background: this.createTerraceBackground.bind(this),
-                hotspots: [
-                    {
-                        name: 'Door',
-                        x: 312, y: 85, width: 15, height: 75,
-                        action: this.scene.interactDoor.bind(this.scene)
-                    }
-                ],
-                walkableBounds: { x: 20, y: 60, width: 280, height: 100 }
-            }
+        // Start with the room configurations from config
+        const rooms = JSON.parse(JSON.stringify(ROOMS));
+
+        // Add runtime properties to room1
+        rooms.room1 = {
+            ...rooms.room1,
+            background: this.createOfficeBackground.bind(this),
+            hotspots: [
+                {
+                    name: 'Door',
+                    x: 79, y: 26, width: 40, height: 65,
+                    action: this.scene.interactDoor.bind(this.scene)
+                },
+                {
+                    name: 'Drawer',
+                    x: 50, y: 100, width: 40, height: 20,
+                    action: this.scene.interactDrawer.bind(this.scene)
+                }
+                // NPC hotspots will be added dynamically after NPCs are created
+            ],
+            walkableBounds: { x: 20, y: 60, width: 280, height: 100 }
         };
+
+        // Add runtime properties to room2
+        rooms.room2 = {
+            ...rooms.room2,
+            background: this.createTerraceBackground.bind(this),
+            hotspots: [
+                {
+                    name: 'Door',
+                    x: 312, y: 85, width: 15, height: 75,
+                    action: this.scene.interactDoor.bind(this.scene)
+                }
+            ],
+            walkableBounds: { x: 20, y: 60, width: 280, height: 100 }
+        };
+
+        return rooms;
     }
 
     createOfficeBackground() {

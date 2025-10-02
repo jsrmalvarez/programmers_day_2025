@@ -269,6 +269,7 @@ export const NPCS = {
 export const ROOMS = {
     room1: {
         name: 'Office',
+        nearFarThreshold: 135, // Y position threshold for near/far player version
         background: {
             image: 'room1_bg', // PNG background image
             mask: 'room1_mask'  // Black/white collision mask
@@ -304,6 +305,7 @@ export const ROOMS = {
     },
     room2: {
         name: 'Terrace',
+        nearFarThreshold: 150, // Y position threshold for near/far player version
         background: {
             image: 'room2_bg',
             mask: 'room2_mask'

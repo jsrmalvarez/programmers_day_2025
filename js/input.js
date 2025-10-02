@@ -295,10 +295,37 @@ export class InputManager {
             }
         }
 
-        // Update player sprite position
+        // Update player sprite position and version based on Y position
         if (this.scene.playerSprite) {
+            console.log('updating player position:', {
+                x: gameState.playerX,
+                y: gameState.playerY,
+                currentRoom: gameState.currentRoom,
+                scene: !!this.scene,
+                rooms: !!this.scene.rooms,
+                playerSprite: !!this.scene.playerSprite
+            });
+
             this.scene.playerSprite.x = gameState.playerX;
             this.scene.playerSprite.y = gameState.playerY;
+
+            // Update player version based on Y position and room threshold
+            const currentRoom = this.scene.rooms[gameState.currentRoom];
+            console.log('room check:', {
+                currentRoom: !!currentRoom,
+                roomId: gameState.currentRoom,
+                threshold: currentRoom?.nearFarThreshold
+            });
+
+            if (currentRoom && currentRoom.nearFarThreshold) {
+                const newVersion = gameState.playerY < currentRoom.nearFarThreshold ? 'FAR' : 'NEAR';
+                console.log('newVersion', newVersion);
+                if (CONFIG.PLAYER.USE_VERSION !== newVersion) {
+                    CONFIG.PLAYER.USE_VERSION = newVersion;
+                    const scale = newVersion === 'FAR' ? CONFIG.PLAYER.FAR.HEIGHT / CONFIG.PLAYER.NEAR.HEIGHT : 1;
+                    this.scene.playerSprite.setScale(scale);
+                }
+            }
         }
 
         // Update all dynamic layering based on new player position
