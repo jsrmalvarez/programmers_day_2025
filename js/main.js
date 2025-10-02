@@ -166,6 +166,12 @@ export class GameScene extends Phaser.Scene {
         this.playerSprite = this.add.sprite(gameState.playerX, gameState.playerY, 'player_front_idle');
         this.playerSprite.setDepth(20); // Layer 20 - between room sprites
         this.playerSprite.setVisible(true);
+
+        // Apply scaling if using FAR version
+        if (CONFIG.PLAYER.USE_VERSION === 'FAR') {
+            const scale = CONFIG.PLAYER.FAR.HEIGHT / CONFIG.PLAYER.NEAR.HEIGHT;
+            this.playerSprite.setScale(scale);
+        }
     }
 
     // Interaction handlers

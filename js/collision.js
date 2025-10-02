@@ -147,16 +147,18 @@ export class CollisionManager {
 
     // Helper method to get player's feet position for collision detection
     getPlayerFeetPosition(playerX, playerY) {
+        const dimensions = CONFIG.PLAYER[CONFIG.PLAYER.USE_VERSION];
         return {
             x: Math.round(playerX),
-            y: Math.round(playerY + CONFIG.PLAYER.FEET_OFFSET)
+            y: Math.round(playerY + dimensions.FEET_OFFSET)
         };
     }
 
     // Check if player can be at a given position (using full feet width for collision)
     isPlayerPositionWalkable(playerX, playerY) {
-        const feetY = playerY + CONFIG.PLAYER.FEET_OFFSET;
-        const halfWidth = CONFIG.PLAYER.WIDTH / 2;
+        const dimensions = CONFIG.PLAYER[CONFIG.PLAYER.USE_VERSION];
+        const feetY = playerY + dimensions.FEET_OFFSET;
+        const halfWidth = dimensions.WIDTH / 2;
 
         // Check multiple points across the player's feet width for thorough collision detection
         // For a 12-pixel wide character, check 5 points to ensure no gaps

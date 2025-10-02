@@ -15,9 +15,20 @@ export const CONFIG = {
 
     // Player character dimensions and collision
     PLAYER: {
-        WIDTH: 24,          // Player sprite width (updated for new design)
-        HEIGHT: 62,         // Player sprite height (updated for new design)
-        FEET_OFFSET: 31     // Distance from sprite center to feet (half of height)
+        // Near version (original size)
+        NEAR: {
+            WIDTH: 24,
+            HEIGHT: 62,
+            FEET_OFFSET: 31
+        },
+        // Far version (scaled down)
+        FAR: {
+            WIDTH: 20,          // Proportionally scaled from 24
+            HEIGHT: 52,         // As specified
+            FEET_OFFSET: 26     // Half of HEIGHT
+        },
+        // Which version to use (NEAR or FAR)
+        USE_VERSION: 'FAR'
     },
 
     // Debug settings

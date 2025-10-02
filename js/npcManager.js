@@ -38,7 +38,8 @@ export class NPC {
 
         if (this.layering.type === 'dynamic') {
             // Use player's feet position for realistic layering
-            const playerFeetY = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
+            const dimensions = CONFIG.PLAYER[CONFIG.PLAYER.USE_VERSION];
+            const playerFeetY = gameState.playerY + dimensions.FEET_OFFSET;
             const threshold = this.layering.threshold;
             const newDepth = playerFeetY < threshold ? this.layering.aboveLayer : this.layering.belowLayer;
 

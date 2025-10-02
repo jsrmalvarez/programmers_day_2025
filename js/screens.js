@@ -287,9 +287,10 @@ export class ScreenManager {
 
     // Helper function to determine screen mode based on player position and orientation
     getScreenMode(screenConfig) {
-        const playerFeetY = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
-        const playerLeftX = gameState.playerX - CONFIG.PLAYER.WIDTH / 2;
-        const playerRightX = gameState.playerX + CONFIG.PLAYER.WIDTH / 2;
+        const dimensions = CONFIG.PLAYER[CONFIG.PLAYER.USE_VERSION];
+        const playerFeetY = gameState.playerY + dimensions.FEET_OFFSET;
+        const playerLeftX = gameState.playerX - dimensions.WIDTH / 2;
+        const playerRightX = gameState.playerX + dimensions.WIDTH / 2;
         const screenLeftX = screenConfig.position.x;
         const screenRightX = screenConfig.position.x + screenConfig.position.width;
 

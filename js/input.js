@@ -200,8 +200,9 @@ export class InputManager {
     movePlayerTo(x, y) {
         // Calculate player center position so that feet end up at clicked coordinates
         // We need to subtract the feet offset from the Y coordinate
+        const dimensions = CONFIG.PLAYER[CONFIG.PLAYER.USE_VERSION];
         const targetCenterX = x;
-        const targetCenterY = y - CONFIG.PLAYER.FEET_OFFSET;
+        const targetCenterY = y - dimensions.FEET_OFFSET;
 
         // Use collision detection if available, otherwise use bounds
         if (this.scene.collisionManager.maskData) {

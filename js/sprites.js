@@ -24,68 +24,72 @@ export class SpriteManager {
     createPlayerSprites() {
         const graphics = this.scene.add.graphics();
 
+        // Always draw at NEAR size, we'll scale the sprite itself later
+        const drawWidth = CONFIG.PLAYER.NEAR.WIDTH;
+        const drawHeight = CONFIG.PLAYER.NEAR.HEIGHT;
+
         // FRONT ORIENTATION (towards player)
         // Front idle
         this.drawPlayerTexture(graphics, 0x4a90e2, false, 'front');
-        graphics.generateTexture('player_front_idle', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.generateTexture('player_front_idle', drawWidth, drawHeight);
         graphics.clear();
 
         // Front walk frame 1 - left foot forward
         this.drawPlayerTexture(graphics, 0x4a90e2, true, 'front', 0);
-        graphics.generateTexture('player_front_walk1', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.generateTexture('player_front_walk1', drawWidth, drawHeight);
         graphics.clear();
 
         // Front walk frame 2 - right foot forward
         this.drawPlayerTexture(graphics, 0x4a90e2, true, 'front', 1);
-        graphics.generateTexture('player_front_walk2', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.generateTexture('player_front_walk2', drawWidth, drawHeight);
         graphics.clear();
 
         // BACK ORIENTATION (away from player)
         // Back idle
         this.drawPlayerTexture(graphics, 0x4a90e2, false, 'back');
-        graphics.generateTexture('player_back_idle', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.generateTexture('player_back_idle', drawWidth, drawHeight);
         graphics.clear();
 
         // Back walk frame 1 - left foot forward
         this.drawPlayerTexture(graphics, 0x4a90e2, true, 'back', 0);
-        graphics.generateTexture('player_back_walk1', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.generateTexture('player_back_walk1', drawWidth, drawHeight);
         graphics.clear();
 
         // Back walk frame 2 - right foot forward
         this.drawPlayerTexture(graphics, 0x4a90e2, true, 'back', 1);
-        graphics.generateTexture('player_back_walk2', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.generateTexture('player_back_walk2', drawWidth, drawHeight);
         graphics.clear();
 
         // LEFT ORIENTATION (side view)
         // Left idle
         this.drawPlayerTexture(graphics, 0x4a90e2, false, 'left');
-        graphics.generateTexture('player_left_idle', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.generateTexture('player_left_idle', drawWidth, drawHeight);
         graphics.clear();
 
         // Left walk frame 1
         this.drawPlayerTexture(graphics, 0x4a90e2, true, 'left', 0);
-        graphics.generateTexture('player_left_walk1', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.generateTexture('player_left_walk1', drawWidth, drawHeight);
         graphics.clear();
 
         // Left walk frame 2
         this.drawPlayerTexture(graphics, 0x4a90e2, true, 'left', 1);
-        graphics.generateTexture('player_left_walk2', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.generateTexture('player_left_walk2', drawWidth, drawHeight);
         graphics.clear();
 
         // RIGHT ORIENTATION (side view, mirrored)
         // Right idle
         this.drawPlayerTexture(graphics, 0x4a90e2, false, 'right');
-        graphics.generateTexture('player_right_idle', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.generateTexture('player_right_idle', drawWidth, drawHeight);
         graphics.clear();
 
         // Right walk frame 1
         this.drawPlayerTexture(graphics, 0x4a90e2, true, 'right', 0);
-        graphics.generateTexture('player_right_walk1', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.generateTexture('player_right_walk1', drawWidth, drawHeight);
         graphics.clear();
 
         // Right walk frame 2
         this.drawPlayerTexture(graphics, 0x4a90e2, true, 'right', 1);
-        graphics.generateTexture('player_right_walk2', CONFIG.PLAYER.WIDTH, CONFIG.PLAYER.HEIGHT);
+        graphics.generateTexture('player_right_walk2', drawWidth, drawHeight);
         graphics.clear();
 
         graphics.destroy();

@@ -92,7 +92,8 @@ export class RoomSpriteManager {
         if (!sprite || !layering) return;
 
         // Use player's feet position for realistic layering
-        const playerFeetY = this.scene.gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
+        const dimensions = CONFIG.PLAYER[CONFIG.PLAYER.USE_VERSION];
+        const playerFeetY = this.scene.gameState.playerY + dimensions.FEET_OFFSET;
         const threshold = layering.threshold;
         const currentDepth = sprite.depth;
 
