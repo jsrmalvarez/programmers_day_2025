@@ -28,7 +28,7 @@ export const CONFIG = {
             FEET_OFFSET: 26     // Half of HEIGHT
         },
         // Which version to use (NEAR or FAR)
-        USE_VERSION: 'FAR'
+        USE_VERSION: 'NEAR'
     },
 
     // Debug settings
@@ -283,9 +283,9 @@ export const ROOMS = {
                 // Dynamic layering: different threshold for this sprite
                 layering: {
                     type: 'dynamic',
-                    threshold: 127, // Different threshold than desk_front
-                    aboveLayer: 25, // Layer when player Y < threshold
-                    belowLayer: 10  // Layer when player Y > threshold
+                    threshold: 127, // Y threshold for far desk
+                    aboveLayer: 25, // Just below far screens (26)
+                    belowLayer: 10  // Just below far screens (11)
                 }
             },
             {
@@ -295,9 +295,9 @@ export const ROOMS = {
                  // Dynamic layering: if player Y > threshold, desk appears behind player
                  layering: {
                      type: 'dynamic',
-                     threshold: 181, // Y position threshold
-                     aboveLayer: 25, // Layer when player Y < threshold
-                     belowLayer: 10  // Layer when player Y > threshold
+                     threshold: 181, // Y threshold for near desk
+                    aboveLayer: 27, // Just below near screens (28)
+                    belowLayer: 12  // Just below near screens (13)
                  }
              },
         ]

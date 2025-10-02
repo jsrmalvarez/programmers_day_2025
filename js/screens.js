@@ -554,7 +554,8 @@ export class ScreenManager {
         // Update screen1 depth
         const screen1Config = SCREENS.screen1;
         if (screen1Config.layering.type === 'dynamic') {
-            const playerFeetY = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
+            const dimensions = CONFIG.PLAYER[CONFIG.PLAYER.USE_VERSION];
+            const playerFeetY = gameState.playerY + dimensions.FEET_OFFSET;
             const threshold = screen1Config.layering.threshold;
             const newDepth = playerFeetY < threshold ? screen1Config.layering.aboveLayer : screen1Config.layering.belowLayer;
 
@@ -566,7 +567,8 @@ export class ScreenManager {
         // Update screen2 depth
         const screen2Config = SCREENS.screen2;
         if (screen2Config.layering.type === 'dynamic') {
-            const playerFeetY = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
+            const dimensions = CONFIG.PLAYER[CONFIG.PLAYER.USE_VERSION];
+            const playerFeetY = gameState.playerY + dimensions.FEET_OFFSET;
             const threshold = screen2Config.layering.threshold;
             const newDepth = playerFeetY < threshold ? screen2Config.layering.aboveLayer : screen2Config.layering.belowLayer;
 
@@ -578,19 +580,22 @@ export class ScreenManager {
         // Update screen3 depth
         const screen3Config = SCREENS.screen3;
         if (screen3Config.layering.type === 'dynamic') {
-            const playerFeetY = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
+            const dimensions = CONFIG.PLAYER[CONFIG.PLAYER.USE_VERSION];
+            const playerFeetY = gameState.playerY + dimensions.FEET_OFFSET;
             const threshold = screen3Config.layering.threshold;
             const newDepth = playerFeetY < threshold ? screen3Config.layering.aboveLayer : screen3Config.layering.belowLayer;
 
             if (this.screen3Graphics.depth !== newDepth) {
                 this.screen3Graphics.setDepth(newDepth);
             }
+
         }
 
         // Update screen4 depth
         const screen4Config = SCREENS.screen4;
         if (screen4Config.layering.type === 'dynamic') {
-            const playerFeetY = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
+            const dimensions = CONFIG.PLAYER[CONFIG.PLAYER.USE_VERSION];
+            const playerFeetY = gameState.playerY + dimensions.FEET_OFFSET;
             const threshold = screen4Config.layering.threshold;
             const newDepth = playerFeetY < threshold ? screen4Config.layering.aboveLayer : screen4Config.layering.belowLayer;
 
@@ -602,7 +607,8 @@ export class ScreenManager {
         // Update screen5 depth
         const screen5Config = SCREENS.screen5;
         if (screen5Config.layering.type === 'dynamic') {
-            const playerFeetY = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
+            const dimensions = CONFIG.PLAYER[CONFIG.PLAYER.USE_VERSION];
+            const playerFeetY = gameState.playerY + dimensions.FEET_OFFSET;
             const threshold = screen5Config.layering.threshold;
             const newDepth = playerFeetY < threshold ? screen5Config.layering.aboveLayer : screen5Config.layering.belowLayer;
 
@@ -614,7 +620,8 @@ export class ScreenManager {
         // Update screen6 depth
         const screen6Config = SCREENS.screen6;
         if (screen6Config.layering.type === 'dynamic') {
-            const playerFeetY = gameState.playerY + CONFIG.PLAYER.FEET_OFFSET;
+            const dimensions = CONFIG.PLAYER[CONFIG.PLAYER.USE_VERSION];
+            const playerFeetY = gameState.playerY + dimensions.FEET_OFFSET;
             const threshold = screen6Config.layering.threshold;
             const newDepth = playerFeetY < threshold ? screen6Config.layering.aboveLayer : screen6Config.layering.belowLayer;
 

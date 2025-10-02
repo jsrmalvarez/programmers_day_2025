@@ -129,29 +129,6 @@ export class RoomSpriteManager {
         return this.createSprite(config);
     }
 
-    // Helper method to change sprite layer
-    setSpriteLayer(id, layer) {
-        const sprite = this.sprites.get(id);
-        if (sprite) {
-            sprite.setDepth(layer);
-        }
-    }
-
-    // Helper method to move sprite
-    moveSprite(id, x, y) {
-        const sprite = this.sprites.get(id);
-        if (sprite) {
-            sprite.setPosition(x, y);
-        }
-    }
-
-    // Helper method to show/hide sprite
-    setSpriteVisible(id, visible) {
-        const sprite = this.sprites.get(id);
-        if (sprite) {
-            sprite.setVisible(visible);
-        }
-    }
 
     // Get all sprites sorted by layer (for debugging)
     getSpritesByLayer() {
