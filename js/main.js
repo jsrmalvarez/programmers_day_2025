@@ -191,14 +191,14 @@ export class GameScene extends Phaser.Scene {
                 }
             } else {*/
                 // Enter room 2
-                setPlayerPosition(299, 141);
+                setPlayerPosition(299, 143);
                 setPlayerOrientation('left');
                 this.switchToRoom('room2');
             //}
         }
         else if (gameState.currentRoom === 'room2') {
             console.log('returning to room 1');
-            setPlayerPosition(97, 70);
+            setPlayerPosition(97, 75);
             setPlayerOrientation('front');
             this.switchToRoom('room1');
         }
