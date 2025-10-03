@@ -4,7 +4,7 @@
  */
 
 import { CONFIG, ITEMS, ROOMS } from './config.js';
-import { gameState, setPlayerPosition, setPlayerOrientation } from './gameState.js';
+import { gameState, setPlayerPosition, setPlayerOrientation, setPlayerVersion } from './gameState.js';
 import { SpriteManager } from './sprites.js';
 import { ScreenManager } from './screens.js';
 import { RoomManager } from './rooms.js';
@@ -167,11 +167,8 @@ export class GameScene extends Phaser.Scene {
         this.playerSprite.setDepth(20); // Layer 20 - between room sprites
         this.playerSprite.setVisible(true);
 
-        // Apply scaling if using FAR version
-        if (CONFIG.PLAYER.USE_VERSION === 'FAR') {
-            const scale = CONFIG.PLAYER.FAR.HEIGHT / CONFIG.PLAYER.NEAR.HEIGHT;
-            this.playerSprite.setScale(scale);
-        }
+        // Apply current version's scale
+        this.playerSprite.setScale(CONFIG.PLAYER.getCurrentScale());
     }
 
     // Interaction handlers
@@ -193,13 +190,15 @@ export class GameScene extends Phaser.Scene {
                 // Enter room 2
                 setPlayerPosition(299, 143);
                 setPlayerOrientation('left');
+                setPlayerVersion('NEAR', this);
                 this.switchToRoom('room2');
             //}
         }
         else if (gameState.currentRoom === 'room2') {
             console.log('returning to room 1');
-            setPlayerPosition(97, 75);
+            setPlayerPosition(97, 78);
             setPlayerOrientation('front');
+            setPlayerVersion('TINY', this);
             this.switchToRoom('room1');
         }
     }

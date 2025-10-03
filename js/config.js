@@ -27,8 +27,25 @@ export const CONFIG = {
             HEIGHT: 52,         // As specified
             FEET_OFFSET: 26     // Half of HEIGHT
         },
-        // Which version to use (NEAR or FAR)
-        USE_VERSION: 'NEAR'
+        // Tiny version (furthest from viewer)
+        TINY: {
+            WIDTH: 16,          // Proportionally scaled from 24
+            HEIGHT: 42,         // Even smaller
+            FEET_OFFSET: 21     // Half of HEIGHT
+        },
+        // Which version to use (NEAR, FAR, or TINY)
+        USE_VERSION: 'NEAR',
+
+        // Get scale factor for a specific version
+        getScale(version) {
+            if (version === 'NEAR' || !this[version]) return 1;
+            return this[version].HEIGHT / this.NEAR.HEIGHT;
+        },
+
+        // Get current version's scale factor
+        getCurrentScale() {
+            return this.getScale(this.USE_VERSION);
+        }
     },
 
     // Debug settings
@@ -269,7 +286,9 @@ export const NPCS = {
 export const ROOMS = {
     room1: {
         name: 'Office',
-        nearFarThreshold: 135, // Y position threshold for near/far player version
+        // Y position thresholds for player scaling
+        nearFarThreshold: 145,  // Below this: FAR, above this: NEAR
+        farTinyThreshold: 102,  // Below this: TINY, above this: FAR
         background: {
             image: 'room1_bg', // PNG background image
             mask: 'room1_mask'  // Black/white collision mask
@@ -305,7 +324,9 @@ export const ROOMS = {
     },
     room2: {
         name: 'Terrace',
-        nearFarThreshold: 150, // Y position threshold for near/far player version
+        // Y position thresholds for player scaling
+        nearFarThreshold: 1,  // Below this: FAR, above this: NEAR
+        farTinyThreshold: 1,  // Below this: TINY, above this: FAR
         background: {
             image: 'room2_bg',
             mask: 'room2_mask'

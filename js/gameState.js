@@ -3,6 +3,8 @@
  * Centralized state management for the entire game
  */
 
+import { CONFIG } from './config.js';
+
 // Game state
 export let gameState = {
     currentRoom: 'room1',
@@ -19,6 +21,7 @@ export let gameState = {
     walkFrame: 0,
     walkTimer: 0,
     playerOrientation: 'front', // 'front', 'back', 'left', 'right'
+    playerVersion: 'NEAR',    // 'NEAR', 'FAR', or 'TINY'
     // Screen animation states (independent)
     screen1: {
         timer: 0,
@@ -179,6 +182,22 @@ export function setPlayerPosition(x, y) {
 
 export function setPlayerOrientation(orientation) {
     gameState.playerOrientation = orientation;
+}
+
+// Set player version and apply appropriate scale
+export function setPlayerVersion(version, scene) {
+    if (!['NEAR', 'FAR', 'TINY'].includes(version)) {
+        console.warn('Invalid player version:', version);
+        return;
+    }
+
+    gameState.playerVersion = version;
+    CONFIG.PLAYER.USE_VERSION = version;
+
+    // Apply scale if scene is provided
+    if (scene && scene.playerSprite) {
+        scene.playerSprite.setScale(CONFIG.PLAYER.getScale(version));
+    }
 }
 
 export function setPlayerTarget(x, y) {

@@ -309,21 +309,30 @@ export class InputManager {
             this.scene.playerSprite.x = gameState.playerX;
             this.scene.playerSprite.y = gameState.playerY;
 
-            // Update player version based on Y position and room threshold
+            // Update player version based on Y position and room thresholds
             const currentRoom = this.scene.rooms[gameState.currentRoom];
             console.log('room check:', {
                 currentRoom: !!currentRoom,
                 roomId: gameState.currentRoom,
-                threshold: currentRoom?.nearFarThreshold
+                nearFarThreshold: currentRoom?.nearFarThreshold,
+                farTinyThreshold: currentRoom?.farTinyThreshold
             });
 
-            if (currentRoom && currentRoom.nearFarThreshold) {
-                const newVersion = gameState.playerY < currentRoom.nearFarThreshold ? 'FAR' : 'NEAR';
+            if (currentRoom && currentRoom.nearFarThreshold && currentRoom.farTinyThreshold) {
+                let newVersion;
+                if (gameState.playerY < currentRoom.farTinyThreshold) {
+                    newVersion = 'TINY';
+                } else if (gameState.playerY < currentRoom.nearFarThreshold) {
+                    newVersion = 'FAR';
+                } else {
+                    newVersion = 'NEAR';
+                }
+
                 console.log('newVersion', newVersion);
                 if (CONFIG.PLAYER.USE_VERSION !== newVersion) {
                     CONFIG.PLAYER.USE_VERSION = newVersion;
-                    const scale = newVersion === 'FAR' ? CONFIG.PLAYER.FAR.HEIGHT / CONFIG.PLAYER.NEAR.HEIGHT : 1;
-                    this.scene.playerSprite.setScale(scale);
+                    // Apply new version's scale
+                    this.scene.playerSprite.setScale(CONFIG.PLAYER.getScale(newVersion));
                 }
             }
         }
