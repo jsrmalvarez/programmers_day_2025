@@ -308,29 +308,29 @@ export class SpriteManager {
     createNPCSprites() {
         const graphics = this.scene.add.graphics();
 
-        graphics.clear();
+        /*graphics.clear();
         this.drawNPCTexture(graphics, 0xe74c3c);
-        graphics.generateTexture('npc_alice', 16, 36);
+        graphics.generateTexture('npc_alice', 16, 36);*/
 
         graphics.clear();
         this.drawNPCTexture(graphics, 0x3ce74c);
-        graphics.generateTexture('npc_bob', 16, 36);
+        graphics.generateTexture('npc_eve', 16, 36);
 
         graphics.clear();
         this.drawNPCTexture(graphics, 0x4c3ce7);
-        graphics.generateTexture('npc_charlie', 16, 36);
+        graphics.generateTexture('npc_david', 16, 36);
 
         graphics.clear();
         this.drawNPCTexture(graphics, 0xee712e, true);
-        graphics.generateTexture('npc_david', 24, 54);
+        graphics.generateTexture('npc_charlie', 24, 54);
 
         graphics.clear();
         this.drawNPCTexture(graphics, 0x2ecc71, true);
-        graphics.generateTexture('npc_eve', 24, 54);
+        graphics.generateTexture('npc_bob', 24, 54);
 
         graphics.clear();
         this.drawNPCTexture(graphics, 0x2e71cc, true);
-        graphics.generateTexture('npc_frank', 24, 54);
+        graphics.generateTexture('npc_alice', 24, 54);
 
         graphics.destroy();
     }
@@ -383,34 +383,6 @@ export class SpriteManager {
         }
     }
 
-    createNPCSpritesInScene() {
-        // Clear existing NPC sprites and overlays
-        this.clearNPCSprites();
-
-        this.scene.sarahSprite = this.scene.add.sprite(110, 89, 'npc_alice');
-        this.scene.sarahSprite.setDepth(15); // Below player (depth 20)
-        this.scene.sarahSprite.setVisible(true);
-
-        this.scene.mikeSprite = this.scene.add.sprite(210, 99, 'npc_bob');
-        this.scene.mikeSprite.setDepth(15); // Below player (depth 20)
-        this.scene.mikeSprite.setVisible(true);
-
-        this.scene.mikeSprite = this.scene.add.sprite(120, 99, 'npc_charlie');
-        this.scene.mikeSprite.setDepth(15); // Below player (depth 20)
-        this.scene.mikeSprite.setVisible(true);
-
-        this.scene.mikeSprite = this.scene.add.sprite(120, 99, 'npc_david');
-        this.scene.mikeSprite.setDepth(15); // Below player (depth 20)
-        this.scene.mikeSprite.setVisible(true);
-
-        this.scene.mikeSprite = this.scene.add.sprite(120, 99, 'npc_eve');
-        this.scene.mikeSprite.setDepth(15); // Below player (depth 20)
-        this.scene.mikeSprite.setVisible(true);
-
-        this.scene.mikeSprite = this.scene.add.sprite(120, 99, 'npc_frank');
-        this.scene.mikeSprite.setDepth(15); // Below player (depth 20)
-        this.scene.mikeSprite.setVisible(true);
-    }
 
 
 

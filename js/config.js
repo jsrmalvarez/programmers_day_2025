@@ -184,7 +184,7 @@ export const NPCS = {
             belowLayer: 12  // Layer when player Y > threshold (NPC behind)
         }
     },*/
-    bob: {
+    eve: {
         name: 'Eve',
         position: { x: 112, y: 110 },
         dialogs: {
@@ -205,7 +205,7 @@ export const NPCS = {
             belowLayer: 12  // Layer when player Y > threshold (NPC behind)
         }
     },
-    charlie: {
+    david: {
         name: 'David',
         position: { x: 172, y: 110 },
         dialogs: {
@@ -226,7 +226,7 @@ export const NPCS = {
             belowLayer: 12  // Layer when player Y > threshold (NPC behind)
         }
     },
-    david: {
+    charlie: {
         name: 'Charlie',
         position: { x: 52, y: 155 },
         dialogs: {
@@ -247,7 +247,7 @@ export const NPCS = {
             belowLayer: 14  // Layer when player Y > threshold (NPC behind)
         }
     },
-    eve: {
+    bob: {
         name: 'Bob',
         position: { x: 110, y: 155 },
         dialogs: {
@@ -268,7 +268,7 @@ export const NPCS = {
             belowLayer: 14  // Layer when player Y > threshold (NPC behind)
         }
     },
-    frank: {
+    alice: {
         name: 'Alice',
         position: { x: 175, y: 155 },
         dialogs: {
@@ -329,6 +329,18 @@ export const ROOMS = {
                     belowLayer: 12  // Just below near screens (13)
                  }
              },
+             {
+                id: 'seat_a',
+                image: 'seat_a',
+                x: 49, y: 106,
+                layering: {
+                    type: 'dynamic',
+                    threshold: 127, // Y threshold for near desk
+                    aboveLayer: 27, // Just below near screens (28)
+                    belowLayer: 12  // Just below near screens (13)
+                }
+             }
+
         ]
     },
     room2: {

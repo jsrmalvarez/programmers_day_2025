@@ -28,9 +28,9 @@ export class RoomManager {
                     action: this.scene.interactDoor.bind(this.scene)
                 },
                 {
-                    name: 'Drawer',
-                    x: 50, y: 100, width: 40, height: 20,
-                    action: this.scene.interactDrawer.bind(this.scene)
+                    name: 'Seat A',
+                    x: 49, y: 106, width: 20, height: 20,
+                    action: this.scene.interactSeatA.bind(this.scene)
                 }
                 // NPC hotspots will be added dynamically after NPCs are created
             ],
@@ -61,45 +61,6 @@ export class RoomManager {
 
         this.backgroundGraphics = this.scene.add.graphics();
         const g = this.backgroundGraphics;
-
-        // Floor
-        g.fillStyle(0x8e8e8e);
-        g.fillRect(0, 0, CONFIG.VIRTUAL_WIDTH, CONFIG.VIRTUAL_HEIGHT - CONFIG.INVENTORY_HEIGHT);
-
-        // Walls
-        g.fillStyle(0xd4d4d4);
-        g.fillRect(0, 0, CONFIG.VIRTUAL_WIDTH, 50);
-        g.fillRect(0, 0, 20, CONFIG.VIRTUAL_HEIGHT - CONFIG.INVENTORY_HEIGHT);
-        g.fillRect(CONFIG.VIRTUAL_WIDTH - 20, 0, 20, CONFIG.VIRTUAL_HEIGHT - CONFIG.INVENTORY_HEIGHT);
-
-        // Door
-        const doorColor = this.scene.gameState.progress.doorUnlocked ? 0x27ae60 : 0x8b4513;
-        g.fillStyle(doorColor);
-        g.fillRect(280, 80, 30, 60);
-        g.fillStyle(0x2c3e50);
-        g.fillRect(285, 85, 20, 50);
-
-        // Door handle
-        g.fillStyle(0xf1c40f);
-        g.fillCircle(290, 110, 2);
-
-        // Desk with drawer
-        g.fillStyle(0x8b4513);
-        g.fillRect(40, 90, 60, 40);
-
-        // Drawer
-        const drawerColor = this.scene.gameState.progress.drawerOpen ? 0x654321 : 0x8b4513;
-        g.fillStyle(drawerColor);
-        g.fillRect(50, 100, 40, 20);
-        if (!this.scene.gameState.progress.drawerOpen) {
-            g.fillStyle(0x2c3e50);
-            g.fillCircle(70, 110, 2);
-        }
-
-        // Computers/desks for NPCs
-        g.fillStyle(0x34495e);
-        g.fillRect(90, 70, 30, 20); // Sarah's computer
-        g.fillRect(190, 80, 30, 20); // Mike's computer
 
         // Create animated screens
         this.scene.screenManager.createAnimatedScreens();

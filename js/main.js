@@ -44,8 +44,6 @@ export class GameScene extends Phaser.Scene {
         // Load room backgrounds and collision masks
         this.loadRoomAssets();
 
-        // Note: GIFs are loaded as HTML elements for animation support
-
         // Create pixel art sprites programmatically
         this.spriteManager.createAllSprites();
     }
@@ -69,6 +67,9 @@ export class GameScene extends Phaser.Scene {
                     if (sprite.image) {
                         this.load.image(sprite.image, `assets/sprites/${sprite.image}.png`);
                     }
+                    /*else if (sprite.graphics) {
+                        sprite.graphics(this.add.graphics());
+                    }*/
                 }
             }
         }
@@ -212,14 +213,9 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
-    interactDrawer() {
-        if (!gameState.progress.drawerOpen) {
-            gameState.progress.drawerOpen = true;
-            this.switchToRoom('room1'); // Refresh room to show open drawer
-            this.uiManager.showMessage('The drawer opens, revealing a key!');
-        } else {
-            this.uiManager.showMessage('The drawer is already open.');
-        }
+    interactSeatA() {
+        gameState.progress._010_triedToOccupySeatA = true;
+        this.uiManager.showMessage("I will not sit in there.\nI booked for seat F.");
     }
 
     takeKey() {

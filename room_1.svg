@@ -31,9 +31,9 @@
      inkscape:bbox-paths="false"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:zoom="0.32"
-     inkscape:cx="5926.5625"
-     inkscape:cy="-7260.9375"
+     inkscape:zoom="0.08"
+     inkscape:cx="7981.25"
+     inkscape:cy="-3293.75"
      inkscape:window-width="1920"
      inkscape:window-height="1011"
      inkscape:window-x="0"
@@ -415,8 +415,8 @@ y0nVjllyPgsAAACAJHoWAAAAAEn0LAAAAACS6FkAAAAAJPnG3b7t5MQ1ZAAAAACHc3FxUT0BAAAA
 ALi9/wHx0DqHIt6inAAAAABJRU5ErkJggg==
 "
        id="image67623"
-       x="1091.7047"
-       y="-950.99683"
+       x="1380.1791"
+       y="-908.95856"
        style="stroke-width:0.470749" />
     <path
        style="fill:#ffeed4;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
@@ -4949,86 +4949,137 @@ AAAAAAAAAAAAsFj8P2CLpO1DHLW8AAAAAElFTkSuQmCC
     <path
        id="rect858-6"
        style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.793752;stroke-linecap:round;paint-order:fill markers stroke;stop-color:#000000"
-       d="m 1492.4198,-2291.3074 h 292.7728 v 262.5138 h -292.7728 z" />
+       d="m 1492.4198,-2291.3074 h 292.7728 v 262.5138 h -292.7728 z"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <path
        id="rect858-1-9"
        style="fill:#dfdfdf;fill-opacity:1;stroke:none;stroke-width:0.793752;stroke-linecap:round;paint-order:fill markers stroke;stop-color:#000000"
-       d="m 1792.0491,-2291.3074 h 292.8276 v 262.5139 h -292.8276 z" />
+       d="m 1792.0491,-2291.3074 h 292.8276 v 262.5139 h -292.8276 z"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <path
        style="fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 1792.2271,-2230.4217 H 1961.23 v -37.178 h 29.3634 v -23.7077 H 1792.049 Z"
-       id="path94125-3" />
+       id="path94125-3"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <path
        style="fill:#aeaeae;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 2053.6415,-2069.8861 h 31.2351 v 41.0925 h -31.2351 z"
-       id="path112319-7" />
+       id="path112319-7"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <rect
        style="font-variation-settings:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
        id="rect91397-4"
        width="8.9962807"
        height="262.51382"
        x="1783.0524"
-       y="-2291.3074" />
+       y="-2291.3074"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <rect
        style="font-variation-settings:normal;fill:#c5a670;fill-opacity:1;stroke:none;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
        id="rect93988-3-5"
        width="8.5407772"
        height="50.194038"
        x="1808.2013"
-       y="-2087.9446" />
+       y="-2087.9446"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <path
        style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 1497.5583,-2028.7936 -129.6743,266.6529 h 846.6668 l -129.6742,-266.6529 h -587.3183"
-       id="path4292-4" />
+       id="path4292-4"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <path
        style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 2084.8766,-2291.3074 v 262.5138 l 129.6742,266.6529 v -529.1667 z"
-       id="path4296-0" />
+       id="path4296-0"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <path
        style="fill:#c5a670;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 1803.0355,-2087.6655 h 119.2494 l -23.8459,-84.0468 h -95.4035 z"
        id="path91895-6"
-       sodipodi:nodetypes="ccccc" />
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <rect
        style="font-variation-settings:normal;fill:#c5a670;fill-opacity:1;stroke:none;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
        id="rect93988-1"
        width="8.5407772"
        height="50.194038"
        x="1908.7012"
-       y="-2087.9446" />
+       y="-2087.9446"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <path
        style="fill:#aeaeae;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 2045.3275,-2033.2809 -84.0975,-197.1408 v -37.178 l 84.1576,180.0002 z"
        id="path96267-5"
-       sodipodi:nodetypes="ccccc" />
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <path
        style="fill:#dcdcdc;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 2045.3876,-2087.5995 -84.1576,-180.0002 h 29.3634 l 54.5066,99.5252 z"
        id="path99239-9"
-       sodipodi:nodetypes="ccccc" />
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <path
        style="fill:#151515;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 2019.3474,-2173.9216 v -18.8043 l 7.6898,14.8176 v 19.9798 z"
        id="path102450-4"
-       sodipodi:nodetypes="ccccc" />
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <path
        style="fill:#565656;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 2019.3474,-2192.7258 7.6898,14.8175 h 18.1414 l -8.9448,-14.8175 z"
        id="path102643-90"
-       sodipodi:nodetypes="ccccc" />
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <path
        style="fill:#010101;fill-opacity:1;stroke:none;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 2027.0372,-2157.9285 h 16.1243 l 2.0173,-19.9798 h -18.1416 z"
        id="path104951-9"
-       sodipodi:nodetypes="ccccc" />
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <path
        id="rect84126-3-1"
        style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583;stroke-miterlimit:4;stroke-dasharray:none;paint-order:fill markers stroke;stop-color:#000000"
-       d="m 1946.7521,-2222.0893 v 193.2957 h 8.5415 v -182.5336 h 89.8065 v 182.5336 h 8.5415 v -193.2957 z" />
+       d="m 1946.7521,-2222.0893 v 193.2957 h 8.5415 v -182.5336 h 89.8065 v 182.5336 h 8.5415 v -193.2957 z"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <g
        id="g106554-77"
        transform="matrix(0.36985864,0,0,0.43125179,744.02752,-1788.44)"
-       style="stroke:none;stroke-width:2.5039">
+       style="stroke:none;stroke-width:2.5039"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004">
       <path
          style="fill:#151515;fill-opacity:1;stroke:none;stroke-width:0.662489px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          d="m 3434.6528,-879.08048 v -18.80429 l 7.6898,14.81755 v 19.97985 z"
@@ -5048,7 +5099,10 @@ AAAAAAAAAAAAsFj8P2CLpO1DHLW8AAAAAElFTkSuQmCC
     <g
        id="g106554-7-7"
        transform="matrix(0.36985864,0,0,0.43125179,750.24272,-1805.0222)"
-       style="stroke:none;stroke-width:2.5039">
+       style="stroke:none;stroke-width:2.5039"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004">
       <path
          style="fill:#151515;fill-opacity:1;stroke:none;stroke-width:0.662489px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          d="m 3434.6528,-879.08048 v -18.80429 l 7.6898,14.81755 v 19.97985 z"
@@ -5068,49 +5122,83 @@ AAAAAAAAAAAAsFj8P2CLpO1DHLW8AAAAAElFTkSuQmCC
     <path
        style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 1792.049,-2291.3074 v 262.5138 h 154.7032 v -193.2957 h 106.8893 v 193.2957 h 31.2351 v -262.5138 H 1792.049"
-       id="path107254-3" />
+       id="path107254-3"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <rect
        style="font-variation-settings:normal;fill:#8e8e8e;fill-opacity:1;stroke:none;stroke-width:5.29168;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
        id="rect90681-3"
        width="35.825821"
        height="113.77082"
        x="1966.603"
-       y="-2202.4187" />
+       y="-2202.4187"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <path
        style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 1496.4943,-2291.5766 v 262.5138 l -129.6742,266.6529 v -529.1667 z"
-       id="path4296-0-9" />
+       id="path4296-0-9"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <rect
        style="font-variation-settings:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
        id="rect145619"
        width="138.1246"
        height="138.69582"
        x="1946.752"
-       y="-2222.0891" />
+       y="-2222.0891"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <rect
        style="font-variation-settings:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
        id="rect145903"
        width="98.348"
        height="54.599812"
        x="1955.2935"
-       y="-2083.3933" />
+       y="-2083.3933"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <rect
        style="font-variation-settings:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
        id="rect146007"
        width="516.63605"
        height="84.219627"
        x="1379.5367"
-       y="-1881.4806" />
+       y="-1881.4806"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <rect
        style="font-variation-settings:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000"
        id="rect146009"
        width="437.53268"
        height="45.838799"
        x="1447.9958"
-       y="-1989.6957" />
+       y="-1989.6957"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
     <path
        style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 2022.8225,-2083.8124 21.2137,54.7497 9.6055,0.2694 v -54.6 z"
-       id="path150163" />
+       id="path150163"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/rooms/room1_mask.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
+    <rect
+       style="font-variation-settings:normal;opacity:1;fill:#5a5a5a;fill-opacity:1;stroke:none;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke;stop-color:#000000;stop-opacity:1"
+       id="rect153844"
+       width="36.388691"
+       height="36.348751"
+       x="2635.2837"
+       y="-2073.7278"
+       inkscape:export-filename="/home/jsrmalvarez/trabajo/erni/programmers_day/assets/sprites/seat_a.png"
+       inkscape:export-xdpi="9.6000004"
+       inkscape:export-ydpi="9.6000004" />
   </g>
 </svg>

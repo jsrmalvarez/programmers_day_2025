@@ -11,10 +11,6 @@ export let gameState = {
     inventory: [],
     selectedItem: null,
     progress: {
-        doorUnlocked: false,
-        drawerOpen: false,
-        keyTaken: false,
-
         _010_triedToOccupySeatA: false,
         _020_talkedToAlice: false,
         _021_pidgeonAvoided: false,
@@ -94,9 +90,9 @@ export function resetGameState() {
     gameState.currentRoom = 'room1';
     gameState.inventory = [];
     gameState.selectedItem = null;
-    gameState.progress.doorUnlocked = false;
-    gameState.progress.drawerOpen = false;
-    gameState.progress.keyTaken = false;
+    Object.keys(gameState.progress).forEach(key => {
+        gameState.progress[key] = false;
+    });
     gameState.playerX = 160;
     gameState.playerY = 120;
     gameState.targetX = 160;
