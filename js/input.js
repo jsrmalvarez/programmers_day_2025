@@ -58,6 +58,11 @@ export class InputManager {
     }
 
     handleClick(x, y) {
+        // Don't process clicks when modal dialog is open
+        if (this.scene.uiManager.isModalDialogOpen()) {
+            return;
+        }
+
         // Check if clicking in inventory area (only when inventory is visible)
         if (this.scene.uiManager.inventoryVisible) {
             const inventoryHeight = 19; // Compact inventory height
@@ -108,6 +113,14 @@ export class InputManager {
     }
 
     handleMouseMove(x, y) {
+        // Don't show tooltips when modal dialog is open
+        if (this.scene.uiManager.isModalDialogOpen()) {
+            if (this.tooltip) {
+                this.tooltip.style.display = 'none';
+            }
+            return;
+        }
+
         let tooltipText = '';
 
         // Check if mouse is in inventory area (only when inventory is visible)

@@ -105,6 +105,15 @@ export class GameScene extends Phaser.Scene {
         console.log('  S - Toggle room sprites visibility');
         console.log('  C - Toggle mouse coordinates and cursor dot');
         console.log('  H - Toggle hotspot rectangles');
+
+        this.uiManager.showMessage('Welcome to ERNI MAD Office.\n\nYou booked a seat in the Desk Reservation App.\n\nFind your place and have a productive day!', {
+            autoHide: false,
+            modal: true,
+            buttonText: 'OK',
+            fontSize: 7,
+            lineSpacing: 10,
+            maxWidth: CONFIG.VIRTUAL_WIDTH - 40
+        });
     }
 
     updateGame() {

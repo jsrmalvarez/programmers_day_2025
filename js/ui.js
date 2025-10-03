@@ -15,6 +15,7 @@ export class UIManager {
         this.messageBackground = null;
         this.toggleButton = null;
         this.inventoryVisible = true;
+        this.isModalOpen = false;
     }
 
     setupUI() {
@@ -242,7 +243,19 @@ export class UIManager {
         removeFromInventory(item);
     }
 
-    showMessage(text) {
+    showMessage(text, options = {}) {
+        // Default options
+        const defaults = {
+            y: 20,                    // Default y position for temporary messages
+            autoHide: true,          // Whether to auto-hide after 3 seconds
+            modal: false,            // Whether this is a modal dialog
+            buttonText: 'OK',        // Text for the modal button
+            fontSize: 7,             // Font size
+            lineSpacing: 10,         // Line spacing
+            maxWidth: CONFIG.VIRTUAL_WIDTH - 40  // Max text width
+        };
+        options = { ...defaults, ...options };
+
         // Remove existing message and its background
         if (this.messageText) {
             if (this.messageBackground) {
@@ -254,31 +267,116 @@ export class UIManager {
         }
 
         // Create bitmap text message - pixel perfect by default
-        this.messageText = this.scene.add.bitmapText(CONFIG.VIRTUAL_WIDTH / 2, 20, 'arcade', text)
+        this.messageText = this.scene.add.bitmapText(CONFIG.VIRTUAL_WIDTH / 2, options.y, 'arcade', text)
             .setOrigin(0.5)
             .setTint(0xffffff)
-            .setDepth(200)
-            .setFontSize(7)
-            .setLineSpacing(10)
-            .setMaxWidth(CONFIG.VIRTUAL_WIDTH - 40);
+            .setDepth(1000)
+            .setFontSize(options.fontSize)
+            .setLineSpacing(options.lineSpacing)
+            .setMaxWidth(options.maxWidth);
 
         // Add background using graphics
         const textBounds = this.messageText.getBounds();
         this.messageBackground = this.scene.add.graphics();
         this.messageBackground.fillStyle(0x000000);
-        this.messageBackground.fillRect(textBounds.x - 4, textBounds.y - 2, textBounds.width + 8, textBounds.height + 4);
-        this.messageBackground.setDepth(199);
 
-        // Auto-hide after 3 seconds
-        this.scene.time.delayedCall(3000, () => {
-            if (this.messageText) {
+        // For modal dialogs, center vertically and add space for button
+        if (options.modal) {
+            this.isModalOpen = true;
+            // Center text vertically
+            this.messageText.y = CONFIG.VIRTUAL_HEIGHT / 2 - 20;
+
+            // Create OK button
+            const buttonText = this.scene.add.bitmapText(
+                CONFIG.VIRTUAL_WIDTH / 2,
+                this.messageText.y + textBounds.height + 15,
+                'arcade',
+                options.buttonText
+            )
+                .setOrigin(0.5)
+                .setTint(0xffffff)
+                .setDepth(1001)
+                .setFontSize(options.fontSize)
+                .setInteractive();
+
+            // Add button background
+            const buttonBounds = buttonText.getBounds();
+            const buttonBackground = this.scene.add.graphics();
+            buttonBackground.fillStyle(0x444444);
+            buttonBackground.fillRect(
+                buttonBounds.x - 10,
+                buttonBounds.y - 4,
+                buttonBounds.width + 20,
+                buttonBounds.height + 8
+            );
+            buttonBackground.setDepth(999);
+
+            // Update message background to include button
+            const totalHeight = (buttonBounds.y + buttonBounds.height + 4) - (textBounds.y - 2);
+            this.messageBackground.fillRect(
+                textBounds.x - 10,
+                textBounds.y - 10,
+                textBounds.width + 20,
+                totalHeight + 20
+            );
+            this.messageBackground.setDepth(998);
+
+            // Handle button click
+            buttonText.on('pointerdown', () => {
+                // Clean up all elements
                 this.messageText.destroy();
                 this.messageText = null;
-            }
-            if (this.messageBackground) {
                 this.messageBackground.destroy();
                 this.messageBackground = null;
+                buttonText.destroy();
+                buttonBackground.destroy();
+                this.isModalOpen = false;
+            });
+
+            // Highlight button on hover
+            buttonText.on('pointerover', () => {
+                buttonBackground.clear();
+                buttonBackground.fillStyle(0x666666);
+                buttonBackground.fillRect(
+                    buttonBounds.x - 10,
+                    buttonBounds.y - 4,
+                    buttonBounds.width + 20,
+                    buttonBounds.height + 8
+                );
+            });
+
+            buttonText.on('pointerout', () => {
+                buttonBackground.clear();
+                buttonBackground.fillStyle(0x444444);
+                buttonBackground.fillRect(
+                    buttonBounds.x - 10,
+                    buttonBounds.y - 4,
+                    buttonBounds.width + 20,
+                    buttonBounds.height + 8
+                );
+            });
+        } else {
+            // Regular message background
+            this.messageBackground.fillRect(textBounds.x - 4, textBounds.y - 2, textBounds.width + 8, textBounds.height + 4);
+            this.messageBackground.setDepth(999);
+
+            // Auto-hide after 3 seconds for non-modal messages
+            if (options.autoHide) {
+                this.scene.time.delayedCall(3000, () => {
+                    if (this.messageText) {
+                        this.messageText.destroy();
+                        this.messageText = null;
+                    }
+                    if (this.messageBackground) {
+                        this.messageBackground.destroy();
+                        this.messageBackground = null;
+                    }
+                });
             }
-        });
+        }
+    }
+
+    isModalDialogOpen() {
+        return this.isModalOpen;
     }
 }
