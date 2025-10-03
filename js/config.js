@@ -154,8 +154,8 @@ export const GAME_GIFS = [
 
 // NPC Definitions
 export const NPCS = {
-    alice: {
-        name: 'Alice',
+    /*alice: {
+        name: '',
         position: { x: 60, y: 110 },
         dialogs: {
             beforeDoorUnlocked: [
@@ -174,9 +174,9 @@ export const NPCS = {
             aboveLayer: 27, // Layer when player Y < threshold (NPC in front)
             belowLayer: 12  // Layer when player Y > threshold (NPC behind)
         }
-    },
+    },*/
     bob: {
-        name: 'Bob',
+        name: 'Eve',
         position: { x: 112, y: 110 },
         dialogs: {
             beforeDoorUnlocked: [
@@ -197,7 +197,7 @@ export const NPCS = {
         }
     },
     charlie: {
-        name: 'Charlie',
+        name: 'David',
         position: { x: 172, y: 110 },
         dialogs: {
             beforeDoorUnlocked: [
@@ -218,7 +218,7 @@ export const NPCS = {
         }
     },
     david: {
-        name: 'David',
+        name: 'Charlie',
         position: { x: 52, y: 155 },
         dialogs: {
             beforeDoorUnlocked: [
@@ -239,7 +239,7 @@ export const NPCS = {
         }
     },
     eve: {
-        name: 'Eve',
+        name: 'Bob',
         position: { x: 110, y: 155 },
         dialogs: {
             beforeDoorUnlocked: [
@@ -260,7 +260,7 @@ export const NPCS = {
         }
     },
     frank: {
-        name: 'Frank',
+        name: 'Alice',
         position: { x: 175, y: 155 },
         dialogs: {
             beforeDoorUnlocked: [
