@@ -73,7 +73,7 @@ export class RoomManager {
         g.fillRect(CONFIG.VIRTUAL_WIDTH - 20, 0, 20, CONFIG.VIRTUAL_HEIGHT - CONFIG.INVENTORY_HEIGHT);
 
         // Door
-        const doorColor = this.scene.gameState.doorUnlocked ? 0x27ae60 : 0x8b4513;
+        const doorColor = this.scene.gameState.progress.doorUnlocked ? 0x27ae60 : 0x8b4513;
         g.fillStyle(doorColor);
         g.fillRect(280, 80, 30, 60);
         g.fillStyle(0x2c3e50);
@@ -88,10 +88,10 @@ export class RoomManager {
         g.fillRect(40, 90, 60, 40);
 
         // Drawer
-        const drawerColor = this.scene.gameState.drawerOpen ? 0x654321 : 0x8b4513;
+        const drawerColor = this.scene.gameState.progress.drawerOpen ? 0x654321 : 0x8b4513;
         g.fillStyle(drawerColor);
         g.fillRect(50, 100, 40, 20);
-        if (!this.scene.gameState.drawerOpen) {
+        if (!this.scene.gameState.progress.drawerOpen) {
             g.fillStyle(0x2c3e50);
             g.fillCircle(70, 110, 2);
         }
@@ -112,7 +112,7 @@ export class RoomManager {
         this.scene.rooms.room1.hotspots.push(...npcHotspots);
 
         // Key in drawer (if drawer is open and key not taken)
-        if (this.scene.gameState.drawerOpen && !this.scene.gameState.keyTaken) {
+        if (this.scene.gameState.progress.drawerOpen && !this.scene.gameState.progress.keyTaken) {
             this.scene.keySprite = this.scene.add.sprite(70, 110, 'key');
             this.scene.keySprite.setDepth(50); // Higher depth to be above everything
 
@@ -204,7 +204,7 @@ export class RoomManager {
     createSpecialElements(roomId) {
         if (roomId === 'room1') {
             // Key in drawer (if drawer is open and key not taken)
-            if (this.scene.gameState.drawerOpen && !this.scene.gameState.keyTaken) {
+            if (this.scene.gameState.progress.drawerOpen && !this.scene.gameState.progress.keyTaken) {
                 this.scene.keySprite = this.scene.add.sprite(70, 110, 'key');
                 this.scene.keySprite.setDepth(50); // Higher depth to be above everything
 

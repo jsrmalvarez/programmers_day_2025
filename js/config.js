@@ -152,6 +152,15 @@ export const GAME_GIFS = [
     'sim_city_2000_gif'
 ];
 
+const SMALL_TALK = [
+    "Good morning.",
+    "It is a nice day.",
+    "When are you bringing engordaciones?",
+    "It is good to be an ERNIan.",
+    "Traffic is horrible.",
+    "I'm not sure what you're talking about."
+];
+
 // NPC Definitions
 export const NPCS = {
     /*alice: {
@@ -263,9 +272,9 @@ export const NPCS = {
         name: 'Alice',
         position: { x: 175, y: 155 },
         dialogs: {
-            beforeDoorUnlocked: [
-                "Door? I'm not sure what you're talking about.",
-                "Key? I don't have one."
+            beforeTryingToOccupySeatA: [
+                "Good morning.",
+                "It is a nice day."
             ],
             afterDoorUnlocked: [
                 "I'm not sure what you're talking about."
@@ -344,3 +353,21 @@ export const ROOMS = {
         ]
     }
 };
+
+
+export function getDialogSet(gameState, id) {
+    if(gameState.progress._010_triedToOccupySeatA){
+
+        if(id === 'alice'){
+            return ["I'd gladly change the seat, but seat A has no mouse.",
+                    "I need a mouse so I can work at seat A.",
+                    "Last afterwork ended up with some mice running around the terrace."];
+        }
+        else{
+            return SMALL_TALK;
+        }
+    }
+    else{
+        return SMALL_TALK;
+    }
+}

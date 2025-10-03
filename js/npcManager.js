@@ -3,7 +3,7 @@
  * Handles creation, interaction, and management of all NPCs
  */
 
-import { NPCS, CONFIG } from './config.js';
+import { NPCS, CONFIG, getDialogSet } from './config.js';
 import { gameState } from './gameState.js';
 
 export class NPC {
@@ -16,9 +16,6 @@ export class NPC {
         this.hotspot = config.hotspot;
         this.layering = config.layering; // Dynamic layering configuration
         this.scene = scene;
-
-        // Individual dialog state
-        this.dialogIndex = 0;
 
         // Phaser sprite (for game logic and rendering)
         this.sprite = null;
@@ -55,13 +52,10 @@ export class NPC {
 
     talk() {
         // Determine which dialog set to use
-        const dialogSet = gameState.doorUnlocked ?
-            this.dialogs.afterDoorUnlocked :
-            this.dialogs.beforeDoorUnlocked;
+        const dialogSet = getDialogSet(gameState, this.id);
 
-        // Get current dialog
-        const dialog = dialogSet[Math.min(this.dialogIndex, dialogSet.length - 1)];
-        this.dialogIndex++;
+        const dialogIndex = Math.floor(Math.random() * dialogSet.length);
+        const dialog = dialogSet[dialogIndex];
 
         // Show message
         this.scene.uiManager.showMessage(`${this.name}: "${dialog}"`);

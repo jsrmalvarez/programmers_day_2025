@@ -10,9 +10,19 @@ export let gameState = {
     currentRoom: 'room1',
     inventory: [],
     selectedItem: null,
-    doorUnlocked: false,
-    drawerOpen: false,
-    keyTaken: false,
+    progress: {
+        doorUnlocked: false,
+        drawerOpen: false,
+        keyTaken: false,
+
+        _010_triedToOccupySeatA: false,
+        _020_talkedToAlice: false,
+        _021_pidgeonAvoided: false,
+        _022_mouseTaken: false,
+        _023_mouseGivenToAlice: false,
+        _030_talkedToBob: false,
+        _040_talkedToEve: false,
+    },
     playerX: 263,
     playerY: 186,
     targetX: 160,
@@ -29,7 +39,7 @@ export let gameState = {
         currentChar: 0,
         lineDelay: 0,
         characters: [], // Array of character data for current screen
-        mode: 'typing', // 'typing' or 'video'
+        mode: 'off', // 'typing' or 'video'
         pongGame: null // Pong game state for video mode
     },
     screen2: {
@@ -84,9 +94,9 @@ export function resetGameState() {
     gameState.currentRoom = 'room1';
     gameState.inventory = [];
     gameState.selectedItem = null;
-    gameState.doorUnlocked = false;
-    gameState.drawerOpen = false;
-    gameState.keyTaken = false;
+    gameState.progress.doorUnlocked = false;
+    gameState.progress.drawerOpen = false;
+    gameState.progress.keyTaken = false;
     gameState.playerX = 160;
     gameState.playerY = 120;
     gameState.targetX = 160;

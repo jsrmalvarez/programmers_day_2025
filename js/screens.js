@@ -95,11 +95,20 @@ export class ScreenManager {
         graphics.lineStyle(1, 0x3498db);
         graphics.strokeRect(x, y, scaledWidth, scaledHeight);
 
-        if (screenState.mode === 'typing') {
+        if (screenState.mode === 'off') {
+            this.renderOffMode(graphics, x, y, scaledWidth, scaledHeight, screenState, isBig);
+        }
+        else if (screenState.mode === 'typing') {
             this.renderTypingMode(graphics, x, y, scaledWidth, scaledHeight, screenState, isBig);
         } else if (screenState.mode === 'video') {
             this.renderVideoMode(graphics, x, y, scaledWidth, scaledHeight, screenState, isBig);
         }
+    }
+
+    renderOffMode(graphics, x, y, width, height, screenState, isBig = false) {
+        // Dark screen background - completely clear the screen
+        graphics.fillStyle(0x001100);
+        graphics.fillRect(x, y+1, width-1, height-1);
     }
 
     renderTypingMode(graphics, x, y, width, height, screenState, isBig = false) {
@@ -287,6 +296,7 @@ export class ScreenManager {
 
     // Helper function to determine screen mode based on player position and orientation
     getScreenMode(screenConfig) {
+
         const dimensions = CONFIG.PLAYER[CONFIG.PLAYER.USE_VERSION];
         const playerFeetY = gameState.playerY + dimensions.FEET_OFFSET;
         const playerLeftX = gameState.playerX - dimensions.WIDTH / 2;
@@ -325,12 +335,12 @@ export class ScreenManager {
         // Video mode when: player is behind screen OR looking away from screen
         // Typing mode when: player is in front of screen AND looking at screen
 
-        const newScreen1Mode = this.getScreenMode(SCREENS.screen1);
-        const newScreen2Mode = this.getScreenMode(SCREENS.screen2);
-        const newScreen3Mode = this.getScreenMode(SCREENS.screen3);
-        const newScreen4Mode = this.getScreenMode(SCREENS.screen4);
-        const newScreen5Mode = this.getScreenMode(SCREENS.screen5);
-        const newScreen6Mode = this.getScreenMode(SCREENS.screen6);
+        const newScreen1Mode = gameState.screen1.mode === 'off' ? 'off' : this.getScreenMode(SCREENS.screen1);
+        const newScreen2Mode = gameState.screen2.mode === 'off' ? 'off' : this.getScreenMode(SCREENS.screen2);
+        const newScreen3Mode = gameState.screen3.mode === 'off' ? 'off' : this.getScreenMode(SCREENS.screen3);
+        const newScreen4Mode = gameState.screen4.mode === 'off' ? 'off' : this.getScreenMode(SCREENS.screen4);
+        const newScreen5Mode = gameState.screen5.mode === 'off' ? 'off' : this.getScreenMode(SCREENS.screen5);
+        const newScreen6Mode = gameState.screen6.mode === 'off' ? 'off' : this.getScreenMode(SCREENS.screen6);
 
         // Reset screen state if mode changed
         if (gameState.screen1.mode !== newScreen1Mode) {
@@ -405,7 +415,7 @@ export class ScreenManager {
     }
 
     resetScreenForMode(screenState) {
-        if (screenState.mode === 'typing') {
+        if (screenState.mode === 'typing' || screenState.mode === 'off') {
             // Clean up video mode elements
             screenState.pongGame = null;
 
@@ -431,6 +441,10 @@ export class ScreenManager {
 
 
     updateSingleScreen(screenState) {
+        if(screenState.mode === 'off') {
+            return false;
+        }
+
         if (screenState.mode === 'typing') {
             return this.updateTypingMode(screenState);
         } else if (screenState.mode === 'video') {

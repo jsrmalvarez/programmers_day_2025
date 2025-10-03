@@ -310,26 +310,12 @@ export class InputManager {
 
         // Update player sprite position and version based on Y position
         if (this.scene.playerSprite) {
-            console.log('updating player position:', {
-                x: gameState.playerX,
-                y: gameState.playerY,
-                currentRoom: gameState.currentRoom,
-                scene: !!this.scene,
-                rooms: !!this.scene.rooms,
-                playerSprite: !!this.scene.playerSprite
-            });
 
             this.scene.playerSprite.x = gameState.playerX;
             this.scene.playerSprite.y = gameState.playerY;
 
             // Update player version based on Y position and room thresholds
             const currentRoom = this.scene.rooms[gameState.currentRoom];
-            console.log('room check:', {
-                currentRoom: !!currentRoom,
-                roomId: gameState.currentRoom,
-                nearFarThreshold: currentRoom?.nearFarThreshold,
-                farTinyThreshold: currentRoom?.farTinyThreshold
-            });
 
             if (currentRoom && currentRoom.nearFarThreshold && currentRoom.farTinyThreshold) {
                 let newVersion;
@@ -341,7 +327,6 @@ export class InputManager {
                     newVersion = 'NEAR';
                 }
 
-                console.log('newVersion', newVersion);
                 if (CONFIG.PLAYER.USE_VERSION !== newVersion) {
                     CONFIG.PLAYER.USE_VERSION = newVersion;
                     // Apply new version's scale
@@ -440,7 +425,6 @@ export class InputManager {
             this.debugText.setDepth(1001);
             this.debugText.setTint(0x00ff00); // Green color for visibility
 
-            console.log('DEBUG: Coordinates debug enabled - Press C to toggle off');
         } else {
             // Clean up debug elements
             if (this.debugDot) {
@@ -451,7 +435,6 @@ export class InputManager {
                 this.debugText.destroy();
                 this.debugText = null;
             }
-            console.log('DEBUG: Coordinates debug disabled');
         }
     }
 

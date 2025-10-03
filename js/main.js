@@ -213,8 +213,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     interactDrawer() {
-        if (!gameState.drawerOpen) {
-            gameState.drawerOpen = true;
+        if (!gameState.progress.drawerOpen) {
+            gameState.progress.drawerOpen = true;
             this.switchToRoom('room1'); // Refresh room to show open drawer
             this.uiManager.showMessage('The drawer opens, revealing a key!');
         } else {
@@ -223,8 +223,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     takeKey() {
-        if (!gameState.keyTaken) {
-            gameState.keyTaken = true;
+        if (!gameState.progress.keyTaken) {
+            gameState.progress.keyTaken = true;
             this.uiManager.addToInventoryUI(ITEMS.key);
             this.switchToRoom('room1'); // Refresh room to remove key
             this.uiManager.showMessage('You took the office key.');
