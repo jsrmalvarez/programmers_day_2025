@@ -16,6 +16,7 @@ export class UIManager {
         this.toggleButton = null;
         this.inventoryVisible = true;
         this.isModalOpen = false;
+        this.messageTimeout = null; // Store reference to auto-hide timeout
     }
 
     setupUI() {
@@ -256,6 +257,12 @@ export class UIManager {
         };
         options = { ...defaults, ...options };
 
+        // Clear any existing timeout
+        if (this.messageTimeout) {
+            this.scene.time.removeEvent(this.messageTimeout);
+            this.messageTimeout = null;
+        }
+
         // Remove existing message and its background
         if (this.messageText) {
             if (this.messageBackground) {
@@ -362,7 +369,7 @@ export class UIManager {
 
             // Auto-hide after 3 seconds for non-modal messages
             if (options.autoHide) {
-                this.scene.time.delayedCall(3000, () => {
+                this.messageTimeout = this.scene.time.delayedCall(3000, () => {
                     if (this.messageText) {
                         this.messageText.destroy();
                         this.messageText = null;
@@ -371,6 +378,7 @@ export class UIManager {
                         this.messageBackground.destroy();
                         this.messageBackground = null;
                     }
+                    this.messageTimeout = null; // Clear the reference
                 });
             }
         }

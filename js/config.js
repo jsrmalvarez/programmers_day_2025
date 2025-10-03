@@ -23,15 +23,15 @@ export const CONFIG = {
         },
         // Far version (scaled down)
         FAR: {
-            WIDTH: 20,          // Proportionally scaled from 24
-            HEIGHT: 52,         // As specified
-            FEET_OFFSET: 26     // Half of HEIGHT
+            WIDTH: 22,          // Proportionally scaled from 24
+            HEIGHT: 56,         // As specified
+            FEET_OFFSET: 28     // Half of HEIGHT
         },
         // Tiny version (furthest from viewer)
         TINY: {
-            WIDTH: 16,          // Proportionally scaled from 24
-            HEIGHT: 42,         // Even smaller
-            FEET_OFFSET: 21     // Half of HEIGHT
+            WIDTH: 18,          // Proportionally scaled from 24
+            HEIGHT: 48,         // Even smaller
+            FEET_OFFSET: 24     // Half of HEIGHT
         },
         // Which version to use (NEAR, FAR, or TINY)
         USE_VERSION: 'NEAR',
@@ -297,7 +297,7 @@ export const ROOMS = {
         name: 'Office',
         // Y position thresholds for player scaling
         nearFarThreshold: 145,  // Below this: FAR, above this: NEAR
-        farTinyThreshold: 102,  // Below this: TINY, above this: FAR
+        farTinyThreshold: 112,  // Below this: TINY, above this: FAR
         background: {
             image: 'room1_bg', // PNG background image
             mask: 'room1_mask'  // Black/white collision mask
@@ -367,13 +367,30 @@ export const ROOMS = {
 };
 
 
+let firstTimeAliceAnd_010_triedToOccupySeatA = true;
 export function getDialogSet(gameState, id) {
+
+    if(id == 'charlie'){
+        if(gameState.progress._030_talkedToBob){
+            return ["I'm super tired.",
+                    "I need a coffee."];
+        }
+        else{
+            return ["...ZZzzzzz...", "...Snore..."];
+        }
+    }
+
     if(gameState.progress._010_triedToOccupySeatA){
 
         if(id === 'alice'){
-            return ["I'd gladly change the seat, but seat A has no mouse.",
-                    "I need a mouse so I can work at seat A.",
+            if(firstTimeAliceAnd_010_triedToOccupySeatA){
+                firstTimeAliceAnd_010_triedToOccupySeatA = false;
+                return ["I'd gladly change the seat, but seat A has no mouse."];
+            }
+            else{
+                return ["I need a mouse so I can work at seat A.",
                     "Last afterwork ended up with some mice running around the terrace."];
+            }
         }
         else{
             return SMALL_TALK;

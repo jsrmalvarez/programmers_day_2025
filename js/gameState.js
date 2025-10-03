@@ -62,7 +62,7 @@ export let gameState = {
         currentChar: 0,
         lineDelay: 0,
         characters: [],
-        mode: 'typing',
+        mode: 'off',
         pongGame: null
     },
     screen5: {

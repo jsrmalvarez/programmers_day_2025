@@ -54,7 +54,10 @@ export class NPC {
         // Determine which dialog set to use
         const dialogSet = getDialogSet(gameState, this.id);
 
-        const dialogIndex = Math.floor(Math.random() * dialogSet.length);
+        let dialogIndex = Math.round(Math.random() * dialogSet.length);
+        if(dialogIndex == dialogSet.length){
+            dialogIndex--;
+        }
         const dialog = dialogSet[dialogIndex];
 
         // Show message
