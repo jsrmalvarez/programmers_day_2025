@@ -223,12 +223,12 @@ export class GameScene extends Phaser.Scene {
         this.uiManager.showMessage("I will not sit in there.\nI booked for seat F.");
     }
 
-    takeKey() {
-        if (!gameState.progress.keyTaken) {
-            gameState.progress.keyTaken = true;
-            this.uiManager.addToInventoryUI(ITEMS.key);
-            this.switchToRoom('room1'); // Refresh room to remove key
-            this.uiManager.showMessage('You took the office key.');
+    takeMouse() {
+        if(!gameState.progress._022_mouseTaken) {
+            gameState.progress._022_mouseTaken = true;
+            this.uiManager.addToInventoryUI('mouse_item');
+            this.roomSpriteManager.hideMouseSprite(); // Hide the mouse sprite
+            this.uiManager.showMessage("You took the mouse.");
         }
     }
 

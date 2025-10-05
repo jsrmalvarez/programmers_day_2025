@@ -66,9 +66,9 @@ export const SOUNDS = {
 
 // Items definition
 export const ITEMS = {
-    key: {
-        name: 'Office Key',
-        sprite: 'key'
+    mouse: {
+        name: 'Mouse',
+        sprite: 'mouse'
     }
 };
 
@@ -365,9 +365,15 @@ export const ROOMS = {
         triggers: [
             {
                 id: 'flying_pidgeon_trigger',
-                condition: (gameState) => gameState.playerX < 200, // Trigger when player X < 100
-                action: 'startAnimation',
-                target: 'flying_pidgeon',
+                condition: (gameState) => gameState.playerX < 200, // Trigger when player X < 200
+                action: (scene) => {
+                    // Start flying pigeon animation
+                    if (scene.roomSpriteManager) {
+                        scene.roomSpriteManager.startAnimation('flying_pidgeon');
+                        // Stop regular pigeon animation
+                        scene.roomSpriteManager.stopAnimation('pidgeon');
+                    }
+                },
                 oneTime: true // Only trigger once
             }
         ],
@@ -444,7 +450,7 @@ export const ROOMS = {
                     },
                     autoStart: false,
                     isPlaying: false,
-                    repeat: 1
+                    repeat: 15
                 },
                 x: 144, y: 119,
                 layering: {

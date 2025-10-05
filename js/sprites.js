@@ -302,6 +302,18 @@ export class SpriteManager {
         graphics.generateTexture('key', 10, 8);
         graphics.clear();
 
+        // Create mouse sprite for inventory
+        graphics.fillStyle(0x8B4513); // Brown color for mouse body
+        graphics.fillRect(2, 2, 8, 4); // Body
+        graphics.fillRect(1, 3, 2, 2); // Left ear
+        graphics.fillRect(9, 3, 2, 2); // Right ear
+        graphics.fillRect(0, 4, 1, 1); // Left eye
+        graphics.fillRect(11, 4, 1, 1); // Right eye
+        graphics.fillRect(5, 6, 2, 1); // Nose
+        graphics.fillRect(4, 7, 4, 1); // Mouth
+        graphics.generateTexture('mouse_item', 12, 8);
+        graphics.clear();
+
         graphics.destroy();
     }
 

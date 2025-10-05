@@ -34,7 +34,6 @@ export class RoomManager {
 
     // Execute a trigger action
     executeTrigger(trigger) {
-        console.log(`Trigger activated: ${trigger.id}`);
 
         // Mark as triggered if it's a one-time trigger
         if (trigger.oneTime) {
@@ -42,29 +41,35 @@ export class RoomManager {
         }
 
         // Execute the action
-        switch (trigger.action) {
-            case 'startAnimation':
-                if (this.scene.roomSpriteManager) {
-                    this.scene.roomSpriteManager.startAnimation(trigger.target);
-                }
-                break;
-            case 'stopAnimation':
-                if (this.scene.roomSpriteManager) {
-                    this.scene.roomSpriteManager.stopAnimation(trigger.target);
-                }
-                break;
-            case 'hideSprite':
-                if (this.scene.roomSpriteManager) {
-                    this.scene.roomSpriteManager.hideSprite(trigger.target);
-                }
-                break;
-            case 'showSprite':
-                if (this.scene.roomSpriteManager) {
-                    this.scene.roomSpriteManager.showSprite(trigger.target);
-                }
-                break;
-            default:
-                console.warn(`Unknown trigger action: ${trigger.action}`);
+        if (typeof trigger.action === 'function') {
+            // Function action - call it with the scene
+            trigger.action(this.scene);
+        } else {
+            // String action - handle legacy format
+            switch (trigger.action) {
+                case 'startAnimation':
+                    if (this.scene.roomSpriteManager) {
+                        this.scene.roomSpriteManager.startAnimation(trigger.target);
+                    }
+                    break;
+                case 'stopAnimation':
+                    if (this.scene.roomSpriteManager) {
+                        this.scene.roomSpriteManager.stopAnimation(trigger.target);
+                    }
+                    break;
+                case 'hideSprite':
+                    if (this.scene.roomSpriteManager) {
+                        this.scene.roomSpriteManager.hideSprite(trigger.target);
+                    }
+                    break;
+                case 'showSprite':
+                    if (this.scene.roomSpriteManager) {
+                        this.scene.roomSpriteManager.showSprite(trigger.target);
+                    }
+                    break;
+                default:
+                    console.warn(`Unknown trigger action: ${trigger.action}`);
+            }
         }
     }
 
@@ -101,6 +106,11 @@ export class RoomManager {
                     name: 'Door',
                     x: 312, y: 85, width: 15, height: 75,
                     action: this.scene.interactDoor.bind(this.scene)
+                },
+                {
+                    name: 'mouse',
+                    x: 71, y: 127, width: 9, height: 5,
+                    action: this.scene.takeMouse.bind(this.scene)
                 }
             ],
             walkableBounds: { x: 20, y: 60, width: 280, height: 100 }
@@ -214,10 +224,10 @@ export class RoomManager {
         }
 
         // Handle special room elements (key, etc.)
-        this.createSpecialElements(roomId);
+        //this.createSpecialElements(roomId);
     }
 
-    createSpecialElements(roomId) {
+    /*createSpecialElements(roomId) {
         if (roomId === 'room1') {
             // Key in drawer (if drawer is open and key not taken)
             if (this.scene.gameState.progress.drawerOpen && !this.scene.gameState.progress.keyTaken) {
@@ -234,13 +244,8 @@ export class RoomManager {
             }
         } else if (roomId === 'room2') {
             // Success message using bitmap font - pixel perfect
-         /*   const successText = this.scene.add.bitmapText(CONFIG.VIRTUAL_WIDTH / 2, 30, 'arcade', 'YOU DID IT!')
-                .setOrigin(0.5)
-                .setTint(0x2ecc71)
-                .setFontSize(7)
-                .setLineSpacing(10);*/
         }
-    }
+    }*/
 
     destroyBackground() {
         if (this.backgroundGraphics) {

@@ -47,6 +47,11 @@ export class RoomSpriteManager {
 
         sprite.setOrigin(0, 0);
 
+        // Handle conditional visibility for items that can be taken
+        if (id === 'mouse' && this.scene.gameState.progress._022_mouseTaken) {
+            sprite.setVisible(false);
+        }
+
         // Handle layering configuration
         if (layering) {
             if (layering.type === 'dynamic') {
@@ -75,10 +80,16 @@ export class RoomSpriteManager {
     }
 
     createAnimatedSprite(id, animationConfig, x, y) {
-        const { key, frames, frameRate, frameDurations, framePositions, repeat } = animationConfig;
+        const { key, frames, frameRate, frameDurations, framePositions, repeat, autoStart } = animationConfig;
 
-        // Create sprite using the first frame
+        // Create sprite with the first frame texture
         const sprite = this.scene.add.sprite(x, y, frames[0]);
+
+        // If autoStart is false, make it invisible immediately
+        if (autoStart === false) {
+            sprite.setVisible(false);
+            sprite.setAlpha(0); // Also set alpha to 0 to ensure it's completely invisible
+        }
 
         // Check if we need custom animation system
         const hasDynamicDurations = frameDurations && frameDurations.some(duration => typeof duration === 'function');
@@ -132,7 +143,7 @@ export class RoomSpriteManager {
             repeat: repeat !== undefined ? repeat : -1,
             currentFrame: 0,
             frameStartTime: 0,
-            isPlaying: autoStart !== false, // Default to true unless explicitly false
+            isPlaying: autoStart === true, // Only true if explicitly set to true
             loopCount: 0,
             originalX: originalX,
             originalY: originalY,
@@ -144,26 +155,33 @@ export class RoomSpriteManager {
         };
 
 
-        // Set initial frame
-        sprite.setTexture(frames[0]);
-        sprite.animationState.frameStartTime = this.scene.time.now;
-        sprite.animationState.lastTranslationTime = this.scene.time.now;
-
-        // Apply initial frame positioning if available
-        if (framePositions && framePositions[0]) {
-            const framePos = framePositions[0];
-            sprite.x = originalX + framePos.x;
-            sprite.y = originalY + framePos.y;
-        }
-
         // Set initial visibility based on autoStart
         if (autoStart === false) {
             sprite.setVisible(false);
         }
 
+        // Only set up animation if it should be playing
+        if (sprite.animationState.isPlaying) {
+            // Set initial frame
+            sprite.setTexture(frames[0]);
+            sprite.animationState.frameStartTime = this.scene.time.now;
+            sprite.animationState.lastTranslationTime = this.scene.time.now;
+
+            // Apply initial frame positioning if available
+            if (framePositions && framePositions[0]) {
+                const framePos = framePositions[0];
+                sprite.x = originalX + framePos.x;
+                sprite.y = originalY + framePos.y;
+            }
+        } else {
+            // Don't set texture or position if not playing
+        }
+
         // Create update function that will be called each frame
         const updateAnimation = () => {
-            if (!sprite.animationState || !sprite.animationState.isPlaying) return;
+            if (!sprite.animationState || !sprite.animationState.isPlaying) {
+                return;
+            }
 
             const now = this.scene.time.now;
             const state = sprite.animationState;
@@ -247,6 +265,27 @@ export class RoomSpriteManager {
         if (sprite && sprite.animationState) {
             sprite.animationState.isPlaying = true;
             sprite.setVisible(true);
+            sprite.setAlpha(1); // Restore full opacity
+
+            // Initialize the sprite if it wasn't set up initially
+            if (!sprite.animationState.frameStartTime) {
+                sprite.setTexture(sprite.animationState.frames[0]);
+                sprite.animationState.frameStartTime = this.scene.time.now;
+                sprite.animationState.lastTranslationTime = this.scene.time.now;
+
+                // Apply initial frame positioning if available
+                if (sprite.animationState.framePositions && sprite.animationState.framePositions[0]) {
+                    const framePos = sprite.animationState.framePositions[0];
+                    sprite.x = sprite.animationState.originalX + framePos.x;
+                    sprite.y = sprite.animationState.originalY + framePos.y;
+                }
+            } else {
+                // Just set the texture if it was already initialized but not playing
+                sprite.setTexture(sprite.animationState.frames[0]);
+            }
+        } else if (sprite) {
+            // For sprites without animationState (static sprites), just make them visible
+            sprite.setVisible(true);
         }
     }
 
@@ -254,6 +293,11 @@ export class RoomSpriteManager {
         const sprite = this.sprites.get(id);
         if (sprite && sprite.animationState) {
             sprite.animationState.isPlaying = false;
+            sprite.setVisible(false); // Hide the sprite when stopping animation
+            sprite.setAlpha(0); // Also set alpha to 0 for complete invisibility
+        } else if (sprite) {
+            // For sprites without animationState (static sprites), just hide them
+            sprite.setVisible(false);
         }
     }
 
@@ -261,6 +305,14 @@ export class RoomSpriteManager {
         const sprite = this.sprites.get(id);
         if (sprite) {
             sprite.setVisible(false);
+        }
+    }
+
+    // Hide mouse sprite when taken
+    hideMouseSprite() {
+        const mouseSprite = this.sprites.get('mouse');
+        if (mouseSprite) {
+            mouseSprite.setVisible(false);
         }
     }
 
