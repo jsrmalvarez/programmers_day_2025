@@ -11,6 +11,61 @@ export class RoomManager {
         this.scene = scene;
         this.backgroundGraphics = null;
         this.backgroundSprite = null;
+        this.triggeredEvents = new Set(); // Track triggered events
+    }
+
+    // Check position triggers for the current room
+    checkTriggers() {
+        const currentRoom = ROOMS[gameState.currentRoom];
+        if (!currentRoom || !currentRoom.triggers) return;
+
+        for (const trigger of currentRoom.triggers) {
+            // Skip if already triggered and it's a one-time trigger
+            if (trigger.oneTime && this.triggeredEvents.has(trigger.id)) {
+                continue;
+            }
+
+            // Check if condition is met
+            if (trigger.condition(gameState)) {
+                this.executeTrigger(trigger);
+            }
+        }
+    }
+
+    // Execute a trigger action
+    executeTrigger(trigger) {
+        console.log(`Trigger activated: ${trigger.id}`);
+
+        // Mark as triggered if it's a one-time trigger
+        if (trigger.oneTime) {
+            this.triggeredEvents.add(trigger.id);
+        }
+
+        // Execute the action
+        switch (trigger.action) {
+            case 'startAnimation':
+                if (this.scene.roomSpriteManager) {
+                    this.scene.roomSpriteManager.startAnimation(trigger.target);
+                }
+                break;
+            case 'stopAnimation':
+                if (this.scene.roomSpriteManager) {
+                    this.scene.roomSpriteManager.stopAnimation(trigger.target);
+                }
+                break;
+            case 'hideSprite':
+                if (this.scene.roomSpriteManager) {
+                    this.scene.roomSpriteManager.hideSprite(trigger.target);
+                }
+                break;
+            case 'showSprite':
+                if (this.scene.roomSpriteManager) {
+                    this.scene.roomSpriteManager.showSprite(trigger.target);
+                }
+                break;
+            default:
+                console.warn(`Unknown trigger action: ${trigger.action}`);
+        }
     }
 
     createRooms() {

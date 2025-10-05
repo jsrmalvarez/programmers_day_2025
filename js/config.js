@@ -361,6 +361,16 @@ export const ROOMS = {
             image: 'room2_bg',
             mask: 'room2_mask'
         },
+        // Position triggers for room-specific events
+        triggers: [
+            {
+                id: 'flying_pidgeon_trigger',
+                condition: (gameState) => gameState.playerX < 200, // Trigger when player X < 100
+                action: 'startAnimation',
+                target: 'flying_pidgeon',
+                oneTime: true // Only trigger once
+            }
+        ],
         sprites: [
             {
                 id: 'structure',
@@ -389,33 +399,29 @@ export const ROOMS = {
                     layer: 25
                 }
             },
-/*            {
+            {
                 id: 'pidgeon',
                 animation: {
                     key: 'pidgeon',
                     frames: ['pidgeon000', 'pidgeon001'], // Add more frames as needed
                     frameRate: 8, // Default frames per second (used when no frame-specific duration)
                     frameDurations: [
-                        500,//() => Math.max(50, gaussianRandom(2000, 750)),
-                        500,//50
+                        () => Math.max(100, gaussianRandom(2000, 1000)),
+                        () => Math.max(100, gaussianRandom(1000, 1000)),
                     ],
                     framePositions: [
                         { x: 0, y: 0 }, // No offset for first frame
                         { x: -1, y: 0 } // Slight offset for second frame
                     ],
-                    translation: {
-                        x: 3,
-                        y: 6
-                    },
-                    autoStart: true, // Start animation automatically
-                    repeat: 0
+                    autoStart: true,
+                    repeat: -1
                 },
                 x: 144, y: 119,
                 layering: {
                     type: 'static',
                     layer: 26
                 }
-            },*/
+            },
             {
                 id: 'flying_pidgeon',
                 animation: {
@@ -436,9 +442,9 @@ export const ROOMS = {
                         y: -1,
                         rate: 50 // Translation every 100ms (independent of frame timing)
                     },
-                    autoStart: true, // Start animation automatically
-
-                    repeat: -1 // Loop infinitely
+                    autoStart: false,
+                    isPlaying: false,
+                    repeat: 1
                 },
                 x: 144, y: 119,
                 layering: {

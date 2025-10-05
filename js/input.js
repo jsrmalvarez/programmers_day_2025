@@ -345,6 +345,11 @@ export class InputManager {
         if (this.scene.screenManager) {
             this.scene.screenManager.updateScreenLayers();
         }
+
+        // Check position triggers
+        if (this.scene.roomManager) {
+            this.scene.roomManager.checkTriggers();
+        }
     }
 
     updateAnimation() {
