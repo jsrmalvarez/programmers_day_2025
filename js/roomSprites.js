@@ -75,23 +75,147 @@ export class RoomSpriteManager {
     }
 
     createAnimatedSprite(id, animationConfig, x, y) {
-        const { key, frames, frameRate, repeat } = animationConfig;
+        const { key, frames, frameRate, frameDurations, framePositions, repeat } = animationConfig;
 
         // Create sprite using the first frame
         const sprite = this.scene.add.sprite(x, y, frames[0]);
 
-        // Create animation from the frames
-        this.scene.anims.create({
-            key: key,
-            frames: frames.map(frame => ({ key: frame })),
-            frameRate: frameRate || 8,
-            repeat: repeat !== undefined ? repeat : -1 // Default to infinite loop
-        });
+        // Check if we need custom animation system
+        const hasDynamicDurations = frameDurations && frameDurations.some(duration => typeof duration === 'function');
+        const hasFramePositions = framePositions && framePositions.length > 0;
 
-        // Start the animation
-        sprite.play(key);
+        if (hasDynamicDurations || hasFramePositions) {
+            // Use custom animation system for dynamic durations or frame positioning
+            this.createCustomAnimatedSprite(sprite, id, animationConfig);
+        } else {
+            // Use standard Phaser animation for static durations
+            const animationFrames = frames.map((frame, index) => {
+                const frameConfig = { key: frame };
+
+                // Check if we have frame-specific durations
+                if (frameDurations && frameDurations[index] !== undefined) {
+                    frameConfig.duration = frameDurations[index];
+                }
+
+                return frameConfig;
+            });
+
+            // Create animation from the frames
+            this.scene.anims.create({
+                key: key,
+                frames: animationFrames,
+                frameRate: frameRate || 8,
+                repeat: repeat !== undefined ? repeat : -1
+            });
+
+            // Start the animation
+            sprite.play(key);
+        }
 
         return sprite;
+    }
+
+    createCustomAnimatedSprite(sprite, id, animationConfig) {
+        const { key, frames, frameRate, frameDurations, framePositions, repeat } = animationConfig;
+
+        // Store original position for reference
+        const originalX = sprite.x;
+        const originalY = sprite.y;
+
+        // Store animation state on the sprite
+        sprite.animationState = {
+            frames: frames,
+            frameDurations: frameDurations,
+            framePositions: framePositions,
+            frameRate: frameRate || 8,
+            repeat: repeat !== undefined ? repeat : -1,
+            currentFrame: 0,
+            frameStartTime: 0,
+            isPlaying: true,
+            loopCount: 0,
+            originalX: originalX,
+            originalY: originalY
+        };
+
+
+        // Set initial frame
+        sprite.setTexture(frames[0]);
+        sprite.animationState.frameStartTime = this.scene.time.now;
+
+        // Apply initial frame positioning if available
+        if (framePositions && framePositions[0]) {
+            const framePos = framePositions[0];
+            sprite.x = originalX + framePos.x;
+            sprite.y = originalY + framePos.y;
+        }
+
+        // Create update function that will be called each frame
+        const updateAnimation = () => {
+            if (!sprite.animationState || !sprite.animationState.isPlaying) return;
+
+            const now = this.scene.time.now;
+            const state = sprite.animationState;
+
+            // Calculate current frame duration
+            let frameDuration;
+            if (state.frameDurations && state.frameDurations[state.currentFrame] !== undefined) {
+                const duration = state.frameDurations[state.currentFrame];
+                if (typeof duration === 'function') {
+                    frameDuration = duration();
+                } else {
+                    frameDuration = duration;
+                }
+            } else {
+                frameDuration = 1000 / state.frameRate; // Convert FPS to milliseconds
+            }
+
+            // Check if it's time to advance to next frame
+            if (now - state.frameStartTime >= frameDuration) {
+                state.currentFrame++;
+
+                // Check if we've reached the end of the animation
+                if (state.currentFrame >= state.frames.length) {
+                    state.loopCount++;
+
+                    // Check if we should stop or loop
+                    if (state.repeat !== -1 && state.loopCount >= state.repeat) {
+                        state.isPlaying = false;
+                        return;
+                    }
+
+                    // Loop back to start
+                    state.currentFrame = 0;
+                }
+
+                // Update sprite texture
+                sprite.setTexture(state.frames[state.currentFrame]);
+
+                // Apply frame-specific positioning if available
+                if (state.framePositions && state.framePositions[state.currentFrame]) {
+                    const framePos = state.framePositions[state.currentFrame];
+                    sprite.x = state.originalX + framePos.x;
+                    sprite.y = state.originalY + framePos.y;
+                } else {
+                    // Reset to original position if no frame position specified
+                    sprite.x = state.originalX;
+                    sprite.y = state.originalY;
+                }
+
+                state.frameStartTime = now;
+            }
+        };
+
+        // Store update function reference for cleanup
+        sprite.animationUpdate = updateAnimation;
+
+        // Add to scene update loop
+        this.scene.events.on('update', updateAnimation);
+
+        // Store reference for cleanup
+        if (!this.customAnimations) {
+            this.customAnimations = new Map();
+        }
+        this.customAnimations.set(id, sprite);
     }
 
     getSprite(id) {
@@ -101,6 +225,17 @@ export class RoomSpriteManager {
     removeSprite(id) {
         const sprite = this.sprites.get(id);
         if (sprite) {
+            // Clean up custom animation if it exists
+            if (sprite.animationUpdate) {
+                this.scene.events.off('update', sprite.animationUpdate);
+                sprite.animationUpdate = null;
+            }
+
+            // Remove from custom animations map
+            if (this.customAnimations) {
+                this.customAnimations.delete(id);
+            }
+
             sprite.destroy();
             this.sprites.delete(id);
         }
@@ -109,10 +244,20 @@ export class RoomSpriteManager {
     clearAllSprites() {
         // Destroy all sprites
         for (const sprite of this.sprites.values()) {
+            // Clean up custom animation if it exists
+            if (sprite.animationUpdate) {
+                this.scene.events.off('update', sprite.animationUpdate);
+                sprite.animationUpdate = null;
+            }
             sprite.destroy();
         }
         this.sprites.clear();
         this.dynamicSprites.clear();
+
+        // Clear custom animations map
+        if (this.customAnimations) {
+            this.customAnimations.clear();
+        }
     }
 
     // Dynamic layering methods

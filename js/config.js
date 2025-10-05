@@ -291,6 +291,15 @@ export const NPCS = {
     }
 };
 
+// Standard Normal variate using Box-Muller transform.
+function gaussianRandom(mean=0, stdev=1) {
+    const u = 1 - Math.random(); // Converting [0,1) to (0,1]
+    const v = Math.random();
+    const z = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+    // Transform to the desired mean and standard deviation:
+    return z * stdev + mean;
+}
+
 // Room Definitions with Images and Sprites
 export const ROOMS = {
     room1: {
@@ -380,12 +389,43 @@ export const ROOMS = {
                     layer: 25
                 }
             },
+            ,
             {
                 id: 'pidgeon',
                 animation: {
                     key: 'pidgeon',
                     frames: ['pidgeon000', 'pidgeon001'], // Add more frames as needed
-                    frameRate: 8, // Frames per second
+                    frameRate: 8, // Default frames per second (used when no frame-specific duration)
+                    frameDurations: [
+                        500,//() => Math.max(50, gaussianRandom(2000, 750)),
+                        500,//50
+                    ],
+                    framePositions: [
+                        { x: 0, y: 0 }, // No offset for first frame
+                        { x: -1, y: 0 } // Slight offset for second frame
+                    ],
+                    repeat: -1 // Loop infinitely
+                },
+                x: 144, y: 119,
+                layering: {
+                    type: 'static',
+                    layer: 26
+                }
+            },
+            {
+                id: 'flying_pidgeon',
+                animation: {
+                    key: 'flying_pidgeon',
+                    frames: ['flying_pidgeon000', 'flying_pidgeon001'], // Add more frames as needed
+                    frameRate: 8, // Default frames per second (used when no frame-specific duration)
+                    frameDurations: [
+                        500,//() => Math.max(50, gaussianRandom(2000, 750)),
+                        500,//50
+                    ],
+                    framePositions: [
+                        { x: 0, y: 0 }, // No offset for first frame
+                        { x: -2, y: 3 } // Slight offset for second frame
+                    ],
                     repeat: -1 // Loop infinitely
                 },
                 x: 144, y: 119,
