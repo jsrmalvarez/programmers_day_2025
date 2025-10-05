@@ -361,6 +361,33 @@ export const ROOMS = {
                     type: 'static',
                     layer: 25
                 }
+            },
+            {
+                id: 'mouse',
+                image: 'mouse',
+                x: 72, y: 128,
+                layering: {
+                    type: 'static',
+                    layer: 25
+                }
+            },
+            {
+                id: 'food_scraps',
+                image: 'food_scraps',
+                x: 138, y: 127,
+                layering: {
+                    type: 'static',
+                    layer: 25
+                }
+            },
+            {
+                id: 'pidgeon',
+                image: 'pidgeon',
+                x: 144, y: 119,
+                layering: {
+                    type: 'static',
+                    layer: 26
+                }
             }
         ]
     }
