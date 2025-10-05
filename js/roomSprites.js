@@ -116,7 +116,7 @@ export class RoomSpriteManager {
     }
 
     createCustomAnimatedSprite(sprite, id, animationConfig) {
-        const { key, frames, frameRate, frameDurations, framePositions, repeat } = animationConfig;
+        const { key, frames, frameRate, frameDurations, framePositions, translation, autoStart, repeat } = animationConfig;
 
         // Store original position for reference
         const originalX = sprite.x;
@@ -127,26 +127,38 @@ export class RoomSpriteManager {
             frames: frames,
             frameDurations: frameDurations,
             framePositions: framePositions,
+            translation: translation,
             frameRate: frameRate || 8,
             repeat: repeat !== undefined ? repeat : -1,
             currentFrame: 0,
             frameStartTime: 0,
-            isPlaying: true,
+            isPlaying: autoStart !== false, // Default to true unless explicitly false
             loopCount: 0,
             originalX: originalX,
-            originalY: originalY
+            originalY: originalY,
+            currentX: originalX,
+            currentY: originalY,
+            // Independent translation timing
+            translationRate: translation?.rate || 100, // Default 100ms
+            lastTranslationTime: 0
         };
 
 
         // Set initial frame
         sprite.setTexture(frames[0]);
         sprite.animationState.frameStartTime = this.scene.time.now;
+        sprite.animationState.lastTranslationTime = this.scene.time.now;
 
         // Apply initial frame positioning if available
         if (framePositions && framePositions[0]) {
             const framePos = framePositions[0];
             sprite.x = originalX + framePos.x;
             sprite.y = originalY + framePos.y;
+        }
+
+        // Set initial visibility based on autoStart
+        if (autoStart === false) {
+            sprite.setVisible(false);
         }
 
         // Create update function that will be called each frame
@@ -167,6 +179,13 @@ export class RoomSpriteManager {
                 }
             } else {
                 frameDuration = 1000 / state.frameRate; // Convert FPS to milliseconds
+            }
+
+            // Handle independent translation timing
+            if (state.translation && now - state.lastTranslationTime >= state.translationRate) {
+                state.currentX += state.translation.x;
+                state.currentY += state.translation.y;
+                state.lastTranslationTime = now;
             }
 
             // Check if it's time to advance to next frame
@@ -193,12 +212,12 @@ export class RoomSpriteManager {
                 // Apply frame-specific positioning if available
                 if (state.framePositions && state.framePositions[state.currentFrame]) {
                     const framePos = state.framePositions[state.currentFrame];
-                    sprite.x = state.originalX + framePos.x;
-                    sprite.y = state.originalY + framePos.y;
+                    sprite.x = state.currentX + framePos.x;
+                    sprite.y = state.currentY + framePos.y;
                 } else {
-                    // Reset to original position if no frame position specified
-                    sprite.x = state.originalX;
-                    sprite.y = state.originalY;
+                    // Use translated position if no frame position specified
+                    sprite.x = state.currentX;
+                    sprite.y = state.currentY;
                 }
 
                 state.frameStartTime = now;
@@ -220,6 +239,46 @@ export class RoomSpriteManager {
 
     getSprite(id) {
         return this.sprites.get(id);
+    }
+
+    // Animation control methods
+    startAnimation(id) {
+        const sprite = this.sprites.get(id);
+        if (sprite && sprite.animationState) {
+            sprite.animationState.isPlaying = true;
+            sprite.setVisible(true);
+        }
+    }
+
+    stopAnimation(id) {
+        const sprite = this.sprites.get(id);
+        if (sprite && sprite.animationState) {
+            sprite.animationState.isPlaying = false;
+        }
+    }
+
+    hideSprite(id) {
+        const sprite = this.sprites.get(id);
+        if (sprite) {
+            sprite.setVisible(false);
+        }
+    }
+
+    showSprite(id) {
+        const sprite = this.sprites.get(id);
+        if (sprite) {
+            sprite.setVisible(true);
+        }
+    }
+
+    resetSpritePosition(id) {
+        const sprite = this.sprites.get(id);
+        if (sprite && sprite.animationState) {
+            sprite.animationState.currentX = sprite.animationState.originalX;
+            sprite.animationState.currentY = sprite.animationState.originalY;
+            sprite.x = sprite.animationState.originalX;
+            sprite.y = sprite.animationState.originalY;
+        }
     }
 
     removeSprite(id) {

@@ -389,8 +389,7 @@ export const ROOMS = {
                     layer: 25
                 }
             },
-            ,
-            {
+/*            {
                 id: 'pidgeon',
                 animation: {
                     key: 'pidgeon',
@@ -404,14 +403,19 @@ export const ROOMS = {
                         { x: 0, y: 0 }, // No offset for first frame
                         { x: -1, y: 0 } // Slight offset for second frame
                     ],
-                    repeat: -1 // Loop infinitely
+                    translation: {
+                        x: 3,
+                        y: 6
+                    },
+                    autoStart: true, // Start animation automatically
+                    repeat: 0
                 },
                 x: 144, y: 119,
                 layering: {
                     type: 'static',
                     layer: 26
                 }
-            },
+            },*/
             {
                 id: 'flying_pidgeon',
                 animation: {
@@ -419,13 +423,21 @@ export const ROOMS = {
                     frames: ['flying_pidgeon000', 'flying_pidgeon001'], // Add more frames as needed
                     frameRate: 8, // Default frames per second (used when no frame-specific duration)
                     frameDurations: [
-                        500,//() => Math.max(50, gaussianRandom(2000, 750)),
-                        500,//50
+                        200,//() => Math.max(50, gaussianRandom(2000, 750)),
+                        200,//50
                     ],
                     framePositions: [
                         { x: 0, y: 0 }, // No offset for first frame
                         { x: -2, y: 3 } // Slight offset for second frame
                     ],
+
+                    translation: {
+                        x: -2,
+                        y: -1,
+                        rate: 50 // Translation every 100ms (independent of frame timing)
+                    },
+                    autoStart: true, // Start animation automatically
+
                     repeat: -1 // Loop infinitely
                 },
                 x: 144, y: 119,
