@@ -382,7 +382,12 @@ export const ROOMS = {
             },
             {
                 id: 'pidgeon',
-                image: 'pidgeon',
+                animation: {
+                    key: 'pidgeon',
+                    frames: ['pidgeon000', 'pidgeon001'], // Add more frames as needed
+                    frameRate: 8, // Frames per second
+                    repeat: -1 // Loop infinitely
+                },
                 x: 144, y: 119,
                 layering: {
                     type: 'static',

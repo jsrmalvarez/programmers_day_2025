@@ -30,10 +30,21 @@ export class RoomSpriteManager {
     }
 
     createSprite(config) {
-        const { id, image, x, y, layering } = config;
+        const { id, image, animation, x, y, layering } = config;
 
-        // Create Phaser sprite
-        const sprite = this.scene.add.sprite(x, y, image);
+        let sprite;
+
+        if (animation) {
+            // Create animated sprite
+            sprite = this.createAnimatedSprite(id, animation, x, y);
+        } else if (image) {
+            // Create static sprite
+            sprite = this.scene.add.sprite(x, y, image);
+        } else {
+            console.warn(`Sprite ${id} has no image or animation defined`);
+            return null;
+        }
+
         sprite.setOrigin(0, 0);
 
         // Handle layering configuration
@@ -59,6 +70,26 @@ export class RoomSpriteManager {
 
         // Store reference
         this.sprites.set(id, sprite);
+
+        return sprite;
+    }
+
+    createAnimatedSprite(id, animationConfig, x, y) {
+        const { key, frames, frameRate, repeat } = animationConfig;
+
+        // Create sprite using the first frame
+        const sprite = this.scene.add.sprite(x, y, frames[0]);
+
+        // Create animation from the frames
+        this.scene.anims.create({
+            key: key,
+            frames: frames.map(frame => ({ key: frame })),
+            frameRate: frameRate || 8,
+            repeat: repeat !== undefined ? repeat : -1 // Default to infinite loop
+        });
+
+        // Start the animation
+        sprite.play(key);
 
         return sprite;
     }

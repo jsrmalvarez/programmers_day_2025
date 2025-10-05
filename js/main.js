@@ -66,6 +66,11 @@ export class GameScene extends Phaser.Scene {
                 for (const sprite of roomConfig.sprites) {
                     if (sprite.image) {
                         this.load.image(sprite.image, `assets/sprites/${sprite.image}.png`);
+                    } else if (sprite.animation) {
+                        // Load animation frames
+                        for (const frame of sprite.animation.frames) {
+                            this.load.image(frame, `assets/sprites/${frame}.png`);
+                        }
                     }
                     /*else if (sprite.graphics) {
                         sprite.graphics(this.add.graphics());
