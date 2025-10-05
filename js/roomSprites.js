@@ -4,6 +4,7 @@
  */
 
 import { CONFIG } from './config.js';
+import { gameState } from './gameState.js';
 
 export class RoomSpriteManager {
     constructor(scene) {
@@ -48,8 +49,9 @@ export class RoomSpriteManager {
         sprite.setOrigin(0, 0);
 
         // Handle conditional visibility for items that can be taken
-        if (id === 'mouse' && this.scene.gameState.progress._022_mouseTaken) {
+        if (id === 'mouse' && gameState.progress._022_mouseTaken) {
             sprite.setVisible(false);
+            //sprite.setAlpha(0);
         }
 
         // Handle layering configuration
@@ -430,8 +432,14 @@ export class RoomSpriteManager {
 
     // Debug method to toggle sprite visibility
     updateSpriteVisibility() {
-        for (const sprite of this.sprites.values()) {
-            sprite.setVisible(CONFIG.DEBUG.SHOW_SPRITES);
+        for (const [id, sprite] of this.sprites.entries()) {
+            // Special handling for mouse sprite - respect the taken state
+            if (id === 'mouse' && gameState.progress._022_mouseTaken) {
+                sprite.setVisible(false);
+                sprite.setAlpha(0);
+            } else {
+                sprite.setVisible(CONFIG.DEBUG.SHOW_SPRITES);
+            }
         }
     }
 }

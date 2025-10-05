@@ -226,7 +226,7 @@ export class GameScene extends Phaser.Scene {
     takeMouse() {
         if(!gameState.progress._022_mouseTaken) {
             gameState.progress._022_mouseTaken = true;
-            this.uiManager.addToInventoryUI('mouse_item');
+            this.uiManager.addToInventoryUI(ITEMS.mouse);
             this.roomSpriteManager.hideMouseSprite(); // Hide the mouse sprite
             this.uiManager.showMessage("You took the mouse.");
         }
