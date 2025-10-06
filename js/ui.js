@@ -30,7 +30,7 @@ export class UIManager {
 
         // Create inventory background (only as wide as needed, positioned bottom-right)
         this.inventoryBg = this.scene.add.graphics();
-        this.inventoryBg.fillStyle(0x2c3e50);
+        this.inventoryBg.fillStyle(0xffc900);
         this.inventoryBg.fillRect(inventoryX, inventoryY, inventoryWidth, inventoryHeight);
         this.inventoryBg.setDepth(100); // Above everything else
 
@@ -89,7 +89,7 @@ export class UIManager {
         const buttonY = this.inventoryY + 2; // Align with top of compact inventory area
 
         // Button background
-        this.toggleButton.fillStyle(0x34495e);
+        this.toggleButton.fillStyle(0xffc900);
         this.toggleButton.fillRect(buttonX, buttonY, 16, 16);
 
         // Button border
@@ -97,7 +97,7 @@ export class UIManager {
         this.toggleButton.strokeRect(buttonX, buttonY, 16, 16);
 
         // Chevron icon (up or down)
-        this.toggleButton.lineStyle(1, 0xecf0f1);
+        this.toggleButton.lineStyle(1, 0x2c3e50);
         if (this.inventoryVisible) {
             // Down chevron (to hide)
             this.toggleButton.beginPath();
@@ -218,6 +218,17 @@ export class UIManager {
                 slot.sprite = this.scene.add.sprite(slot.x + slot.width/2, slot.y + slot.height/2, item.sprite);
                 slot.sprite.setDepth(100); // Below toggle button (depth 102)
                 slot.sprite.setVisible(this.inventoryVisible);
+
+                // Apply transforms if specified
+                if (item.transform) {
+                    if (item.transform.scale !== undefined) {
+                        slot.sprite.setScale(item.transform.scale);
+                    }
+                    if (item.transform.rotate !== undefined) {
+                        slot.sprite.setRotation(item.transform.rotate * Math.PI / 180); // Convert degrees to radians
+                    }
+                }
+
                 addToInventory(item);
                 break;
             }

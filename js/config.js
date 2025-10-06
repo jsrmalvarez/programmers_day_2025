@@ -71,7 +71,7 @@ export const ITEMS = {
         sprite: 'branch',
         transform: {
             rotate: 35,
-            scale: 0.5
+            scale: 0.75
         }
     },
     mouse: {

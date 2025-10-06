@@ -51,7 +51,10 @@ export class RoomSpriteManager {
         // Handle conditional visibility for items that can be taken
         if (id === 'mouse' && gameState.progress._022_mouseTaken) {
             sprite.setVisible(false);
-            //sprite.setAlpha(0);
+        }
+
+        if(id === 'branch' && gameState.progress._022_branchTaken) {
+            sprite.setVisible(false);
         }
 
         // Handle layering configuration
@@ -432,6 +435,14 @@ export class RoomSpriteManager {
                 sprite.setVisible(false);
                 sprite.setAlpha(0);
             } else {
+                sprite.setVisible(CONFIG.DEBUG.SHOW_SPRITES);
+            }
+
+            if(id === 'branch' && gameState.progress._022_branchTaken) {
+                sprite.setVisible(false);
+                sprite.setAlpha(0);
+            }
+            else {
                 sprite.setVisible(CONFIG.DEBUG.SHOW_SPRITES);
             }
         }
