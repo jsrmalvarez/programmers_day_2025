@@ -174,27 +174,6 @@ const SMALL_TALK = [
 
 // NPC Definitions
 export const NPCS = {
-    /*alice: {
-        name: '',
-        position: { x: 60, y: 110 },
-        dialogs: {
-            beforeDoorUnlocked: [
-                "The boss lost a key... maybe it's in a drawer.",
-                "Seriously, check the drawer near the door."
-            ],
-            afterDoorUnlocked: [
-                "Don't mess with anything in the storage room."
-            ]
-        },
-        hotspot: { x: 50, y: 89, width: 20, height: 36 },
-        // Dynamic layering based on player position
-        layering: {
-            type: 'dynamic',
-            threshold: 127, // Y position threshold (NPC feet position)
-            aboveLayer: 27, // Layer when player Y < threshold (NPC in front)
-            belowLayer: 12  // Layer when player Y > threshold (NPC behind)
-        }
-    },*/
     eve: {
         name: 'Eve',
         position: { x: 112, y: 110 },
@@ -396,11 +375,10 @@ export const ROOMS = {
             image: 'room2_bg',
             mask: 'room2_mask'
         },
-        // Position triggers for room-specific events
         triggers: [
             {
                 id: 'flying_pidgeon_trigger',
-                condition: (gameState) => gameState.playerX < 200, // Trigger when player X < 200
+                condition: (gameState) => gameState.progress._024_branchUsedOnPidgeon,
                 action: (scene) => {
                     // Start flying pigeon animation
                     if (scene.roomSpriteManager) {
@@ -410,6 +388,23 @@ export const ROOMS = {
                     }
                 },
                 oneTime: true // Only trigger once
+            },
+            {
+                id: 'refuse_to_come_closer_to_pidgeon_trigger',
+                condition: (gameState) => !gameState.progress._024_branchUsedOnPidgeon && gameState.playerX < 144,
+                action: (scene) => {
+                    // stop walking
+                    gameState.isWalking = false;
+                    gameState.walkTimer = 0;
+                    gameState.walkFrame = 0;
+                    // message that you can't come closer to the pidgeon
+                    const refusalMessages = ["I refuse to come closer to that filthy pidgeon.",
+                                            "Pidgeons live on trash.",
+                                            "Pidgeons are pests, I won't come closer."];
+                    const randomMessage = refusalMessages[Math.floor(Math.random() * refusalMessages.length)];
+                    scene.uiManager.showMessage(randomMessage);
+                },
+                oneTime: false
             }
         ],
         sprites: [

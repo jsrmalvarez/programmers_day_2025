@@ -113,9 +113,14 @@ export class RoomManager {
                     action: this.scene.interactDoor.bind(this.scene)
                 },
                 {
-                    name: 'mouse',
+                    name: 'Mouse',
                     x: 71, y: 127, width: 9, height: 5,
                     action: this.scene.takeMouse.bind(this.scene)
+                },
+                {
+                    name: 'Pidgeon',
+                    x: 144, y: 119, width: 12, height: 12,
+                    action: this.scene.interactPidgeon.bind(this.scene)
                 }
             ],
             walkableBounds: { x: 20, y: 60, width: 280, height: 100 }

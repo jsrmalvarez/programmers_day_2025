@@ -210,8 +210,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     takeBranch() {
-        if(!gameState.progress._022_branchTaken) {
-            gameState.progress._022_branchTaken = true;
+        if(!gameState.progress._023_branchTaken) {
+            gameState.progress._023_branchTaken = true;
             this.uiManager.addToInventoryUI(ITEMS.branch);
             this.roomSpriteManager.hideBranchSprite(); // Hide the branch sprite
             this.uiManager.showMessage("You took the branch.");
@@ -233,6 +233,19 @@ export class GameScene extends Phaser.Scene {
             npc.talk();
         }
     }
+
+    interactPidgeon() {
+        if (gameState.selectedItem && gameState.selectedItem === ITEMS.branch) {
+            gameState.progress._024_branchUsedOnPidgeon = true;
+            this.roomManager.checkTriggers();
+            this.uiManager.removeFromInventoryUI(ITEMS.branch);
+            this.uiManager.showMessage("Go away, you aerial rat!");
+        }
+        else {
+            this.uiManager.showMessage("That will not work.");
+        }
+    }
+
 
 }
 

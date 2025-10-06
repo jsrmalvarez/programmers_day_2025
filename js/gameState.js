@@ -13,9 +13,10 @@ export let gameState = {
     progress: {
         _010_triedToOccupySeatA: false,
         _020_talkedToAlice: false,
-        _021_pidgeonAvoided: false,
         _022_mouseTaken: false,
-        _023_mouseGivenToAlice: false,
+        _023_branchTaken: false,
+        _024_branchUsedOnPidgeon: false,
+        _025_mouseGivenToAlice: false,
         _030_talkedToBob: false,
         _040_talkedToEve: false,
     },

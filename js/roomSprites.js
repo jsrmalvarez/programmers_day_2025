@@ -53,7 +53,7 @@ export class RoomSpriteManager {
             sprite.setVisible(false);
         }
 
-        if(id === 'branch' && gameState.progress._022_branchTaken) {
+        if(id === 'branch' && gameState.progress._023_branchTaken) {
             sprite.setVisible(false);
         }
 
@@ -438,7 +438,7 @@ export class RoomSpriteManager {
                 sprite.setVisible(CONFIG.DEBUG.SHOW_SPRITES);
             }
 
-            if(id === 'branch' && gameState.progress._022_branchTaken) {
+            if(id === 'branch' && gameState.progress._023_branchTaken) {
                 sprite.setVisible(false);
                 sprite.setAlpha(0);
             }
