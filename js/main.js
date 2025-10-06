@@ -227,6 +227,14 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
+    giveMouseToAlice() {
+        if(gameState.progress._022_mouseTaken && !gameState.progress._025_mouseGivenToAlice) {
+            gameState.progress._025_mouseGivenToAlice = true;
+            this.uiManager.removeFromInventoryUI(ITEMS.mouse);
+            this.uiManager.showMessage("You gave the mouse to Alice.");
+        }
+    }
+
     talkToNPC(npcId) {
         const npc = this.npcManager.getNPC(npcId);
         if (npc) {

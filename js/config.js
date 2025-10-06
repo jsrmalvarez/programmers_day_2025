@@ -496,19 +496,52 @@ export const ROOMS = {
 let firstTimeAliceAnd_010_triedToOccupySeatA = true;
 export function getDialogSet(gameState, id) {
 
+    // Charlie's dialogs
     if(id == 'charlie'){
-        if(gameState.progress._030_talkedToBob){
-            return ["I'm super tired.",
-                    "I need a coffee."];
+        if(gameState.progress._050_talkedToDavid){
+            return ["ZZZ...Coffeee....", "I'm veeeryy tireed.", "So tired... I cannot stand up.", "ZZZ...I need coffee."];
         }
         else{
             return ["...ZZzzzzz...", "...Snore..."];
         }
     }
 
-    if(gameState.progress._010_triedToOccupySeatA){
+    // David's dialogs
+    if(id == 'david'){
+        if(gameState.progress._040_talkedToEve){
+            return ["I'd change seats with Charlie if you convince him."];
+        }
+        else{
+            return SMALL_TALK;
+        }
+    }
 
-        if(id === 'alice'){
+    // Eve's dialogs
+    if(id == 'eve'){
+        if(gameState.progress._030_talkedToBob){
+            return ["I'd gladly change seats with Bob, but I need to work closely with David."];
+        }
+        else{
+            return SMALL_TALK;
+        }
+    }
+
+    // Bob's dialogs
+    if(id == 'bob'){
+        if(gameState.progress._025_mouseGivenToAlice){
+            return ["I'd gladly move to seat B, but there's Eve."];
+        }
+        else{
+            return SMALL_TALK;
+        }
+    }
+
+    // Alice's dialogs
+    if(id === 'alice'){
+        if(gameState.progress._025_mouseGivenToAlice){
+            return ["I will move to seat A if Bob moves to seat B, because we need to work together."];
+        }
+        else if(gameState.progress._010_triedToOccupySeatA){
             if(firstTimeAliceAnd_010_triedToOccupySeatA){
                 firstTimeAliceAnd_010_triedToOccupySeatA = false;
                 return ["I'd gladly change the seat, but seat A has no mouse."];
@@ -522,7 +555,7 @@ export function getDialogSet(gameState, id) {
             return SMALL_TALK;
         }
     }
-    else{
-        return SMALL_TALK;
-    }
+
+    // Default small talk for other NPCs
+    return SMALL_TALK;
 }

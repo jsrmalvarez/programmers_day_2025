@@ -60,8 +60,28 @@ export class NPC {
         }
         const dialog = dialogSet[dialogIndex];
 
+        // Handle state changes based on NPC and current progress
+        this.handleStateChanges();
+
         // Show message
         this.scene.uiManager.showMessage(`${this.name}: "${dialog}"`);
+    }
+
+    handleStateChanges() {
+        // Bob: Set _030_talkedToBob when mouse has been given to Alice
+        if (this.id === 'bob' && gameState.progress._025_mouseGivenToAlice && !gameState.progress._030_talkedToBob) {
+            gameState.progress._030_talkedToBob = true;
+        }
+
+        // Eve: Set _040_talkedToEve when Bob has been talked to
+        if (this.id === 'eve' && gameState.progress._030_talkedToBob && !gameState.progress._040_talkedToEve) {
+            gameState.progress._040_talkedToEve = true;
+        }
+
+        // David: Set _050_talkedToDavid when Eve has been talked to
+        if (this.id === 'david' && gameState.progress._040_talkedToEve && !gameState.progress._050_talkedToDavid) {
+            gameState.progress._050_talkedToDavid = true;
+        }
     }
 
     getHotspot() {
@@ -71,8 +91,17 @@ export class NPC {
             y: this.hotspot.y,
             width: this.hotspot.width,
             height: this.hotspot.height,
-            action: () => this.talk()
+            action: () => this.interact()
         };
+    }
+
+    interact() {
+        // Special interaction for Alice when player has mouse
+        if (this.id === 'alice' && gameState.progress._022_mouseTaken && !gameState.progress._025_mouseGivenToAlice) {
+            this.scene.giveMouseToAlice();
+        } else {
+            this.talk();
+        }
     }
 
     destroy() {
