@@ -391,12 +391,12 @@ export const ROOMS = {
             },
             {
                 id: 'refuse_to_come_closer_to_pidgeon_trigger',
-                condition: (gameState) => !gameState.progress._024_branchUsedOnPidgeon && gameState.playerX < 144,
+                condition: (gameState) => !gameState.progress._024_branchUsedOnPidgeon && gameState.playerX < 175,
                 action: (scene) => {
-                    // stop walking
-                    gameState.isWalking = false;
-                    gameState.walkTimer = 0;
-                    gameState.walkFrame = 0;
+                    // stop walking using scene's gameState reference
+                    scene.gameState.isWalking = false;
+                    scene.gameState.walkTimer = 0;
+                    scene.gameState.walkFrame = 0;
                     // message that you can't come closer to the pidgeon
                     const refusalMessages = ["I refuse to come closer to that filthy pidgeon.",
                                             "Pidgeons live on trash.",
