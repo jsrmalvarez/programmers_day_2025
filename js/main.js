@@ -190,24 +190,10 @@ export class GameScene extends Phaser.Scene {
     interactDoor() {
         if (gameState.currentRoom === 'room1') {
             console.log('interacting with door in room 1');
-            /*if (!gameState.doorUnlocked) {
-                if (gameState.selectedItem && gameState.selectedItem === ITEMS.key) {
-                    // Unlock door
-                    gameState.doorUnlocked = true;
-                    this.uiManager.removeFromInventoryUI(ITEMS.key);
-                    this.inputManager.playSound('unlock');
-                    this.switchToRoom('room1'); // Refresh room to show unlocked door
-                    this.uiManager.showMessage('Door unlocked!');
-                } else {
-                    this.uiManager.showMessage("It's locked.");
-                }
-            } else {*/
-                // Enter room 2
-                setPlayerPosition(299, 143);
-                setPlayerOrientation('left');
-                setPlayerVersion('NEAR', this);
-                this.switchToRoom('room2');
-            //}
+            setPlayerPosition(299, 143);
+            setPlayerOrientation('left');
+            setPlayerVersion('NEAR', this);
+            this.switchToRoom('room2');
         }
         else if (gameState.currentRoom === 'room2') {
             console.log('returning to room 1');
@@ -221,6 +207,15 @@ export class GameScene extends Phaser.Scene {
     interactSeatA() {
         gameState.progress._010_triedToOccupySeatA = true;
         this.uiManager.showMessage("I will not sit in there.\nI booked for seat F.");
+    }
+
+    takeBranch() {
+        if(!gameState.progress._022_branchTaken) {
+            gameState.progress._022_branchTaken = true;
+            this.uiManager.addToInventoryUI(ITEMS.branch);
+            this.roomSpriteManager.hideBranchSprite(); // Hide the branch sprite
+            this.uiManager.showMessage("You took the branch.");
+        }
     }
 
     takeMouse() {

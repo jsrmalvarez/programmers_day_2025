@@ -66,9 +66,20 @@ export const SOUNDS = {
 
 // Items definition
 export const ITEMS = {
+    branch: {
+        name: 'Branch',
+        sprite: 'branch',
+        transform: {
+            rotate: 35,
+            scale: 0.5
+        }
+    },
     mouse: {
         name: 'Mouse',
-        sprite: 'mouse'
+        sprite: 'mouse',
+        transform: {
+            scale: 1.2
+        }
     }
 };
 
@@ -337,8 +348,8 @@ export const ROOMS = {
                     aboveLayer: 27, // Just below near screens (28)
                     belowLayer: 12  // Just below near screens (13)
                  }
-             },
-             {
+            },
+            {
                 id: 'seat_a',
                 image: 'seat_a',
                 x: 49, y: 106,
@@ -348,7 +359,31 @@ export const ROOMS = {
                     aboveLayer: 27, // Just below near screens (28)
                     belowLayer: 12  // Just below near screens (13)
                 }
-             }
+            },
+            {
+                id: 'plant_wo_branch',
+                image: 'plant_wo_branch',
+                x: 280, y: 98,
+                visible: false,
+                // Dynamic layering: if player Y > threshold, desk appears behind player
+                layering: {
+                    type: 'dynamic',
+                    threshold: 172, // Y threshold for near desk
+                   aboveLayer: 27, // Just below near screens (28)
+                   belowLayer: 12  // Just below near screens (13)
+                }
+            },
+            {
+                id: 'branch',
+                image: 'branch',
+                x: 275, y: 131,
+                layering: {
+                    type: 'dynamic',
+                    threshold: 172, // Y threshold for near desk
+                   aboveLayer: 27, // Just below near screens (28)
+                   belowLayer: 12  // Just below near screens (13)
+                }
+            },
 
         ]
     },

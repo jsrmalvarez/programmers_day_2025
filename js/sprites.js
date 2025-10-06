@@ -14,9 +14,6 @@ export class SpriteManager {
         // Create player sprites
         this.createPlayerSprites();
 
-        // Create item sprites
-        this.createItemSprites();
-
         // Create NPC sprites
         this.createNPCSprites();
     }
@@ -290,21 +287,6 @@ export class SpriteManager {
         }
     }
 
-    createItemSprites() {
-        const graphics = this.scene.add.graphics();
-
-        // Create key sprite
-        graphics.fillStyle(0xf1c40f);
-        graphics.fillRect(0, 4, 8, 2);
-        graphics.fillRect(6, 2, 2, 6);
-        graphics.fillRect(8, 3, 2, 1);
-        graphics.fillRect(8, 5, 2, 1);
-        graphics.generateTexture('key', 10, 8);
-        graphics.clear();
-
-
-        graphics.destroy();
-    }
 
     createNPCSprites() {
         const graphics = this.scene.add.graphics();

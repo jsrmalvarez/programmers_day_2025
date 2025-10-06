@@ -310,11 +310,21 @@ export class RoomSpriteManager {
         }
     }
 
-    // Hide mouse sprite when taken
     hideMouseSprite() {
         const mouseSprite = this.sprites.get('mouse');
         if (mouseSprite) {
             mouseSprite.setVisible(false);
+        }
+    }
+
+    hideBranchSprite() {
+        const branchSprite = this.sprites.get('branch');
+        const plant_wo_branch = this.sprites.get('plant_wo_branch');
+        if (branchSprite) {
+            branchSprite.setVisible(false);
+        }
+        if (plant_wo_branch) {
+            plant_wo_branch.setVisible(true);
         }
     }
 
@@ -400,22 +410,6 @@ export class RoomSpriteManager {
         for (const spriteId of this.dynamicSprites.keys()) {
             this.updateSpriteDepth(spriteId);
         }
-    }
-
-    // Helper method to add a sprite dynamically
-    addSprite(id, imageKey, x, y, layer = 10) {
-        // Remove existing sprite with same ID if it exists
-        this.removeSprite(id);
-
-        const config = {
-            id: id,
-            image: imageKey,
-            x: x,
-            y: y,
-            layer: layer
-        };
-
-        return this.createSprite(config);
     }
 
 

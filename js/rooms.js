@@ -88,6 +88,11 @@ export class RoomManager {
                     action: this.scene.interactDoor.bind(this.scene)
                 },
                 {
+                    name: 'Branch',
+                    x: 272, y: 129, width: 20, height: 5,
+                    action: this.scene.takeBranch.bind(this.scene)
+                },
+                {
                     name: 'Seat A',
                     x: 49, y: 106, width: 20, height: 20,
                     action: this.scene.interactSeatA.bind(this.scene)
@@ -137,19 +142,6 @@ export class RoomManager {
         const npcHotspots = this.scene.npcManager.getAllHotspots();
         this.scene.rooms.room1.hotspots.push(...npcHotspots);
 
-        // Key in drawer (if drawer is open and key not taken)
-        if (this.scene.gameState.progress.drawerOpen && !this.scene.gameState.progress.keyTaken) {
-            this.scene.keySprite = this.scene.add.sprite(70, 110, 'key');
-            this.scene.keySprite.setDepth(50); // Higher depth to be above everything
-
-            // Add key hotspot with larger area for easier clicking
-            // Insert at the beginning so it gets checked first (higher priority than drawer)
-            this.scene.rooms.room1.hotspots.unshift({
-                name: 'Office Key',
-                x: 60, y: 105, width: 20, height: 15,
-                action: this.scene.takeKey.bind(this.scene)
-            });
-        }
     }
 
     createTerraceBackground() {
