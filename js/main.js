@@ -247,6 +247,8 @@ export class GameScene extends Phaser.Scene {
 
     interactPidgeon() {
         if (gameState.selectedItem && gameState.selectedItem === ITEMS.branch) {
+            setPlayerPosition(157, 108);
+            setPlayerOrientation('left');
             gameState.progress._024_branchUsedOnPidgeon = true;
             this.roomManager.checkTriggers();
             this.uiManager.removeFromInventoryUI(ITEMS.branch);

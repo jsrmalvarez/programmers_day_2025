@@ -383,6 +383,7 @@ export const ROOMS = {
                 action: (scene) => {
                     // Start flying pigeon animation
                     if (scene.roomSpriteManager) {
+                        scene.roomSpriteManager.startAnimation('move_branch');
                         scene.roomSpriteManager.startAnimation('flying_pidgeon');
                         // Stop regular pigeon animation
                         scene.roomSpriteManager.stopAnimation('pidgeon');
@@ -461,11 +462,32 @@ export const ROOMS = {
                 }
             },
             {
+                id: 'move_branch',
+                animation: {
+                    key: 'move_branch',
+                    frames: ['move_branch000', 'move_branch001', 'move_branch002'],
+                    frameRate: 8,
+                    framePositions: [
+                        { x: 0, y: 0 },
+                        { x: 10, y: -10 },
+                        { x: 20, y: -20 }
+                    ],
+                    autoStart: false,
+                    repeat: 3
+                },
+                x: 157, y: 108,
+                layering: {
+                    type: 'static',
+                    layer: 19
+                },
+
+            },
+            {
                 id: 'flying_pidgeon',
                 animation: {
                     key: 'flying_pidgeon',
                     frames: ['flying_pidgeon000', 'flying_pidgeon001'], // Add more frames as needed
-                    frameRate: 8, // Default frames per second (used when no frame-specific duration)
+                    frameRate: 8,
                     frameDurations: [
                         200,//() => Math.max(50, gaussianRandom(2000, 750)),
                         200,//50
