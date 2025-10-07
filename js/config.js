@@ -52,7 +52,8 @@ export const CONFIG = {
     DEBUG: {
         SHOW_MASK: false,           // Toggle with 'M' key
         SHOW_SPRITES: true,         // Toggle with 'S' key
-        SHOW_HOTSPOTS: false        // Toggle with 'H' key
+        SHOW_HOTSPOTS: false,       // Toggle with 'H' key
+        SHOW_PATHFINDING: false     // Toggle with 'P' key
     }
 };
 

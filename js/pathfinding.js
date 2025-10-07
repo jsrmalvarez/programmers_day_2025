@@ -46,42 +46,25 @@ export class PathfindingManager {
             }
         }
 
-        // Sample mask image at 10-pixel intervals
+        // Use proper collision detection for each grid position
         for (let gridY = 0; gridY < this.gridHeight; gridY++) {
             for (let gridX = 0; gridX < this.gridWidth; gridX++) {
-                // Convert grid coordinates to mask coordinates
-                const maskX = gridX * this.cellSize + this.cellSize / 2; // Center of cell
-                const maskY = gridY * this.cellSize + this.cellSize / 2; // Center of cell
+                const worldPos = this.gridToWorld(gridX, gridY);
 
-                // Sample the mask at this position
-                const isWalkable = this.sampleMaskAt(maskImage, maskX, maskY);
+                // Convert grid position to player center position for collision testing
+                const dimensions = CONFIG.PLAYER[CONFIG.PLAYER.USE_VERSION];
+                const playerCenterX = worldPos.x;
+                const playerCenterY = worldPos.y - dimensions.FEET_OFFSET;
+
+                // Use proper collision detection to determine if this position is walkable
+                const isWalkable = this.scene.collisionManager.isPlayerPositionWalkable(playerCenterX, playerCenterY);
                 this.grid[gridY][gridX] = isWalkable ? 0 : 1; // 0 = walkable, 1 = blocked
             }
         }
 
-        console.log('Pathfinding grid created:', this.gridWidth, 'x', this.gridHeight);
+        console.log('Pathfinding grid created with proper collision detection:', this.gridWidth, 'x', this.gridHeight);
     }
 
-    // Sample mask image at a specific position
-    sampleMaskAt(maskImage, x, y) {
-        // Create a temporary canvas to sample the mask
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = 1;
-        canvas.height = 1;
-
-        // Draw the mask at the specific position
-        ctx.drawImage(maskImage, -x, -y);
-
-        // Get pixel data
-        const imageData = ctx.getImageData(0, 0, 1, 1);
-        const pixel = imageData.data;
-
-        // Check if pixel is white (walkable) or black (blocked)
-        // Assuming white = walkable (255,255,255) and black = blocked (0,0,0)
-        const isWhite = pixel[0] > 128 && pixel[1] > 128 && pixel[2] > 128;
-        return isWhite;
-    }
 
     // Convert world coordinates to grid coordinates
     worldToGrid(worldX, worldY) {
@@ -131,6 +114,11 @@ export class PathfindingManager {
     setWaypoints(waypoints) {
         this.waypoints = waypoints;
         this.currentWaypointIndex = 0;
+
+        // Trigger debug redraw if enabled
+        if (this.scene.inputManager && this.scene.inputManager.drawPathfindingDebug) {
+            this.scene.inputManager.drawPathfindingDebug();
+        }
     }
 
     // Get next waypoint

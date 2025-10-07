@@ -53,6 +53,10 @@ export class InputManager {
             this.toggleHotspotDebug();
         });
 
+        this.scene.input.keyboard.on('keydown-P', () => {
+            this.togglePathfindingDebug();
+        });
+
         // Get tooltip element from DOM
         this.tooltip = document.getElementById('tooltip');
     }
@@ -192,16 +196,29 @@ export class InputManager {
 
         // Use pathfinding if available, otherwise fall back to collision detection
         if (this.scene.pathfindingManager && this.scene.pathfindingManager.grid) {
-            // Use pathfinding to find waypoints
+            // Get player feet position for pathfinding
+            const playerFeet = this.scene.collisionManager.getPlayerFeetPosition(gameState.playerX, gameState.playerY);
+
+            // Calculate target feet position (where we want the player's feet to end up)
+            const targetFeetX = x;
+            const targetFeetY = y;
+
+            // Use pathfinding to find waypoints (using feet positions)
             this.scene.pathfindingManager.findPath(
-                gameState.playerX,
-                gameState.playerY,
-                targetCenterX,
-                targetCenterY,
+                playerFeet.x,
+                playerFeet.y,
+                targetFeetX,
+                targetFeetY,
                 (waypoints) => {
                     if (waypoints && waypoints.length > 0) {
+                        // Convert waypoints from feet coordinates to center coordinates
+                        const centerWaypoints = waypoints.map(waypoint => ({
+                            x: waypoint.x,
+                            y: waypoint.y - dimensions.FEET_OFFSET
+                        }));
+
                         // Set waypoints for movement
-                        this.scene.pathfindingManager.setWaypoints(waypoints);
+                        this.scene.pathfindingManager.setWaypoints(centerWaypoints);
 
                         // Start moving to first waypoint
                         const firstWaypoint = this.scene.pathfindingManager.getNextWaypoint();
@@ -269,6 +286,12 @@ export class InputManager {
                 if (nextWaypoint) {
                     // Continue to next waypoint
                     setPlayerTarget(nextWaypoint.x, nextWaypoint.y);
+
+                    // Update pathfinding debug visualization
+                    if (CONFIG.DEBUG.SHOW_PATHFINDING) {
+                        this.drawPathfindingDebug();
+                    }
+
                     return; // Continue movement
                 }
             }
@@ -466,5 +489,102 @@ export class InputManager {
 
         // Update coordinates text
         this.debugText.setText(`X: ${x}, Y: ${y}`);
+    }
+
+    togglePathfindingDebug() {
+        CONFIG.DEBUG.SHOW_PATHFINDING = !CONFIG.DEBUG.SHOW_PATHFINDING;
+
+        if (CONFIG.DEBUG.SHOW_PATHFINDING) {
+            // Create pathfinding debug graphics
+            this.pathfindingDebugGraphics = this.scene.add.graphics();
+            this.pathfindingDebugGraphics.setDepth(999); // High depth to be visible
+            this.drawPathfindingDebug();
+        } else {
+            // Clean up pathfinding debug elements
+            if (this.pathfindingDebugGraphics) {
+                this.pathfindingDebugGraphics.destroy();
+                this.pathfindingDebugGraphics = null;
+            }
+        }
+    }
+
+    drawPathfindingDebug() {
+        if (!CONFIG.DEBUG.SHOW_PATHFINDING || !this.pathfindingDebugGraphics) return;
+
+        this.pathfindingDebugGraphics.clear();
+
+        // Draw the 32x20 grid in cyan (only on walkable positions)
+        if (this.scene.pathfindingManager && this.scene.pathfindingManager.grid) {
+            const cellSize = this.scene.pathfindingManager.cellSize;
+
+            // Draw grid points only where the player can actually stand
+            this.pathfindingDebugGraphics.fillStyle(0x00ffff, 0.7); // Cyan with transparency
+            for (let y = 0; y < this.scene.pathfindingManager.gridHeight; y++) {
+                for (let x = 0; x < this.scene.pathfindingManager.gridWidth; x++) {
+                    const worldPos = this.scene.pathfindingManager.gridToWorld(x, y);
+
+                    // Convert grid position to player center position for collision testing
+                    const dimensions = CONFIG.PLAYER[CONFIG.PLAYER.USE_VERSION];
+                    const playerCenterX = worldPos.x;
+                    const playerCenterY = worldPos.y - dimensions.FEET_OFFSET;
+
+                    // Only draw grid points where the player can actually stand
+                    if (this.scene.collisionManager.isPlayerPositionWalkable(playerCenterX, playerCenterY)) {
+                        this.pathfindingDebugGraphics.fillRect(worldPos.x - 1, worldPos.y - 1, 2, 2);
+                    }
+                }
+            }
+        }
+
+        // Draw pathfinding path if player is walking
+        if (gameState.isWalking && this.scene.pathfindingManager && this.scene.pathfindingManager.waypoints.length > 0) {
+            // Get player feet position for proper positioning
+            const playerFeet = this.scene.collisionManager.getPlayerFeetPosition(gameState.playerX, gameState.playerY);
+
+            // Draw starting point in red (at feet position)
+            this.pathfindingDebugGraphics.fillStyle(0xff0000, 0.8); // Red
+            this.pathfindingDebugGraphics.fillRect(playerFeet.x - 2, playerFeet.y - 2, 4, 4);
+
+            // Only draw lines if there are waypoints to connect
+            if (this.scene.pathfindingManager.waypoints.length > 0) {
+                // Draw waypoints and lines
+                this.pathfindingDebugGraphics.lineStyle(2, 0xff0000, 0.8); // Red lines
+
+                // Start from the current waypoint index (skip already reached waypoints)
+                const currentWaypointIndex = this.scene.pathfindingManager.currentWaypointIndex;
+                let lastX = playerFeet.x;
+                let lastY = playerFeet.y;
+
+                for (let i = currentWaypointIndex; i < this.scene.pathfindingManager.waypoints.length; i++) {
+                    const waypoint = this.scene.pathfindingManager.waypoints[i];
+
+                    // Convert waypoint from center coordinates back to feet coordinates for display
+                    const dimensions = CONFIG.PLAYER[CONFIG.PLAYER.USE_VERSION];
+                    const waypointFeetX = waypoint.x;
+                    const waypointFeetY = waypoint.y + dimensions.FEET_OFFSET;
+
+                    // Draw waypoint
+                    this.pathfindingDebugGraphics.fillStyle(0xff0000, 0.8);
+                    this.pathfindingDebugGraphics.fillRect(waypointFeetX - 2, waypointFeetY - 2, 4, 4);
+
+                    // Only draw line if this is not the first waypoint from current position
+                    if (i > currentWaypointIndex) {
+                        this.pathfindingDebugGraphics.lineBetween(lastX, lastY, waypointFeetX, waypointFeetY);
+                    }
+
+                    lastX = waypointFeetX;
+                    lastY = waypointFeetY;
+                }
+
+                // Draw line to final target only if there are waypoints
+                const targetFeet = this.scene.collisionManager.getPlayerFeetPosition(gameState.targetX, gameState.targetY);
+                this.pathfindingDebugGraphics.lineBetween(lastX, lastY, targetFeet.x, targetFeet.y);
+            }
+
+            // Draw final target point (at feet position)
+            const targetFeet = this.scene.collisionManager.getPlayerFeetPosition(gameState.targetX, gameState.targetY);
+            this.pathfindingDebugGraphics.fillStyle(0xff0000, 0.8);
+            this.pathfindingDebugGraphics.fillRect(targetFeet.x - 2, targetFeet.y - 2, 4, 4);
+        }
     }
 }
