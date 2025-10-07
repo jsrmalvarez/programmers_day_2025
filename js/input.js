@@ -9,8 +9,10 @@ import { gameState, setPlayerTarget } from './gameState.js';
 export class InputManager {
     constructor(scene) {
         this.scene = scene;
-        this.tooltip = null;
         this.pendingInteraction = null;
+        this.tooltipText = null;
+        this.tooltipBackground = null;
+        this.crossCursor = null;
 
         // Debug features
         this.debugCoords = false;
@@ -36,6 +38,12 @@ export class InputManager {
             this.updateCoordsDebug(x, y);
         });
 
+        // Mouse leave handler
+        this.scene.input.on('pointerout', () => {
+            this.hideCrossCursor();
+            this.hideTooltip();
+        });
+
         // Keyboard input for debug toggles
         this.scene.input.keyboard.on('keydown-M', () => {
             this.toggleMaskDebug();
@@ -57,8 +65,8 @@ export class InputManager {
             this.togglePathfindingDebug();
         });
 
-        // Get tooltip element from DOM
-        this.tooltip = document.getElementById('tooltip');
+        // Create cross cursor
+        this.createCrossCursor();
     }
 
     handleClick(x, y) {
@@ -94,11 +102,17 @@ export class InputManager {
     }
 
     handleMouseMove(x, y) {
+        // Update cross cursor position and color
+        if (this.crossCursor) {
+            this.crossCursor.x = x;
+            this.crossCursor.y = y;
+            this.crossCursor.setVisible(true);
+            this.updateCursorColor(x, y);
+        }
+
         // Don't show tooltips when modal dialog is open
         if (this.scene.uiManager.isModalDialogOpen()) {
-            if (this.tooltip) {
-                this.tooltip.style.display = 'none';
-            }
+            this.hideTooltip();
             return;
         }
 
@@ -135,17 +149,172 @@ export class InputManager {
         this.showTooltip(tooltipText, x, y);
     }
 
-    showTooltip(text, x, y) {
-        if (text) {
-            this.tooltip.textContent = text;
-            this.tooltip.style.display = 'block';
+    createCrossCursor() {
+        // Create a simple cross cursor using graphics
+        this.crossCursor = this.scene.add.graphics();
 
-            // Position tooltip relative to canvas
-            this.tooltip.style.left = (x * this.scene.cameras.main.width / CONFIG.VIRTUAL_WIDTH) + 'px';
-            this.tooltip.style.top = (y * this.scene.cameras.main.height / CONFIG.VIRTUAL_HEIGHT - 25) + 'px';
-        } else {
-            this.tooltip.style.display = 'none';
+        // Draw a simple cross (color will be updated dynamically)
+        const size = 8;
+        this.crossCursor.lineBetween(-size, 0, size, 0); // Horizontal line
+        this.crossCursor.lineBetween(0, -size, 0, size); // Vertical line
+
+        this.crossCursor.setDepth(2000); // Above everything
+        this.crossCursor.setVisible(false); // Initially hidden
+    }
+
+    showTooltip(text, x, y) {
+        // Hide existing tooltip
+        this.hideTooltip();
+
+        if (text) {
+            // Calculate tooltip position
+            const tooltipX = x + 10;
+            const tooltipY = y - 10;
+
+            // Create tooltip text first to measure its width
+            this.tooltipText = this.scene.add.bitmapText(tooltipX, tooltipY, 'arcade', text)
+                .setOrigin(0, 1) // Bottom-left origin
+                .setTint(0xffffff)
+                .setDepth(1500)
+                .setFontSize(7)
+                .setLineSpacing(10)
+                .setMaxWidth(CONFIG.VIRTUAL_WIDTH - tooltipX - 10);
+
+            // Check if tooltip would go off-screen on the right
+            const textBounds = this.tooltipText.getBounds();
+            const wouldGoOffScreen = textBounds.x + textBounds.width > CONFIG.VIRTUAL_WIDTH - 10;
+
+            if (wouldGoOffScreen) {
+                // Position tooltip to the left of the cursor
+                const newX = x - textBounds.width - 10;
+                this.tooltipText.setX(newX);
+
+                // Update text bounds for background positioning
+                const updatedBounds = this.tooltipText.getBounds();
+
+                // Create tooltip background
+                this.tooltipBackground = this.scene.add.graphics();
+                this.tooltipBackground.fillStyle(0x000000, 0.8);
+                this.tooltipBackground.fillRect(
+                    updatedBounds.x - 2,
+                    updatedBounds.y - 2,
+                    updatedBounds.width + 4,
+                    updatedBounds.height + 4
+                );
+                this.tooltipBackground.setDepth(1499); // Behind text
+            } else {
+                // Create tooltip background (normal positioning)
+                this.tooltipBackground = this.scene.add.graphics();
+                this.tooltipBackground.fillStyle(0x000000, 0.8);
+                this.tooltipBackground.fillRect(
+                    textBounds.x - 2,
+                    textBounds.y - 2,
+                    textBounds.width + 4,
+                    textBounds.height + 4
+                );
+                this.tooltipBackground.setDepth(1499); // Behind text
+            }
         }
+    }
+
+    hideTooltip() {
+        if (this.tooltipText) {
+            this.tooltipText.destroy();
+            this.tooltipText = null;
+        }
+        if (this.tooltipBackground) {
+            this.tooltipBackground.destroy();
+            this.tooltipBackground = null;
+        }
+    }
+
+    hideCrossCursor() {
+        if (this.crossCursor) {
+            this.crossCursor.setVisible(false);
+        }
+    }
+
+    updateCursorColor(x, y) {
+        if (!this.crossCursor) return;
+
+        try {
+            // Get the pixel color at the cursor position
+            const pixelColor = this.getPixelColor(x, y);
+
+            // Determine cursor color based on background brightness
+            const brightness = this.getBrightness(pixelColor);
+            const cursorColor = brightness > 128 ? 0xa2a2a2 : 0xe2e2e2; // Black on light, white on dark
+
+            // Update cursor color
+            this.crossCursor.clear();
+            this.crossCursor.lineStyle(1, cursorColor, 1);
+
+            // Redraw the cross
+            const size = 8;
+            this.crossCursor.lineBetween(-size, 0, size, 0); // Horizontal line
+            this.crossCursor.lineBetween(0, -size, 0, size); // Vertical line
+        } catch (error) {
+            // Fallback to white cursor if pixel sampling fails
+            this.crossCursor.clear();
+            this.crossCursor.lineStyle(1, 0xffffff, 1);
+
+            const size = 8;
+            this.crossCursor.lineBetween(-size, 0, size, 0);
+            this.crossCursor.lineBetween(0, -size, 0, size);
+        }
+    }
+
+    getPixelColor(x, y) {
+        // Clamp coordinates to valid range
+        x = Math.max(0, Math.min(CONFIG.VIRTUAL_WIDTH - 1, Math.floor(x)));
+        y = Math.max(0, Math.min(CONFIG.VIRTUAL_HEIGHT - 1, Math.floor(y)));
+
+        // Get the current room's background sprite
+        const roomManager = this.scene.roomManager;
+        if (!roomManager || !roomManager.backgroundSprite) {
+            // Fallback to white if no background sprite
+            return { r: 255, g: 255, b: 255, a: 255 };
+        }
+
+        // Get the texture from the background sprite
+        const texture = roomManager.backgroundSprite.texture;
+        if (!texture || !texture.source[0]) {
+            // Fallback to white if no texture
+            return { r: 255, g: 255, b: 255, a: 255 };
+        }
+
+        // Get the source image from the texture
+        const sourceImage = texture.source[0].image;
+        if (!sourceImage) {
+            // Fallback to white if no source image
+            return { r: 255, g: 255, b: 255, a: 255 };
+        }
+
+        // Create a temporary canvas to sample the background image
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = 1;
+        tempCanvas.height = 1;
+        const tempCtx = tempCanvas.getContext('2d');
+
+        // Draw the background image at the specific position
+        tempCtx.drawImage(sourceImage, x, y, 1, 1, 0, 0, 1, 1);
+
+        // Get pixel data
+        const imageData = tempCtx.getImageData(0, 0, 1, 1);
+        const pixel = imageData.data;
+
+        // Return RGB values
+        return {
+            r: pixel[0],
+            g: pixel[1],
+            b: pixel[2],
+            a: pixel[3]
+        };
+    }
+
+    getBrightness(rgb) {
+        // Calculate brightness using luminance formula
+        return (rgb.r * 0.299 + rgb.g * 0.587 + rgb.b * 0.114);
     }
 
     isPlayerNearHotspot(hotspot) {
@@ -417,6 +586,31 @@ export class InputManager {
 
     clearPendingInteraction() {
         this.pendingInteraction = null;
+    }
+
+    destroy() {
+        // Clean up tooltip elements
+        this.hideTooltip();
+
+        // Clean up cross cursor
+        if (this.crossCursor) {
+            this.crossCursor.destroy();
+            this.crossCursor = null;
+        }
+
+        // Clean up debug elements
+        if (this.debugDot) {
+            this.debugDot.destroy();
+            this.debugDot = null;
+        }
+        if (this.debugText) {
+            this.debugText.destroy();
+            this.debugText = null;
+        }
+        if (this.pathfindingDebugGraphics) {
+            this.pathfindingDebugGraphics.destroy();
+            this.pathfindingDebugGraphics = null;
+        }
     }
 
     // Debug toggle methods
