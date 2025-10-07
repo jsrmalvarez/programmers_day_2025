@@ -160,26 +160,10 @@ export class InputManager {
     }
 
     movePlayerToHotspot(hotspot) {
-        // Calculate a good position where player's feet should be near the hotspot
+        // Calculate target position at the lower edge of the hotspot
         const hotspotCenterX = hotspot.x + hotspot.width / 2;
-        const hotspotCenterY = hotspot.y + hotspot.height / 2;
-
-        const room = this.scene.rooms[gameState.currentRoom];
-        const bounds = room.walkableBounds;
-
-        // Try to approach from below (most common for adventure games)
-        let targetX = Math.max(bounds.x + 10, Math.min(bounds.x + bounds.width - 10, hotspotCenterX));
-        let targetY = Math.max(bounds.y + 10, Math.min(bounds.y + bounds.height - 10, hotspot.y + hotspot.height + CONFIG.APPROACH_DISTANCE));
-
-        // If can't approach from below, try from the side
-        if (targetY > bounds.y + bounds.height - 10) {
-            targetY = hotspotCenterY;
-            if (gameState.playerX < hotspotCenterX) {
-                targetX = Math.max(bounds.x + 10, hotspot.x - CONFIG.APPROACH_DISTANCE);
-            } else {
-                targetX = Math.min(bounds.x + bounds.width - 10, hotspot.x + hotspot.width + CONFIG.APPROACH_DISTANCE);
-            }
-        }
+        const targetX = hotspotCenterX; // Center horizontally on the hotspot
+        const targetY = hotspot.y + hotspot.height + CONFIG.APPROACH_DISTANCE; // Below the hotspot
 
         // Store the interaction to execute when player reaches target
         this.pendingInteraction = hotspot;

@@ -119,7 +119,7 @@ export class RoomManager {
                 },
                 {
                     name: 'Pidgeon',
-                    x: 144, y: 119, width: 12, height: 12,
+                    x: 144, y: 119, width: 20, height: 12,
                     action: this.scene.interactPidgeon.bind(this.scene)
                 }
             ],
