@@ -6,6 +6,11 @@
 import { CONFIG } from './config.js';
 import { gameState, addToInventory, removeFromInventory } from './gameState.js';
 
+
+const INVENTORY_SLOT_COUNT = 3;
+const SLOT_SIZE = 15;
+const SLOT_SPACING = 20;
+
 export class UIManager {
     constructor(scene) {
         this.scene = scene;
@@ -15,42 +20,38 @@ export class UIManager {
         this.messageBackground = null;
         this.toggleButton = null;
         this.inventoryVisible = true;
+        this.inventoryWidth = INVENTORY_SLOT_COUNT * SLOT_SPACING + 30;
+        this.inventoryHeight = SLOT_SIZE + 4;
+        this.inventoryX = CONFIG.VIRTUAL_WIDTH - this.inventoryWidth - 10;
+        this.inventoryY = CONFIG.VIRTUAL_HEIGHT - this.inventoryHeight;
         this.isModalOpen = false;
         this.messageTimeout = null; // Store reference to auto-hide timeout
     }
 
     setupUI() {
-        // Calculate inventory area dimensions
-        const slotSize = 15;
-        const slotSpacing = 20;
-        const inventoryWidth = 7 * slotSpacing + 30; // Width for 7 slots + padding + space for button
-        const inventoryHeight = slotSize + 4; // Just enough height for slots + small padding
-        const inventoryX = CONFIG.VIRTUAL_WIDTH - inventoryWidth - 10; // Position from right edge
-        const inventoryY = CONFIG.VIRTUAL_HEIGHT - inventoryHeight;
-
         // Create inventory background (only as wide as needed, positioned bottom-right)
         this.inventoryBg = this.scene.add.graphics();
         this.inventoryBg.fillStyle(0xffc900);
-        this.inventoryBg.fillRect(inventoryX, inventoryY, inventoryWidth, inventoryHeight);
+        this.inventoryBg.fillRect(this.inventoryX, this.inventoryY, this.inventoryWidth, this.inventoryHeight);
         this.inventoryBg.setDepth(100); // Above everything else
 
         // Create inventory slots (positioned bottom-right, moved down)
         this.inventorySlots = [];
-        const slotY = inventoryY + 2; // Small padding from top of compact inventory area
+        const slotY = this.inventoryY + 2; // Small padding from top of compact inventory area
 
-        for (let i = 0; i < 7; i++) {
-            const slotX = inventoryX + 5 + i * slotSpacing; // Start from inventory background + padding
+        for (let i = 0; i < INVENTORY_SLOT_COUNT; i++) {
+            const slotX = this.inventoryX + 5 + i * SLOT_SPACING; // Start from inventory background + padding
 
             const slot = this.scene.add.graphics();
             slot.lineStyle(1, 0x34495e);
-            slot.strokeRect(slotX, slotY, slotSize, slotSize);
+            slot.strokeRect(slotX, slotY, SLOT_SIZE, SLOT_SIZE);
             slot.setDepth(101);
 
             this.inventorySlots.push({
                 x: slotX,
                 y: slotY,
-                width: slotSize,
-                height: slotSize,
+                width: SLOT_SIZE,
+                height: SLOT_SIZE,
                 item: null,
                 sprite: null,
                 highlight: null,
@@ -59,7 +60,7 @@ export class UIManager {
         }
 
         // Create toggle button (positioned relative to inventory)
-        this.createToggleButton(inventoryX, inventoryY, inventoryWidth);
+        this.createToggleButton(this.inventoryX, this.inventoryY, this.inventoryWidth);
     }
 
     createToggleButton(inventoryX, inventoryY, inventoryWidth) {
@@ -85,7 +86,7 @@ export class UIManager {
         this.toggleButton.clear();
 
         // Position button to the right of the slots, within the inventory background
-        const buttonX = this.inventoryX + 7 * 20 + 5; // After 7 slots + small padding
+        const buttonX = this.inventoryX + INVENTORY_SLOT_COUNT * SLOT_SPACING + 5;
         const buttonY = this.inventoryY + 2; // Align with top of compact inventory area
 
         // Button background
@@ -134,33 +135,39 @@ export class UIManager {
     }
 
     handleInventoryClick(x, y) {
+        let inventoryHit = false;
+
         // Check if clicking on toggle button
-        const buttonX = this.inventoryX + 7 * 20 + 5; // After 7 slots + small padding
+        const buttonX = this.inventoryX + INVENTORY_SLOT_COUNT * SLOT_SPACING + 5;
         const buttonY = this.inventoryY + 2; // Align with top of compact inventory area
         if (x >= buttonX && x <= buttonX + 16 && y >= buttonY && y <= buttonY + 16) {
             this.toggleInventory();
-            return;
+            inventoryHit = true;
         }
+        else{
+            // Only handle inventory slot clicks if inventory is visible
+            if (this.inventoryVisible){
+                for (let i = 0; i < this.inventorySlots.length; i++) {
+                    const slot = this.inventorySlots[i];
+                    if (x >= slot.x && x <= slot.x + slot.width &&
+                        y >= slot.y && y <= slot.y + slot.height && slot.item) {
 
-        // Only handle inventory slot clicks if inventory is visible
-        if (!this.inventoryVisible) return;
+                        // Deselect current item if any
+                        const previousSelectedItem = gameState.selectedItem;
+                        if (previousSelectedItem) {
+                            this.deselectItem();
+                        }
 
-        for (let i = 0; i < this.inventorySlots.length; i++) {
-            const slot = this.inventorySlots[i];
-            if (x >= slot.x && x <= slot.x + slot.width &&
-                y >= slot.y && y <= slot.y + slot.height && slot.item) {
-
-                // Deselect current item if any
-                if (gameState.selectedItem) {
-                    this.deselectItem();
+                        if(previousSelectedItem !== slot.item) {
+                            gameState.selectedItem = slot.item;
+                            this.highlightInventorySlot(i);
+                        }
+                        inventoryHit = true;
+                    }
                 }
-
-                // Select this item
-                gameState.selectedItem = slot.item;
-                this.highlightInventorySlot(i);
-                break;
             }
         }
+        return inventoryHit;
     }
 
     getInventoryTooltip(x, y) {
@@ -189,7 +196,7 @@ export class UIManager {
         if (index >= 0 && index < this.inventorySlots.length) {
             const slot = this.inventorySlots[index];
             slot.highlight = this.scene.add.graphics();
-            slot.highlight.lineStyle(2, 0xf1c40f);
+            slot.highlight.lineStyle(2, 0xff6e00);
             slot.highlight.strokeRect(slot.x, slot.y, slot.width, slot.height);
             slot.highlight.setDepth(102);
             slot.highlight.setVisible(this.inventoryVisible);
