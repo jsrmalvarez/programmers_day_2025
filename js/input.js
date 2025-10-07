@@ -230,7 +230,7 @@ export class InputManager {
         const dy = gameState.targetY - gameState.playerY;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance <= 8) {
+        if (distance <= 2) {
             // Reached target
             gameState.playerX = gameState.targetX;
             gameState.playerY = gameState.targetY;

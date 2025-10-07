@@ -169,16 +169,10 @@ export class CollisionManager {
         const checkPoints = [
             // Top row (feetY - 2)
             { x: playerX - halfWidth - HORIZONTAL_MARGIN, y: feetY - VERTICAL_MARGIN }, // Left edge (with 1px margin)
-            { x: playerX - halfWidth/2, y: feetY - VERTICAL_MARGIN },   // Left quarter
-            { x: playerX, y: feetY - 2 },                 // Center
-            { x: playerX + halfWidth/2, y: feetY - VERTICAL_MARGIN },   // Right quarter
             { x: playerX + halfWidth + HORIZONTAL_MARGIN, y: feetY - VERTICAL_MARGIN }, // Right edge (with 1px margin)
 
             // Bottom row (feetY + 2)
             { x: playerX - halfWidth - HORIZONTAL_MARGIN, y: feetY + VERTICAL_MARGIN }, // Left edge (with 1px margin)
-            { x: playerX - halfWidth/2, y: feetY + VERTICAL_MARGIN },   // Left quarter
-            { x: playerX, y: feetY + 2 },                 // Center
-            { x: playerX + halfWidth/2, y: feetY + VERTICAL_MARGIN },   // Right quarter
             { x: playerX + halfWidth + HORIZONTAL_MARGIN, y: feetY + VERTICAL_MARGIN }  // Right edge (with 1px margin)
         ];
 
