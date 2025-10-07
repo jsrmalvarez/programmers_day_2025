@@ -230,7 +230,7 @@ export class InputManager {
         const dy = gameState.targetY - gameState.playerY;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < 2) {
+        if (distance <= 8) {
             // Reached target
             gameState.playerX = gameState.targetX;
             gameState.playerY = gameState.targetY;
@@ -275,7 +275,7 @@ export class InputManager {
                     }
                 }
             } else {
-                // No collision system, move normally
+                // No collision, move normally
                 gameState.playerX = nextX;
                 gameState.playerY = nextY;
             }

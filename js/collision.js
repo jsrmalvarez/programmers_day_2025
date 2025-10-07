@@ -156,18 +156,30 @@ export class CollisionManager {
 
     // Check if player can be at a given position (using full feet width for collision)
     isPlayerPositionWalkable(playerX, playerY) {
+        const HORIZONTAL_MARGIN = 1;
+        const VERTICAL_MARGIN = 2;
+
         const dimensions = CONFIG.PLAYER[CONFIG.PLAYER.USE_VERSION];
-        const feetY = playerY + dimensions.FEET_OFFSET;
+        const feetY = playerY + dimensions.FEET_OFFSET - VERTICAL_MARGIN/2;
         const halfWidth = dimensions.WIDTH / 2;
 
-        // Check multiple points across the player's feet width for thorough collision detection
-        // For a 12-pixel wide character, check 5 points to ensure no gaps
+        // Check multiple points in a rectangular area around the player's feet
+        // This ensures collision detection works when moving both horizontally and vertically
+
         const checkPoints = [
-            { x: playerX - halfWidth - 1, y: feetY }, // Left edge (with 1px margin)
-            { x: playerX - halfWidth/2, y: feetY },   // Left quarter
-            { x: playerX, y: feetY },                 // Center
-            { x: playerX + halfWidth/2, y: feetY },   // Right quarter
-            { x: playerX + halfWidth + 1, y: feetY }  // Right edge (with 1px margin)
+            // Top row (feetY - 2)
+            { x: playerX - halfWidth - HORIZONTAL_MARGIN, y: feetY - VERTICAL_MARGIN }, // Left edge (with 1px margin)
+            { x: playerX - halfWidth/2, y: feetY - VERTICAL_MARGIN },   // Left quarter
+            { x: playerX, y: feetY - 2 },                 // Center
+            { x: playerX + halfWidth/2, y: feetY - VERTICAL_MARGIN },   // Right quarter
+            { x: playerX + halfWidth + HORIZONTAL_MARGIN, y: feetY - VERTICAL_MARGIN }, // Right edge (with 1px margin)
+
+            // Bottom row (feetY + 2)
+            { x: playerX - halfWidth - HORIZONTAL_MARGIN, y: feetY + VERTICAL_MARGIN }, // Left edge (with 1px margin)
+            { x: playerX - halfWidth/2, y: feetY + VERTICAL_MARGIN },   // Left quarter
+            { x: playerX, y: feetY + 2 },                 // Center
+            { x: playerX + halfWidth/2, y: feetY + VERTICAL_MARGIN },   // Right quarter
+            { x: playerX + halfWidth + HORIZONTAL_MARGIN, y: feetY + VERTICAL_MARGIN }  // Right edge (with 1px margin)
         ];
 
         // All points must be walkable for the position to be valid
