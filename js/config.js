@@ -81,6 +81,20 @@ export const ITEMS = {
         transform: {
             scale: 1.2
         }
+    },
+    coffeeMachineManual: {
+        name: "User's Manual",
+        sprite: 'users_manual',
+        transform: {
+            scale: 0.8
+        }
+    },
+    coffee: {
+        name: 'Coffee',
+        sprite: 'coffee',
+        transform: {
+            scale: 0.85
+        }
     }
 };
 
@@ -315,6 +329,24 @@ export const ROOMS = {
                     threshold: 127, // Y threshold for far desk
                     aboveLayer: 25, // Just below far screens (26)
                     belowLayer: 10  // Just below far screens (11)
+                }
+            },
+            {
+                id: 'users_manual',
+                image: 'users_manual',
+                x: 872, y: 875,
+                layering: {
+                    type: 'static',
+                    layer: 0
+                }
+            },
+            {
+                id: 'coffee',
+                image: 'coffee',
+                x: 872, y: 875,
+                layering: {
+                    type: 'static',
+                    layer: 0
                 }
             },
             {

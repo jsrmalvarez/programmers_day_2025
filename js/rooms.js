@@ -88,6 +88,16 @@ export class RoomManager {
                     action: this.scene.interactDoor.bind(this.scene)
                 },
                 {
+                    name: 'Coffee Machine',
+                    x: 244, y: 36, width: 15, height: 16,
+                    action: this.scene.interactCoffeeMachine.bind(this.scene)
+                },
+                {
+                    name: 'Drawer',
+                    x: 252, y: 75, width: 4, height: 4,
+                    action: this.scene.interactDrawer.bind(this.scene)
+                },
+                {
                     name: 'Branch',
                     x: 272, y: 129, width: 20, height: 5,
                     action: this.scene.takeBranch.bind(this.scene)

@@ -82,6 +82,10 @@ export class NPC {
         if (this.id === 'david' && gameState.progress._040_talkedToEve && !gameState.progress._050_talkedToDavid) {
             gameState.progress._050_talkedToDavid = true;
         }
+
+        if(this.id === 'charlie' && gameState.progress._050_talkedToDavid && !gameState.progress._060_talkedToCharlie) {
+            gameState.progress._060_talkedToCharlie = true;
+        }
     }
 
     getHotspot() {

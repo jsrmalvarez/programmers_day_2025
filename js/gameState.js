@@ -23,6 +23,7 @@ export let gameState = {
         _060_talkedToCharlie: false,
         _070_coffeMachineManualTaken: false,
         _080_coffeMachineFixed: false,
+        _081_coffeTaken: false,
         _090_coffeGivenToCharlie: false,
     },
     playerX: 263,

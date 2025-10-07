@@ -207,9 +207,35 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
+    interactDrawer() {
+        if(!gameState.progress._070_coffeMachineManualTaken) {
+            gameState.progress._070_coffeMachineManualTaken = true;
+            this.uiManager.addToInventoryUI(ITEMS.coffeeMachineManual);
+            this.uiManager.showMessage("You found the coffee machine manual.");
+        }
+    }
+
     interactSeatA() {
         gameState.progress._010_triedToOccupySeatA = true;
         this.uiManager.showMessage("I will not sit in there.\nI booked for seat F.");
+    }
+
+    interactCoffeeMachine() {
+        /*if(!gameState.progress._080_coffeMachineFixed) {
+            this.uiManager.showMessage("The coffee machine is not working.");
+        }
+        else {
+            if(gameState.progress._060_talkedToCharlie) {
+                if(!gameState.progress._081_coffeTaken) {
+                    gameState.progress._081_coffeTaken = true;*/
+                    this.uiManager.addToInventoryUI(ITEMS.coffee);
+                    this.uiManager.showMessage("Hmm... coffee.");
+                /*}
+                else {
+                    this.uiManager.showMessage("That would be too much coffee.");
+                }
+            }
+        }*/
     }
 
     takeBranch() {
