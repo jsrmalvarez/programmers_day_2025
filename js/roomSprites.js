@@ -222,6 +222,9 @@ export class RoomSpriteManager {
                     // Check if we should stop or loop
                     if (state.repeat !== -1 && state.loopCount >= state.repeat) {
                         state.isPlaying = false;
+                        // Hide the sprite when animation completes
+                        sprite.setVisible(false);
+                        sprite.setAlpha(0);
                         return;
                     }
 
