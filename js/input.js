@@ -190,12 +190,38 @@ export class InputManager {
         const targetCenterX = x;
         const targetCenterY = y - dimensions.FEET_OFFSET;
 
-        // Use collision detection if available, otherwise use bounds
-        if (this.scene.collisionManager.maskData) {
-            // Find nearest walkable point using collision mask
-            // The collision system will check if the feet can be at (x, y)
+        // Use pathfinding if available, otherwise fall back to collision detection
+        if (this.scene.pathfindingManager && this.scene.pathfindingManager.grid) {
+            // Use pathfinding to find waypoints
+            this.scene.pathfindingManager.findPath(
+                gameState.playerX,
+                gameState.playerY,
+                targetCenterX,
+                targetCenterY,
+                (waypoints) => {
+                    if (waypoints && waypoints.length > 0) {
+                        // Set waypoints for movement
+                        this.scene.pathfindingManager.setWaypoints(waypoints);
+
+                        // Start moving to first waypoint
+                        const firstWaypoint = this.scene.pathfindingManager.getNextWaypoint();
+                        if (firstWaypoint) {
+                            setPlayerTarget(firstWaypoint.x, firstWaypoint.y);
+                            gameState.isWalking = true;
+                        }
+                    } else {
+                        // No path found, try to find nearest walkable point
+                        const walkablePoint = this.scene.collisionManager.findNearestWalkablePoint(targetCenterX, targetCenterY);
+                        setPlayerTarget(walkablePoint.x, walkablePoint.y);
+                    }
+                    this.playSound('walk');
+                }
+            );
+        } else if (this.scene.collisionManager.maskData) {
+            // Fallback to collision detection
             const walkablePoint = this.scene.collisionManager.findNearestWalkablePoint(targetCenterX, targetCenterY);
             setPlayerTarget(walkablePoint.x, walkablePoint.y);
+            this.playSound('walk');
         } else {
             // Fallback to bounds-based movement
             const room = this.scene.rooms[gameState.currentRoom];
@@ -205,9 +231,8 @@ export class InputManager {
             const clampedY = Math.max(bounds.y, Math.min(bounds.y + bounds.height, targetCenterY));
 
             setPlayerTarget(clampedX, clampedY);
+            this.playSound('walk');
         }
-
-        this.playSound('walk');
     }
 
     playSound(soundName) {
@@ -231,9 +256,24 @@ export class InputManager {
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         if (distance <= 2) {
-            // Reached target
+            // Reached current target
             gameState.playerX = gameState.targetX;
             gameState.playerY = gameState.targetY;
+
+            // Check if we have more waypoints to follow
+            if (this.scene.pathfindingManager && !this.scene.pathfindingManager.hasReachedAllWaypoints()) {
+                // Move to next waypoint
+                this.scene.pathfindingManager.advanceToNextWaypoint();
+                const nextWaypoint = this.scene.pathfindingManager.getNextWaypoint();
+
+                if (nextWaypoint) {
+                    // Continue to next waypoint
+                    setPlayerTarget(nextWaypoint.x, nextWaypoint.y);
+                    return; // Continue movement
+                }
+            }
+
+            // No more waypoints, stop movement
             gameState.isWalking = false;
 
             // Execute pending interaction if any

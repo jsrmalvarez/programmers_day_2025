@@ -54,6 +54,10 @@ export class CollisionManager {
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             this.maskData = imageData.data;
 
+            // Initialize pathfinding with the mask image
+            if (this.scene.pathfindingManager) {
+                this.scene.pathfindingManager.initializeFromMask(source.image);
+            }
 
             return true;
         } catch (error) {

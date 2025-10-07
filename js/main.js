@@ -13,6 +13,7 @@ import { UIManager } from './ui.js';
 import { NPCManager } from './npcManager.js';
 import { CollisionManager } from './collision.js';
 import { RoomSpriteManager } from './roomSprites.js';
+import { PathfindingManager } from './pathfinding.js';
 
 export class GameScene extends Phaser.Scene {
     constructor() {
@@ -27,6 +28,7 @@ export class GameScene extends Phaser.Scene {
         this.npcManager = new NPCManager(this);
         this.collisionManager = new CollisionManager(this);
         this.roomSpriteManager = new RoomSpriteManager(this);
+        this.pathfindingManager = new PathfindingManager(this);
 
         // Game objects
         this.playerSprite = null;
