@@ -210,7 +210,7 @@ export class GameScene extends Phaser.Scene {
     interactDrawer() {
         if(!gameState.progress._070_coffeMachineManualTaken) {
             gameState.progress._070_coffeMachineManualTaken = true;
-            this.uiManager.addToInventoryUI(ITEMS.coffeeMachineManual);
+            this.uiManager.addToInventoryUI(ITEMS.users_manual);
             this.uiManager.showMessage("You found the coffee machine manual.");
         }
     }
@@ -221,21 +221,31 @@ export class GameScene extends Phaser.Scene {
     }
 
     interactCoffeeMachine() {
-        /*if(!gameState.progress._080_coffeMachineFixed) {
-            this.uiManager.showMessage("The coffee machine is not working.");
+        if(!gameState.progress._080_coffeMachineFixed) {
+            if (gameState.selectedItem && gameState.selectedItem === ITEMS.users_manual) {
+                this.uiManager.removeFromInventoryUI(ITEMS.users_manual);
+                this.uiManager.showMessage("Fixed! It was just a matter of plugging in the cord.");
+                gameState.progress._080_coffeMachineFixed = true;
+            }
+            else{
+                this.uiManager.showMessage("The coffee machine is not working.");
+            }
         }
         else {
             if(gameState.progress._060_talkedToCharlie) {
                 if(!gameState.progress._081_coffeTaken) {
-                    gameState.progress._081_coffeTaken = true;*/
+                    gameState.progress._081_coffeTaken = true;
                     this.uiManager.addToInventoryUI(ITEMS.coffee);
-                    this.uiManager.showMessage("Hmm... coffee.");
-                /*}
+                    this.uiManager.showMessage("Ouch... burning hot!.");
+                }
                 else {
                     this.uiManager.showMessage("That would be too much coffee.");
                 }
             }
-        }*/
+            else{
+                this.uiManager.showMessage("I don't like coffee.");
+            }
+        }
     }
 
     takeBranch() {
@@ -264,12 +274,28 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
+    giveCoffeeToCharlie() {
+        if(gameState.progress._081_coffeTaken && !gameState.progress._090_coffeGivenToCharlie) {
+            gameState.progress._090_coffeGivenToCharlie = true;
+            this.uiManager.removeFromInventoryUI(ITEMS.coffee);
+            this.uiManager.showMessage("You gave the coffee to Charlie.\nHe is now awake and ready to change seats with David.\nNow everyone is in their seats and ready to work.\n\nCongratulations!\n\n        -jsrmalvarez", {
+                autoHide: false,
+                modal: true,
+                buttonText: 'OK',
+                fontSize: 7,
+                lineSpacing: 10,
+                maxWidth: CONFIG.VIRTUAL_WIDTH - 40
+            });
+        }
+    }
+
     talkToNPC(npcId) {
         const npc = this.npcManager.getNPC(npcId);
         if (npc) {
             npc.talk();
         }
     }
+
 
     interactPidgeon() {
         if (gameState.selectedItem && gameState.selectedItem === ITEMS.branch) {

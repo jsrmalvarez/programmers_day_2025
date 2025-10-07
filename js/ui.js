@@ -385,9 +385,9 @@ export class UIManager {
             this.messageBackground.fillRect(textBounds.x - 4, textBounds.y - 2, textBounds.width + 8, textBounds.height + 4);
             this.messageBackground.setDepth(999);
 
-            // Auto-hide after 3 seconds for non-modal messages
+            // Auto-hide after 6 seconds for non-modal messages
             if (options.autoHide) {
-                this.messageTimeout = this.scene.time.delayedCall(3000, () => {
+                this.messageTimeout = this.scene.time.delayedCall(6000, () => {
                     if (this.messageText) {
                         this.messageText.destroy();
                         this.messageText = null;

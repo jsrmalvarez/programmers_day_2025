@@ -83,9 +83,12 @@ export class NPC {
             gameState.progress._050_talkedToDavid = true;
         }
 
-        if(this.id === 'charlie' && gameState.progress._050_talkedToDavid && !gameState.progress._060_talkedToCharlie) {
-            gameState.progress._060_talkedToCharlie = true;
+        if(this.id === 'charlie' && gameState.progress._050_talkedToDavid) {
+            if(!gameState.progress._060_talkedToCharlie){
+                gameState.progress._060_talkedToCharlie = true;
+            }
         }
+
     }
 
     getHotspot() {
@@ -103,7 +106,11 @@ export class NPC {
         // Special interaction for Alice when player has mouse
         if (this.id === 'alice' && gameState.progress._022_mouseTaken && !gameState.progress._025_mouseGivenToAlice) {
             this.scene.giveMouseToAlice();
-        } else {
+        }
+        else if (this.id === 'charlie' && gameState.progress._081_coffeTaken && !gameState.progress._090_coffeGivenToCharlie) {
+            this.scene.giveCoffeeToCharlie();
+        }
+        else {
             this.talk();
         }
     }

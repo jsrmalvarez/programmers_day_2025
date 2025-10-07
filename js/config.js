@@ -82,7 +82,7 @@ export const ITEMS = {
             scale: 1.2
         }
     },
-    coffeeMachineManual: {
+    users_manual: {
         name: "User's Manual",
         sprite: 'users_manual',
         transform: {
