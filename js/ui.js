@@ -348,6 +348,11 @@ export class UIManager {
 
             // Handle button click
             buttonText.on('pointerdown', () => {
+                // Call custom callback if provided
+                if (options.onButtonClick) {
+                    options.onButtonClick();
+                }
+
                 // Clean up all elements
                 this.messageText.destroy();
                 this.messageText = null;

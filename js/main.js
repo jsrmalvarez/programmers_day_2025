@@ -224,10 +224,14 @@ export class GameScene extends Phaser.Scene {
         this.uiManager.showMessage("You did it, you reached the seat you booked for!\n\nCongratulations!\n\nNow, let's work a bit.\n\n        -jsrmalvarez", {
             autoHide: false,
             modal: true,
-            buttonText: 'OK',
+            buttonText: 'Play Again',
             fontSize: 7,
             lineSpacing: 10,
-            maxWidth: CONFIG.VIRTUAL_WIDTH - 40
+            maxWidth: CONFIG.VIRTUAL_WIDTH - 40,
+            onButtonClick: () => {
+                // Reload the page to restart the game
+                window.location.reload();
+            }
         });
     }
 
