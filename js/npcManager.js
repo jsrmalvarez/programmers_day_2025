@@ -3,7 +3,7 @@
  * Handles creation, interaction, and management of all NPCs
  */
 
-import { NPCS, CONFIG, getDialogSet } from './config.js';
+import { NPCS, NPCS_CORRECTLY_SEATED, CONFIG, getDialogSet } from './config.js';
 import { gameState } from './gameState.js';
 
 export class NPC {
@@ -21,9 +21,10 @@ export class NPC {
         this.sprite = null;
     }
 
-    create() {
+    create(correctlySeated = false) {
         // Create visible Phaser sprite with dynamic depth layering
-        this.sprite = this.scene.add.sprite(this.position.x, this.position.y, `npc_${this.id}`);
+        const prefix = correctlySeated ? 'npc_correctly_seated_' : 'npc_';
+        this.sprite = this.scene.add.sprite(this.position.x, this.position.y, `${prefix}${this.id}`);
         this.sprite.setVisible(true);
 
         // Set initial depth based on layering configuration
@@ -138,6 +139,19 @@ export class NPCManager {
         for (const [id, config] of Object.entries(NPCS)) {
             const npc = new NPC(id, config, this.scene);
             npc.create();
+            this.npcs.set(id, npc);
+        }
+
+    }
+
+    createCorrectlySeatedNPCs() {
+        // Clear existing NPCs
+        this.clearAllNPCs();
+
+        // Create NPCs from config
+        for (const [id, config] of Object.entries(NPCS_CORRECTLY_SEATED)) {
+            const npc = new NPC(id, config, this.scene);
+            npc.create(true);
             this.npcs.set(id, npc);
         }
     }

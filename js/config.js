@@ -296,6 +296,80 @@ export const NPCS = {
     }
 };
 
+export const NPCS_CORRECTLY_SEATED = {
+
+    alice: {
+        name: 'Alice',
+        position: { x: 56, y: 110 },
+        dialogs: {
+        },
+        hotspot: { x: 162, y: 125, width: 25, height: 56 },
+        // Dynamic layering based on player position
+        layering: {
+            type: 'dynamic',
+            threshold: 181, // Y position threshold (NPC feet position)
+            aboveLayer: 29, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 14  // Layer when player Y > threshold (NPC behind)
+        }
+    },
+    bob: {
+        name: 'Bob',
+        position: { x: 112, y: 110 },
+        dialogs: {
+        },
+        hotspot: { x: 102, y: 89, width: 20, height: 36 },
+        // Dynamic layering based on player position
+        layering: {
+            type: 'dynamic',
+            threshold: 127, // Y position threshold (NPC feet position)
+            aboveLayer: 27, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 12  // Layer when player Y > threshold (NPC behind)
+        }
+    },
+    charlie: {
+        name: 'Charlie',
+        position: { x: 172, y: 110 },
+        dialogs: {
+        },
+        hotspot: { x: 162, y: 89, width: 20, height: 36 },
+        // Dynamic layering based on player position
+        layering: {
+            type: 'dynamic',
+            threshold: 127, // Y position threshold (NPC feet position)
+            aboveLayer: 27, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 12  // Layer when player Y > threshold (NPC behind)
+        }
+    },
+    david: {
+        name: 'David',
+        position: { x: 52, y: 155 },
+        dialogs: {
+        },
+        hotspot: { x: 40, y: 125, width: 25, height: 56 },
+        // Dynamic layering based on player position
+        layering: {
+            type: 'dynamic',
+            threshold: 181, // Y position threshold (NPC feet position)
+            aboveLayer: 29, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 14  // Layer when player Y > threshold (NPC behind)
+        }
+    },
+    eve: {
+        name: 'Eve',
+        position: { x: 110, y: 155 },
+        dialogs: {
+        },
+        hotspot: { x: 98, y: 125, width: 25, height: 56 },
+        // Dynamic layering based on player position
+        layering: {
+            type: 'dynamic',
+            threshold: 181, // Y position threshold (NPC feet position)
+            aboveLayer: 29, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 14  // Layer when player Y > threshold (NPC behind)
+        }
+    }
+};
+
 // Standard Normal variate using Box-Muller transform.
 function gaussianRandom(mean=0, stdev=1) {
     const u = 1 - Math.random(); // Converting [0,1) to (0,1]
@@ -542,6 +616,68 @@ export const ROOMS = {
                 layering: {
                     type: 'static',
                     layer: 26
+                }
+            }
+        ]
+    },
+    room3: {
+        name: 'OfficeNPCCorrectlySeated',
+        // Y position thresholds for player scaling
+        nearFarThreshold: 145,  // Below this: FAR, above this: NEAR
+        farTinyThreshold: 112,  // Below this: TINY, above this: FAR
+        background: {
+            image: 'room1_bg', // PNG background image
+            mask: 'room1_mask'  // Black/white collision mask
+        },
+        sprites: [
+            // Dynamic layering system: sprites can change depth based on player position
+            // This simulates perspective - objects appear behind/in front based on relative distance
+            {
+                id: 'desk_back',
+                image: 'desk_back',
+                x: 35, y: 92,
+                // Dynamic layering: different threshold for this sprite
+                layering: {
+                    type: 'dynamic',
+                    threshold: 127, // Y threshold for far desk
+                    aboveLayer: 25, // Just below far screens (26)
+                    belowLayer: 10  // Just below far screens (11)
+                }
+            },
+            {
+                 id: 'desk_front',
+                 image: 'desk_front',
+                 x: 9, y: 134,
+                 // Dynamic layering: if player Y > threshold, desk appears behind player
+                 layering: {
+                     type: 'dynamic',
+                     threshold: 181, // Y threshold for near desk
+                    aboveLayer: 27, // Just below near screens (28)
+                    belowLayer: 12  // Just below near screens (13)
+                 }
+            },
+            {
+                id: 'seat_a',
+                image: 'seat_a',
+                x: 49, y: 106,
+                layering: {
+                    type: 'dynamic',
+                    threshold: 127, // Y threshold for near desk
+                    aboveLayer: 27, // Just below near screens (28)
+                    belowLayer: 12  // Just below near screens (13)
+                }
+            },
+            {
+                id: 'plant_wo_branch',
+                image: 'plant_wo_branch',
+                x: 280, y: 98,
+                visible: false,
+                // Dynamic layering: if player Y > threshold, desk appears behind player
+                layering: {
+                    type: 'dynamic',
+                    threshold: 172, // Y threshold for near desk
+                   aboveLayer: 27, // Just below near screens (28)
+                   belowLayer: 12  // Just below near screens (13)
                 }
             }
         ]

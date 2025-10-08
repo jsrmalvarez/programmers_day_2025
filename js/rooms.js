@@ -136,6 +136,13 @@ export class RoomManager {
             walkableBounds: { x: 20, y: 60, width: 280, height: 100 }
         };
 
+        rooms.room3 = {
+            ...rooms.room3,
+            background: this.createOfficeBackground.bind(this),
+            hotspots: [],
+            walkableBounds: { x: 20, y: 60, width: 280, height: 100 }
+        };
+
         return rooms;
     }
 
@@ -150,8 +157,13 @@ export class RoomManager {
         // Create animated screens
         this.scene.screenManager.createAnimatedScreens();
 
-        // Create NPCs using new NPC management system
-        this.scene.npcManager.createAllNPCs();
+        if(gameState.currentRoom === 'room3') {
+            // Create NPCs using new NPC management system
+            this.scene.npcManager.createCorrectlySeatedNPCs();
+        } else {
+            // Create NPCs using new NPC management system
+            this.scene.npcManager.createAllNPCs();
+        }
 
         // Add NPC hotspots to the room after NPCs are created
         const npcHotspots = this.scene.npcManager.getAllHotspots();
@@ -220,6 +232,11 @@ export class RoomManager {
             // Create animated screens
 
             this.scene.screenManager.createAnimatedScreens();
+        }
+
+        if(roomId === 'room3') {
+            // Create NPCs using new NPC management system
+            this.scene.npcManager.createCorrectlySeatedNPCs();
         }
 
         // Update all dynamic layering based on current player position

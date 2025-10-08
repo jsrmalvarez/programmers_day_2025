@@ -7,7 +7,7 @@ import { CONFIG } from './config.js';
 
 // Game state
 export let gameState = {
-    currentRoom: 'room1',
+    currentRoom: 'room3',
     inventory: [],
     selectedItem: null,
     progress: {

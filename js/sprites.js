@@ -16,6 +16,8 @@ export class SpriteManager {
 
         // Create NPC sprites
         this.createNPCSprites();
+
+        this.createCorrectlySeatedNPCSprites()
     }
 
     createPlayerSprites() {
@@ -294,11 +296,11 @@ export class SpriteManager {
 
 
         graphics.clear();
-        this.drawNPCTexture(graphics, 0xee712e);
+        this.drawNPCTexture(graphics, 0x2ecc71);
         graphics.generateTexture('npc_eve', 16, 36);
 
         graphics.clear();
-        this.drawNPCTexture(graphics, 0x2ecc71);
+        this.drawNPCTexture(graphics, 0xee712e);
         graphics.generateTexture('npc_david', 16, 36);
 
         graphics.clear();
@@ -312,6 +314,36 @@ export class SpriteManager {
         graphics.clear();
         this.drawNPCTexture(graphics, 0xe74c3c, true);
         graphics.generateTexture('npc_alice', 24, 54);
+
+        graphics.destroy();
+    }
+
+    createCorrectlySeatedNPCSprites() {
+        const graphics = this.scene.add.graphics();
+
+        graphics.clear();
+        this.drawNPCTexture(graphics, 0xe74c3c);
+        graphics.generateTexture('npc_correctly_seated_alice', 16, 36);
+
+        graphics.clear();
+        this.drawNPCTexture(graphics, 0x3ce74c);
+        graphics.generateTexture('npc_correctly_seated_bob', 16, 36);
+
+        graphics.clear();
+        this.drawNPCTexture(graphics, 0x4c3ce7);
+        graphics.generateTexture('npc_correctly_seated_charlie', 16, 36);
+
+        graphics.clear();
+        this.drawNPCTexture(graphics, 0xee712e, true);
+        graphics.generateTexture('npc_correctly_seated_david', 24, 54);
+
+        graphics.clear();
+        this.drawNPCTexture(graphics, 0x2ecc71, true);
+        graphics.generateTexture('npc_correctly_seated_eve', 24, 54);
+
+
+
+
 
         graphics.destroy();
     }
