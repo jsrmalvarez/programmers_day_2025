@@ -299,7 +299,11 @@ export class GameScene extends Phaser.Scene {
                 buttonText: 'OK',
                 fontSize: 7,
                 lineSpacing: 10,
-                maxWidth: CONFIG.VIRTUAL_WIDTH - 40
+                maxWidth: CONFIG.VIRTUAL_WIDTH - 40,
+                onButtonClick: () => {
+                    // Switch to room3 where everyone is seated correctly
+                    this.switchToRoom('room3');
+                }
             });
         }
     }
