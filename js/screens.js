@@ -46,11 +46,36 @@ export class ScreenManager {
         this.screen5Graphics = this.scene.add.graphics();
         this.screen6Graphics = this.scene.add.graphics();
 
+        // Set room-specific screen modes
+        this.setRoomSpecificScreenModes();
+
         // Set initial depths based on dynamic layering configuration
         this.updateScreenLayers();
 
         // Initial screen render
         this.updateScreenGraphics();
+    }
+
+    setRoomSpecificScreenModes() {
+        // Set different screen modes based on the current room
+        if (gameState.currentRoom === 'room3') {
+            // In room3 (everyone seated correctly), customize screen modes
+            gameState.screen1.mode = 'typing';
+            gameState.screen2.mode = 'typing';
+            gameState.screen3.mode = 'typing';
+            gameState.screen4.mode = 'typing';
+            gameState.screen5.mode = 'typing';
+            gameState.screen6.mode = 'off';
+
+            // Reset all screen states for the new modes
+            this.resetScreenForMode(gameState.screen1);
+            this.resetScreenForMode(gameState.screen2);
+            this.resetScreenForMode(gameState.screen3);
+            this.resetScreenForMode(gameState.screen4);
+            this.resetScreenForMode(gameState.screen5);
+            this.resetScreenForMode(gameState.screen6);
+        }
+        // For room1, use the default modes from gameState (already set)
     }
 
     updateScreenGraphics() {
@@ -325,8 +350,9 @@ export class ScreenManager {
     }
 
     updateScreenAnimations() {
-        // Only update screens if we're in room1 and screens exist
-        if (gameState.currentRoom !== 'room1' || !this.screen1Graphics || !this.screen2Graphics ||
+        // Only update screens if we're in room1 or room3 and screens exist
+        if ((gameState.currentRoom !== 'room1' && gameState.currentRoom !== 'room3') ||
+            !this.screen1Graphics || !this.screen2Graphics ||
             !this.screen3Graphics || !this.screen4Graphics || !this.screen5Graphics || !this.screen6Graphics) {
             return;
         }
@@ -335,6 +361,7 @@ export class ScreenManager {
         // Video mode when: player is behind screen OR looking away from screen
         // Typing mode when: player is in front of screen AND looking at screen
 
+        // Get new modes based on current gameState modes and player position
         const newScreen1Mode = gameState.screen1.mode === 'off' ? 'off' : this.getScreenMode(SCREENS.screen1);
         const newScreen2Mode = gameState.screen2.mode === 'off' ? 'off' : this.getScreenMode(SCREENS.screen2);
         const newScreen3Mode = gameState.screen3.mode === 'off' ? 'off' : this.getScreenMode(SCREENS.screen3);

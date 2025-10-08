@@ -307,9 +307,9 @@ export const NPCS_CORRECTLY_SEATED = {
         // Dynamic layering based on player position
         layering: {
             type: 'dynamic',
-            threshold: 181, // Y position threshold (NPC feet position)
-            aboveLayer: 29, // Layer when player Y < threshold (NPC in front)
-            belowLayer: 14  // Layer when player Y > threshold (NPC behind)
+            threshold: 127, // Y position threshold (NPC feet position)
+            aboveLayer: 27, // Layer when player Y < threshold (NPC in front)
+            belowLayer: 12  // Layer when player Y > threshold (NPC behind)
         }
     },
     bob: {
@@ -659,7 +659,7 @@ export const ROOMS = {
             {
                 id: 'seat_f',
                 image: 'seat_f',
-                x: 168, y: 149,
+                x: 166, y: 149,
                 layering: {
                     type: 'dynamic',
                     threshold: 181, // Y threshold for near desk

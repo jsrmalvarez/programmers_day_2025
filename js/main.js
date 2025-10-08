@@ -220,6 +220,17 @@ export class GameScene extends Phaser.Scene {
         this.uiManager.showMessage("I will not sit in there.\nI booked for seat F.");
     }
 
+    interactSeatF(){
+        this.uiManager.showMessage("You did it, you reached the seat you booked for!\n\nCongratulations!\n\nNow, let's work a bit.\n\n        -jsrmalvarez", {
+            autoHide: false,
+            modal: true,
+            buttonText: 'OK',
+            fontSize: 7,
+            lineSpacing: 10,
+            maxWidth: CONFIG.VIRTUAL_WIDTH - 40
+        });
+    }
+
     interactCoffeeMachine() {
         if(!gameState.progress._080_coffeMachineFixed) {
             if (gameState.selectedItem && gameState.selectedItem === ITEMS.users_manual) {
@@ -278,7 +289,7 @@ export class GameScene extends Phaser.Scene {
         if(gameState.progress._081_coffeTaken && !gameState.progress._090_coffeGivenToCharlie) {
             gameState.progress._090_coffeGivenToCharlie = true;
             this.uiManager.removeFromInventoryUI(ITEMS.coffee);
-            this.uiManager.showMessage("You gave the coffee to Charlie.\nHe is now awake and ready to change seats with David.\nNow everyone is in their seats and ready to work.\n\nCongratulations!\n\n        -jsrmalvarez", {
+            this.uiManager.showMessage("You gave the coffee to Charlie.\nHe is now awake and ready to change seats with David.\nNow everyone is in their seats and ready to work.", {
                 autoHide: false,
                 modal: true,
                 buttonText: 'OK',

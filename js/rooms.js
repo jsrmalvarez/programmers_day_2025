@@ -142,8 +142,8 @@ export class RoomManager {
             hotspots: [
                 {
                     name: 'Seat F',
-                    x: 168, y: 149, width: 20, height: 20,
-                    action: this.scene.interactDoor.bind(this.scene)
+                    x: 166, y: 149, width: 20, height: 20,
+                    action: this.scene.interactSeatF.bind(this.scene)
                 }
             ],
             walkableBounds: { x: 20, y: 60, width: 280, height: 100 }
@@ -236,19 +236,26 @@ export class RoomManager {
             this.scene.rooms[roomId].hotspots.push(...npcHotspots);
 
             // Create animated screens
-
             this.scene.screenManager.createAnimatedScreens();
         }
 
         if(roomId === 'room3') {
             // Create NPCs using new NPC management system
             this.scene.npcManager.createCorrectlySeatedNPCs();
+
+            // Create animated screens
+            this.scene.screenManager.createAnimatedScreens();
         }
 
         // Update all dynamic layering based on current player position
         this.scene.roomSpriteManager.updateAllDynamicLayers();
 
         if (roomId === 'room1') {
+            this.scene.npcManager.updateAllNPCLayers();
+            this.scene.screenManager.updateScreenLayers();
+        }
+
+        if (roomId === 'room3') {
             this.scene.npcManager.updateAllNPCLayers();
             this.scene.screenManager.updateScreenLayers();
         }
