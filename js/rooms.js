@@ -139,7 +139,13 @@ export class RoomManager {
         rooms.room3 = {
             ...rooms.room3,
             background: this.createOfficeBackground.bind(this),
-            hotspots: [],
+            hotspots: [
+                {
+                    name: 'Seat F',
+                    x: 168, y: 149, width: 20, height: 20,
+                    action: this.scene.interactDoor.bind(this.scene)
+                }
+            ],
             walkableBounds: { x: 20, y: 60, width: 280, height: 100 }
         };
 

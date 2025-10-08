@@ -657,12 +657,12 @@ export const ROOMS = {
                  }
             },
             {
-                id: 'seat_a',
-                image: 'seat_a',
-                x: 49, y: 106,
+                id: 'seat_f',
+                image: 'seat_f',
+                x: 168, y: 149,
                 layering: {
                     type: 'dynamic',
-                    threshold: 127, // Y threshold for near desk
+                    threshold: 181, // Y threshold for near desk
                     aboveLayer: 27, // Just below near screens (28)
                     belowLayer: 12  // Just below near screens (13)
                 }
